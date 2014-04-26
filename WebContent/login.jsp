@@ -47,10 +47,7 @@
  
   <div class="row" id="shift">
       <div class="row">
-          <div class="panel">
-          	<h3>Log in</h3>
-            <h5>Enter your credentials:</h5>
-            
+          <div class="panel">            
             
  <!-- *****************************************JSP*************************************************** -->
  	<%@ page language="java" import="java.sql.*" %>
@@ -70,13 +67,11 @@
  
             <% if(rset_user.next()) { %>
               <!-- Redirect to home page -->
+              <p>success</p>
             <% } 
             //else invalid username
             else {%>
-            	<form method="post" action="login.jsp">
-				Name: <input type="text" name="param_username">
-				<input type="submit" value="Log in" class="button">
-            </form>
+            	<p>DOES NOT EXIST</p>
             <% } %>
             
             
