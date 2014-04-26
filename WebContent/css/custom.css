@@ -1,0 +1,36 @@
+/**custom css for customization of the entire site, I know, it's pretty bad coding but it's functional!**/
+
+
+/*General site-specific css*/
+div#offset {
+	position: relative;
+	left: 15px;
+	width: 240px;
+}
+
+div.large-4 a {
+	position: relative;
+	text-align: center;
+	width: 25px;
+}
+
+
+/******signUp.jsp*****/
+#shift {
+	width: 940px;
+	
+}
+
+#shift form{
+	width: 500px;
+	
+}
+
+
+
+/*index.html*/
+.fill {
+	margin-left: 15px;
+	width: 720px;
+}
+
