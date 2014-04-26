@@ -63,15 +63,23 @@
  					 
  					// Initialization 
  	 				Statement stmt = conn.createStatement();
- 					ResultSet rset_users = stmt.executeQuery("SELECT name FROM users");
- 					rset_users.next();
- 	 			 	
+ 					ResultSet rset_user = stmt.executeQuery("SELECT name FROM users WHERE name='" + 
+ 	 													request.getParameter("param_username") + "'");
+ 					 	 			 	
  			%>
  
-            <form method="post" action="confirmation.jsp">
+            <% if(rset_user.next()) { %>
+              <!-- Redirect to home page -->
+            <% } 
+            //else invalid username
+            else {%>
+            	<form method="post" action="login.jsp">
 				Name: <input type="text" name="param_username">
 				<input type="submit" value="Log in" class="button">
             </form>
+            <% } %>
+            
+            
  <!-- *********************************************************************************************** -->      
             
           </div>

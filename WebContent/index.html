@@ -66,7 +66,10 @@
         <div class="fill">
           <div class="panel">
             <h5>Returning User?</h5>
-            <p><a href="" class="button">Log in!</a></p><br>
+            <form method="post" action="login.jsp">
+				Name: <input type="text" name="param_username">
+				<input type="submit" value="Log in" class="button">
+            </form><hr>
             <h5>New User?</h5>
             <p><a href="signUp.jsp" class="button">Sign up!</a></p>
           </div>
