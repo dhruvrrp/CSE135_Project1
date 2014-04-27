@@ -48,46 +48,76 @@
   <div class="row" id="shift">
       <div class="row">
           <div class="panel">
-          	<h3>Sign Up</h3>
-            <h5>Choose your desired credentials:</h5>
+          	<h3>Sign up below:</h3><br>
             
             
  <!-- *****************************************JSP*************************************************** -->
- 			<%@ page language="java" import="java.sql.*" %>
- 			<!-- Connect to DataBase -->
- 			<% 
- 				
- 					 Class.forName("org.postgresql.Driver");
- 					 Connection conn = DriverManager.getConnection(
- 							 "jdbc:postgresql://localhost:5432/Assignment 1 - 135", "postgres", "pass");
+
+ <%@ page language="java" import="java.sql.*" %>
+ 
+ <!-- Connect to database -->
+ <% 
+     try
+ 	 {
+ 	     Class.forName("org.postgresql.Driver");
+ 		 Connection conn = DriverManager.getConnection(
+ 					       "jdbc:postgresql://localhost:5432/CSE135", "postgres", "calcium");
  					 
- 					// Initialization 
- 	 				Statement stmt = conn.createStatement();
- 	 			 	ResultSet rs_states = stmt.executeQuery("SELECT state_id FROM states ORDER BY state_id");
+ 		 // Initialization 
+ 	 	 Statement stmt = conn.createStatement();
+ 	 	 ResultSet rs_states = stmt.executeQuery("SELECT state_id FROM states ORDER BY state_id");
  	 			 	
- 	 			 	Statement stmt2 = conn.createStatement();
- 	 			 	ResultSet rs_roles = stmt2.executeQuery("SELECT * FROM roles");
- 			%>
+ 	     Statement stmt2 = conn.createStatement();
+ 	 	 ResultSet rs_roles = stmt2.executeQuery("SELECT * FROM roles");
+ %>
  
+         <!-- Begin text forms -->
+         <form method="post" action="signUpConfirmation.jsp">
+         <input type="hidden" value="insert" name="action">
+             Username: 
+                 <input type="text" name="param_name" autofocus="autofocus">
+             Role: 
+                 <select name="param_role">
+                     <% while (rs_roles.next()) { %>
+                         <option value= <%= rs_roles.getString("role") %>>
+                         <%= rs_roles.getString("role") %></option>
+                     <% } %> 
+                 </select>
+             Age: 
+                 <input type="text" name="param_age">
+             State: 
+                 <select name="param_state">
+                     <% while(rs_states.next()) { %>
+                         <option value= <%= rs_states.getString("state_id") %>>
+                         <%= rs_states.getString("state_id") %></option>
+                     <% } %>
+                 </select> 
+         <input type="submit" value="Sign Up" class="button">
+         </form>
+
+ <!-- Close connection to database -->
  
+ <%
+         rs_states.close();
+         rs_roles.close();
+
+         stmt.close();
+         stmt2.close();
+
+         conn.close();
+     }
+     catch (SQLException e)
+     {
+         out.println(e.getMessage());
+         e.printStackTrace();
+         return;
+     }
+     catch (Exception e)
+     {
+         out.println(e.getMessage());
+     }
+ %>
  
-            <form method="post" action="confirmation.jsp">
-            	<label>Username:</label> <input type="text" name="param_name" autofocus="autofocus">
-            	Role: <select name="param_role">
-  						<% while (rs_roles.next()) { %>
-  							<option value= <%= rs_roles.getString("role") %>> <%= rs_roles.getString("role") %></option>
-  						<% } %> 
-					</select>
-				State: <select name="param_state">
-					<% while(rs_states.next()) { %>
-						 <option value= <%= rs_states.getString("state_id") %>><%= rs_states.getString("state_id") %></option>
-				 	<% } %>
-				 	</select>
-				 Age: <input type="text" name="param_age">
-					
-				<h2>Add more stuff here</h2>
-				<input type="submit" value="Sign Up" class="button">
-            </form>
  <!-- *********************************************************************************************** -->      
             
           </div>
