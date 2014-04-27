@@ -49,30 +49,55 @@
       <div class="row">
           <div class="panel">            
             
+            <form method="post" action="login.jsp">
+              Name: <input type="text" name="param_username" />
+              <input type="hidden" name="loginClicked" value="true" />
+              <input type="submit" value="Log in" class="button">
+            </form> 
+            
  <!-- *****************************************JSP*************************************************** -->
+ 	
+ 	
  	<%@ page language="java" import="java.sql.*" %>
- 			<!-- Connect to DataBase -->
- 			<% 
- 				
- 					 Class.forName("org.postgresql.Driver");
- 					 Connection conn = DriverManager.getConnection(
- 							 "jdbc:postgresql://localhost:5432/Assignment 1 - 135", "postgres", "pass");
- 					 
- 					// Initialization 
- 	 				Statement stmt = conn.createStatement();
- 					ResultSet rset_user = stmt.executeQuery("SELECT name FROM users WHERE name='" + 
- 	 													request.getParameter("param_username") + "'");
- 					 	 			 	
- 			%>
- 
-            <% if(rset_user.next()) { %>
-              <!-- Redirect to home page -->
-              <p>success</p>
-            <% } 
-            //else invalid username
-            else {%>
-            	<p>DOES NOT EXIST</p>
-            <% } %>
+ 	    
+ 	    <!-- Connect to DataBase -->
+ 		
+ 		<% 
+            Class.forName("org.postgresql.Driver");
+ 			Connection conn = DriverManager.getConnection(
+ 							  "jdbc:postgresql://localhost:5432/CSE135", "postgres", "calcium");
+ 		
+            String clicked = request.getParameter("loginClicked");
+ 		    if (clicked != null && clicked.equals("true"))
+ 		    {
+ 			    conn.setAutoCommit(false);
+ 			
+ 	  		    // Initialization 
+ 	 		    Statement stmt = conn.createStatement();
+ 			    ResultSet rset_user = stmt.executeQuery("SELECT name FROM users WHERE name='" + 
+ 	 				 								    request.getParameter("param_username") + "'");
+
+                if(rset_user.next()) 
+                { 
+                    // TODO: Redirect to home page
+                    String name = request.getParameter("param_username");
+                    session.setAttribute("user", name);
+                
+                    // TODO: Remove this later -- for testing purposes
+                    out.println("GREAT SUCCESS");
+                } 
+                //else invalid username
+                else 
+                {
+            	    out.println("Sorry! The provided name \"" + request.getParameter("param_username") + "\" isn't registered.");
+                }
+            
+                conn.commit();
+                conn.setAutoCommit(true);
+                conn.close();
+ 		    }
+        
+        %>
             
             
  <!-- *********************************************************************************************** -->      
