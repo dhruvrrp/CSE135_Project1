@@ -5,7 +5,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta http-equiv="Content-Style-Type" content="text/css">
-  <title>Log in</title>
+  <title>Sign up confirmation</title>
   <meta name="Author" content="Allen Gong">
   <meta name="description" content="Best place to get your goodies">
   
