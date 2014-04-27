@@ -89,7 +89,7 @@
                 //else invalid username
                 else 
                 {
-            	    out.println("Sorry! The provided name \"" + request.getParameter("param_username") + "\" isn't registered.");
+            	    out.println("Sorry! The name \"" + request.getParameter("param_username") + "\" isn't registered.");
                 }
             
                 conn.commit();
