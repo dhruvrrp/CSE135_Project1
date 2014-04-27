@@ -67,6 +67,7 @@
  			Connection conn = DriverManager.getConnection(
  							  "jdbc:postgresql://localhost:5432/CSE135", "postgres", "calcium");
  		
+ 			// Check if the Login button has been clicked
             String clicked = request.getParameter("loginClicked");
  		    if (clicked != null && clicked.equals("true"))
  		    {
@@ -79,17 +80,20 @@
 
                 if(rset_user.next()) 
                 { 
-                    // TODO: Redirect to home page
+                    // Save username in session
                     String name = request.getParameter("param_username");
-                    session.setAttribute("user", name);
-                
-                    // TODO: Remove this later -- for testing purposes
-                    out.println("GREAT SUCCESS");
+                    session.setAttribute("session_username", name);
+                    
+                    // Redirect to home page
+                    String redirectURL = "index.html";
+                    response.sendRedirect(redirectURL);
                 } 
-                //else invalid username
+                // Else invalid username
                 else 
                 {
-            	    out.println("Sorry! The name \"" + request.getParameter("param_username") + "\" isn't registered.");
+            	    out.println("Sorry! The name \"" + 
+                                request.getParameter("param_username") + 
+                                "\" isn't registered.");
                 }
             
                 conn.commit();
