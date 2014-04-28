@@ -131,7 +131,7 @@ Hello, <%= session.getAttribute("session_username") %>!
                 
                 pstmt.setString(1, request.getParameter("cat_name"));
                 pstmt.setString(2, request.getParameter("cat_desc"));
-                pstmt.setInt   (3, Integer.parseInt(request.getParameter("param_id")));
+                pstmt.setInt   (3, Integer.parseInt(request.getParameter("cat_id")));
                 int rowCount = pstmt.executeUpdate();
                 
                 // Commit transaction
@@ -166,18 +166,18 @@ Hello, <%= session.getAttribute("session_username") %>!
             <form action="categories.jsp" method="post">
             <input type="hidden" value="update" name="action"/>
                 <td>
-                    <input type="hidden" value="<%=rs.getInt("category_id")%>" name="param_id" size="15" />
+                    <input type="hidden" value="<%=rs.getInt("category_id")%>" name="cat_id" />
                     <%=rs.getInt("category_id") %>
                 </td>
-                <td><input value="<%=rs.getString("name")%>" name="cat_name" size="15" /></td>
-                <td><input value="<%=rs.getString("description")%>" name="cat_desc" size="15" /></td>
+                <td><input value="<%=rs.getString("name")%>" name="cat_name" /></td>
+                <td><input value="<%=rs.getString("description")%>" name="cat_desc"/></td>
             <!-- Update button -->
             <td><input type="submit" value="Update" class="button" ></td>
             </form>
             
             <form action="categories.jsp" method="post">
                 <input type="hidden" value="delete" name="action"/>
-                <input type="hidden" value="<%=rs.getInt("category_id")%>" name="param_id"/>
+                <input type="hidden" value="<%=rs.getInt("category_id")%>" name="cat_id"/>
             <!-- Delete button -->    
             <td><input type="submit" value="Delete" class="button"/></td>
             </form>
