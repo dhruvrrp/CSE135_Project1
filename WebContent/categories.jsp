@@ -86,7 +86,6 @@ Hello, <%= session.getAttribute("session_username") %>!
                             </form>
                             </tr>
                         </table>
-
      
             <!------ INSERT CODE ------>
         <%
@@ -95,20 +94,15 @@ Hello, <%= session.getAttribute("session_username") %>!
             if (action != null && action.equals("insert"))
             {
             	String strCatName = request.getParameter("cat_name");
-                String strCatDesc = request.getParameter("cat_desc");
                 
             	Statement statement = conn.createStatement();
                 ResultSet rs_dupcat = statement.executeQuery("SELECT * FROM Categories " + 
                                                              "WHERE name = '" + request.getParameter("cat_name") + "'");
                 
                 // Check for empty text fields and throw error if true
-                if (strCatName == "" || strCatDesc == "")
+                if (strCatName == "")
                 {
-                	out.println("ERROR ADDING NEW CATEGORY: ");
-                	if (strCatName == "")
-                	    out.println("The category name cannot be empty.");
-                	if (strCatDesc == "")
-                		out.println("The category description cannot be empty.");
+                	    out.println("ERROR ADDING NEW CATEGORY: The category name cannot be empty.");
                 }
                 else if (rs_dupcat.next())
                 {
@@ -133,7 +127,7 @@ Hello, <%= session.getAttribute("session_username") %>!
                     conn.commit();
                     conn.setAutoCommit(true);
                     
-                    if (request.getParameter("cat_name") != "" && request.getParameter("cat_desc") != "")
+                    if (request.getParameter("cat_name") != "")
                     {
                     	out.println("The category \"" + request.getParameter("cat_name") + "\" has been added!");
                     }
@@ -230,8 +224,7 @@ Hello, <%= session.getAttribute("session_username") %>!
         %>
         
         <!------ ITERATION CODE ------>
-        <br><br>
-        <br><br>
+        <br><br><br><br>
         
         <h2>Modify existing categories</h2>
         <table border="1">
