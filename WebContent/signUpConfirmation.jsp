@@ -55,8 +55,8 @@
     <%@ page language="java" import="java.sql.*" %>
     
     <%
-        try {
-                      
+        try 
+        {        
             Class.forName("org.postgresql.Driver");
 
             // Make a connection to the Oracle datasource "CSE135"
@@ -64,19 +64,19 @@
             		          "jdbc:postgresql://localhost:5432/CSE135", "postgres", "calcium");
     %>
     
-    <%-- -------- INSERT Code -------- --%>
+        <%---------- INSERT Code ----------%>
     <%
-        String action = request.getParameter("action");
-        // Check if an insertion is requested
-        if (action != null && action.equals("insert")) {
+            // Check if an insertion is requested
+            String action = request.getParameter("action");
+            if (action != null && action.equals("insert")) {
 
             // Begin transaction
             conn.setAutoCommit(false);
             
             // Create the prepared statement and use it to
-            // INSERT the student attributes INTO the Users table.
-            PreparedStatement pstmt = conn.prepareStatement(
-                "INSERT INTO Users (name, role, age, state) VALUES (?, ?, ?, ?)");
+            // INSERT the User attributes INTO the Users table.
+            PreparedStatement pstmt = conn.prepareStatement("INSERT INTO Users " +
+                                      "(name, role, age, state) VALUES (?, ?, ?, ?)");
     
             pstmt.setString(1, request.getParameter("param_name"));
             pstmt.setString(2, request.getParameter("param_role"));
@@ -87,9 +87,9 @@
             // Commit transaction
             conn.commit();
             conn.setAutoCommit(true);
-        }
+            }
         
-            // Close the Connection
+            // Close the connection
             conn.close();
     
         }
