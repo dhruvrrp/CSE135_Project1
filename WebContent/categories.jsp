@@ -54,17 +54,20 @@ Hello, <%= session.getAttribute("session_username") %>!
     <div class="row">
       <div class="panel">
       
+        <h3>Add a new category</h3><p>
         <form action="categories.jsp" method="post">
         <input type="hidden" value="insert" name="action">
             Category name: 
                 <input type="text" name="param_catname" autofocus="autofocus"/>
             Description: 
-                <input type="text" name="param_desc" />
+                <input type="text" name="param_desc"/>
         <input type="submit" value="Submit" class="button">
         </form>
         
         <br>
         <br>
+        
+        <h3>Edit existing categories</h3>
         
         
     
@@ -81,7 +84,9 @@ Hello, <%= session.getAttribute("session_username") %>!
             Connection conn = DriverManager.getConnection(
             		          "jdbc:postgresql://localhost:5432/CSE135", "postgres", "calcium");
             
-            // INSERT CODE //
+        %>
+            <!------ INSERT CODE ------>
+        <%
             // Check if an insertion is requested
             String action = request.getParameter("action");
             if (action != null && action.equals("insert"))
@@ -103,7 +108,35 @@ Hello, <%= session.getAttribute("session_username") %>!
                 conn.setAutoCommit(true);
             }
             
-            // SELECT CODE //
+        %>
+        
+            <!------ UPDATE CODE ------>
+        <%
+            // Check if an updated is requested
+            if (action != null && action.equals("update"))
+            {
+                // Begin transaction
+                conn.setAutoCommit(false);
+                
+                // Create the PreparedStatement and use it to UPDATE
+                //   Category values in the Categories table
+                PreparedStatement pstmt = conn.prepareStatement("UPDATE Categories " +
+                                                                "SET name = ?, description = ? " +
+                                                                "WHERE category_id = ?");
+                
+                pstmt.setString(1, request.getParameter("param_catname"));
+                pstmt.setString(2, request.getParameter("param_desc"));
+                pstmt.setInt   (3, Integer.parseInt(request.getParameter("param_id")));
+                int rowCount = pstmt.executeUpdate();
+                
+                // Commit transaction
+                conn.commit();
+                conn.setAutoCommit(true);
+            }
+        %>
+            
+            <!------ SELECT CODE ------>
+        <%
             // Create the Statement
             Statement statement = conn.createStatement();
             
@@ -111,41 +144,48 @@ Hello, <%= session.getAttribute("session_username") %>!
             //   from the Categories table
             ResultSet rs = statement.executeQuery("SELECT * FROM Categories");
             
-            // ITERATION CODE//
         %>
-            <table border="1">
-            <tr>
-                <th>ID</th>
-                <th>Category</th>
-                <th>Description</th>
+        
+        <!------ ITERATION CODE ------>
+        <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Category</th>
+            <th>Description</th>
+        </tr>
+    <%
+        while(rs.next())
+        {
+    %>      <tr>
+            <form action="categories.jsp" method="post">
+            <input type="hidden" value="update" name="action"/>
+                <td>
+                    <input type="hidden" value="<%=rs.getInt("category_id")%>" name="param_id" size="15" />
+                    <%=rs.getInt("category_id") %>
+                </td>
+                <td><input value="<%=rs.getString("name")%>" name="param_catname" size="15" /></td>
+                <td><input value="<%=rs.getString("description")%>" name="param_desc" size="15" /></td>
+            <!-- Update button -->
+            <td><input type="submit" value="Update" class="button" ></td>
+            </form>
+            
+            <form action="categories.jsp" method="post">
+                <input type="hidden" value="delete" name="action"/>
+                <input type="hidden" value="<%=rs.getInt("category_id")%>" name="param_id"/>
+            <!-- Delete button -->    
+            <td><input type="submit" value="Delete" class="button"/></td>
+            </form>
             </tr>
-        <%
-            while(rs.next())
-            {
-        %>      <tr>
-                <form action="categories.jsp" method="post">
-                <input type="hidden" value="update" name="action"/>
-                    <td>
-                        <input type="hidden" value="<%=rs.getInt("category_id")%>" name="param_id" size="15" />
-                        <%=rs.getInt("category_id") %>
-                    </td>
-                    <td><input value="<%=rs.getString("name")%>" name="param_catname" size="15" /></td>
-                    <td><input value="<%=rs.getString("description")%>" name="param_desc" size="15" /></td>
-                <td><input type="submit" value="Update" class="button" ></td>
-                </form>
-                
-                <form action="categories.jsp" method="post">
-                    <input type="hidden" value="Delete" name="action"/>
-                    <input type="hidden" value="<%=rs.getInt("category_id")%>" name="param_id"/>
-                <td><input type="submit" value="Delete" class="button"/></td>
-                </form>
-                </tr>
-                
-        <%	
-            }
-        %>
-            </table>
-        <%  
+    <%
+        }
+    %>
+        </table>
+    
+            <!------ Close the connection code ------>
+    <%      
+            // Close the ResultSet
+            rs.close();
+    
             // Close the connection
             conn.close();
         }
