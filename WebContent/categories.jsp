@@ -142,20 +142,15 @@ Hello, <%= session.getAttribute("session_username") %>!
             if (action != null && action.equals("update"))
             {
                 String strCatName = request.getParameter("cat_name");
-                String strCatDesc = request.getParameter("cat_desc");
                 
                 Statement statement = conn.createStatement();
                 ResultSet rs_dupcat = statement.executeQuery("SELECT * FROM Categories " + 
                                                              "WHERE name = '" + request.getParameter("cat_name") + "'");
                 
                 // Check for empty text fields and throw error if true
-                if (strCatName == "" || strCatDesc == "")
+                if (strCatName == "")
                 {
-                	out.println("ERROR UPDATING EXISTING CATEGORY: ");
-                    if (strCatName == "")
-                        out.println("The category name cannot be empty.");
-                    if (strCatDesc == "")
-                        out.println("The category description cannot be empty.");
+                        out.println("ERROR UPDATING EXISTING CATEGORY: The category name cannot be empty.");
                 }
                 else if (rs_dupcat.next())
                 {
