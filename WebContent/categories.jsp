@@ -139,6 +139,31 @@ Hello, <%= session.getAttribute("session_username") %>!
                 conn.setAutoCommit(true);
             }
         %>
+        
+            <!------ DELETE CODE ------>
+        <%
+            // Check if a delete is requested
+            if (action != null && action.equals("delete"))
+            {
+                // Begin transaction
+                conn.setAutoCommit(false);
+                
+                Statement statement2 = conn.createStatement();
+
+               
+                // Create the PreparedStatement and use it to
+                //   DELETE Categories FROM the Categories table
+                PreparedStatement pstmt = conn.prepareStatement("DELETE FROM Categories " +
+                		                                        "WHERE category_id = ? ");
+                pstmt.setInt(1, Integer.parseInt(request.getParameter("cat_id")));
+                int rowCount = pstmt.executeUpdate();
+                
+                
+                // Commit transaction
+                conn.commit();
+                conn.setAutoCommit(true);
+            }
+        %>
             
             <!------ SELECT CODE ------>
         <%
@@ -147,7 +172,9 @@ Hello, <%= session.getAttribute("session_username") %>!
             
             // Use the created Statement to SELECT the Category attributes
             //   from the Categories table
-            ResultSet rs = statement.executeQuery("SELECT * FROM Categories");
+            ResultSet rs_allcats = statement.executeQuery("SELECT * FROM Categories ORDER BY category_id");
+            
+
             
         %>
         
@@ -160,26 +187,38 @@ Hello, <%= session.getAttribute("session_username") %>!
             <th>Description</th>
         </tr>
     <%
-        while(rs.next())
+        ResultSet rs_nodelete = null;
+        Statement statement2 = null;
+        while(rs_allcats.next())
         {
+            // Get ResultSet containing Products attached to the current Category
+        	statement2 = conn.createStatement();
+        	rs_nodelete = statement2.executeQuery("SELECT * FROM Products " + 
+                                                  "WHERE Products.category = " + rs_allcats.getInt("category_id"));
     %>      <tr>
             <form action="categories.jsp" method="post">
             <input type="hidden" value="update" name="action"/>
                 <td>
-                    <input type="hidden" value="<%=rs.getInt("category_id")%>" name="cat_id" />
-                    <%=rs.getInt("category_id") %>
+                    <input type="hidden" value="<%=rs_allcats.getInt("category_id")%>" name="cat_id" />
+                    <%=rs_allcats.getInt("category_id") %>
                 </td>
-                <td><input value="<%=rs.getString("name")%>" name="cat_name" /></td>
-                <td><input value="<%=rs.getString("description")%>" name="cat_desc"/></td>
+                <td><input value="<%=rs_allcats.getString("name")%>" name="cat_name" /></td>
+                <td><input value="<%=rs_allcats.getString("description")%>" name="cat_desc"/></td>
             <!-- Update button -->
             <td><input type="submit" value="Update" class="button" ></td>
             </form>
             
             <form action="categories.jsp" method="post">
                 <input type="hidden" value="delete" name="action"/>
-                <input type="hidden" value="<%=rs.getInt("category_id")%>" name="cat_id"/>
-            <!-- Delete button -->    
-            <td><input type="submit" value="Delete" class="button"/></td>
+                <input type="hidden" value="<%=rs_allcats.getInt("category_id")%>" name="cat_id"/>
+    <% 
+            // Only display Delete button if there are no Products
+            //   attached to the current Category
+            if (!(rs_nodelete.next())) {  
+    %>          <!-- Delete button -->    
+                <td><input type="submit" value="Delete" class="button"/></td> 
+    <%      } 
+    %>
             </form>
             </tr>
     <%
@@ -190,7 +229,12 @@ Hello, <%= session.getAttribute("session_username") %>!
             <!------ Close the connection code ------>
     <%      
             // Close the ResultSet
-            rs.close();
+            rs_allcats.close();
+            rs_nodelete.close();
+            
+            // Close the Statements
+            statement.close();
+            statement2.close();
     
             // Close the connection
             conn.close();
