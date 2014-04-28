@@ -1,8 +1,8 @@
-<!-- 
+<!-- ************* FOR GETTING THE STORED USERNAME, JUST SAVING FOR FUTURE REF ***********
 <body>
 Hello, <%= session.getAttribute("session_username") %>!
 </body> 
--->
+     *********************************************************-->
 
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
@@ -52,13 +52,115 @@ Hello, <%= session.getAttribute("session_username") %>!
   
   <div class="row" id="shift">
     <div class="row">
-      <div class="panel"> 
+      <div class="panel">
+      
+        <form action="categories.jsp" method="post">
+        <input type="hidden" value="insert" name="action">
+            Category name: 
+                <input type="text" name="param_catname" autofocus="autofocus"/>
+            Description: 
+                <input type="text" name="param_desc" />
+        <input type="submit" value="Submit" class="button">
+        </form>
+        
+        <br>
+        <br>
+        
+        
     
     
   <!-- *****************************************JSP*************************************************** -->
-  
-  
-  
+    
+    <%@ page language="java" import="java.sql.*" %>
+    
+    <!-- Connect to database -->
+    <%
+        try
+        {
+            Class.forName("org.postgresql.Driver");
+            Connection conn = DriverManager.getConnection(
+            		          "jdbc:postgresql://localhost:5432/CSE135", "postgres", "calcium");
+            
+            // INSERT CODE //
+            // Check if an insertion is requested
+            String action = request.getParameter("action");
+            if (action != null && action.equals("insert"))
+            {
+                // Begin transaction
+                conn.setAutoCommit(false);
+                
+                // Create the PreparedStatement and use it to INSERT
+                //   the Category attribuets INTO the Categories table
+                PreparedStatement pstmt = conn.prepareStatement("INSERT INTO Categories (name, description) " +
+                                          "VALUES (?, ?)");
+                
+                pstmt.setString(1, request.getParameter("param_catname"));
+                pstmt.setString(2, request.getParameter("param_desc"));
+                int rowCount = pstmt.executeUpdate();
+                
+                // Commit transaction
+                conn.commit();
+                conn.setAutoCommit(true);
+            }
+            
+            // SELECT CODE //
+            // Create the Statement
+            Statement statement = conn.createStatement();
+            
+            // Use the created Statement to SELECT the Category attributes
+            //   from the Categories table
+            ResultSet rs = statement.executeQuery("SELECT * FROM Categories");
+            
+            // ITERATION CODE//
+        %>
+            <table border="1">
+            <tr>
+                <th>ID</th>
+                <th>Category</th>
+                <th>Description</th>
+            </tr>
+        <%
+            while(rs.next())
+            {
+        %>      <tr>
+                <form action="categories.jsp" method="post">
+                <input type="hidden" value="update" name="action"/>
+                    <td>
+                        <input type="hidden" value="<%=rs.getInt("category_id")%>" name="param_id" size="15" />
+                        <%=rs.getInt("category_id") %>
+                    </td>
+                    <td>
+                        <input value="<%=rs.getString("name")%>" name="param_catname" size="15" />
+                    </td>
+                    <td>
+                        <input value="<%=rs.getString("description")%>" name="param_desc" size="15" />
+                    </td>
+                <td>
+                    <input type="submit" value="Update" class="button" >
+                </td>
+                </form>
+                </tr>
+                
+        <%	
+            }
+        %>
+            </table>
+        <%  
+            // Close the connection
+            conn.close();
+        }
+        catch (SQLException e)
+        {
+        	out.println(e.getMessage());
+        	e.printStackTrace();
+        	return;
+        }
+        catch (Exception e)
+        {
+        	out.println(e.getMessage());
+        }
+        
+    %>
   
   
   <!-- *********************************************************************************************** -->      
