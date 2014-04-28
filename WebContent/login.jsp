@@ -91,9 +91,9 @@
                 // Else invalid username
                 else 
                 {
-            	    out.println("Sorry! The name \"" + 
+            	    out.println("The provided name \"" + 
                                 request.getParameter("param_username") + 
-                                "\" isn't registered.");
+                                "\" is not known.");
                 }
             
                 conn.commit();
