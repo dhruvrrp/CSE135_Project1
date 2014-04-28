@@ -147,12 +147,14 @@ Hello, <%= session.getAttribute("session_username") %>!
                 ResultSet rs_dupcat = statement.executeQuery("SELECT * FROM Categories " + 
                                                              "WHERE name = '" + request.getParameter("cat_name") + "'");
                 
-                // Check for empty text fields and throw error if true
+                // Check for 1) empty text field and 2) duplicate category name
+                //   Allows updating description of a given category w/o throwing "duplicate category" error
                 if (strCatName == "")
                 {
                         out.println("ERROR UPDATING EXISTING CATEGORY: The category name cannot be empty.");
                 }
-                else if (rs_dupcat.next())
+                else if (rs_dupcat.next() 
+                		 && Integer.parseInt(request.getParameter("cat_id")) != rs_dupcat.getInt("category_id"))
                 {
                     out.println("ERROR UPDATING EXISTING CATEGORY: Category name \"" + request.getParameter("cat_name") + 
                                 "\" already exists! Please choose a different name.");
