@@ -176,7 +176,7 @@ Hello, <%= session.getAttribute("session_username") %>!
       <div class="row">
  
         <div class="large-6 columns">
-            <p>© Copyright no one at all. Go to town.</p>
+            <p>&copy; Allen Gong, Dhruv Kaushal, Jasmine Nguyen.</p>
         </div>
       </div>
   </div>

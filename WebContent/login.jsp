@@ -91,9 +91,9 @@
                 // Else invalid username
                 else 
                 {
-            	    out.println("Sorry! The name \"" + 
+            	    out.println("The provided name \"" + 
                                 request.getParameter("param_username") + 
-                                "\" isn't registered.");
+                                "\" is not known.");
                 }
             
                 conn.commit();
@@ -117,7 +117,7 @@
       <div class="row">
  
         <div class="large-6 columns">
-            <p>© Copyright no one at all. Go to town.</p>
+            <p>&copy; Allen Gong, Dhruv Kaushal, Jasmine Nguyen.</p>
         </div>
       </div>
   </div>
