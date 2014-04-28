@@ -86,7 +86,7 @@
           						<th><input type="text" name="prod_name"></th>
           						<th><input type="text" name="prod_category"></th>
           						<th><input type="text" name="prod_price"></th>
-          						<th><input type="submit" value="Insert"></th>
+          						<th><input type="submit" value="Insert" class="button"></th>
           					</form>
           					</tr>
           					<%-- Populate the table --%>
