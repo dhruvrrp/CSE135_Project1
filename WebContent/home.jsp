@@ -76,7 +76,7 @@
           				<% if(user_role != null && user_role.equals("owner")) { %>   
        	  				<div class="center">
        	  					<a href="categories.jsp" class="button">Categories</a>
-       	  					<a href="" class="button">Products</a>
+       	  					<a href="products.jsp" class="button">Products</a>
        	  				</div>
        	  				<% } else if(user_role != null && user_role.equals("customer")) { %>
        	  					<div class="center"><a href="" class="button">Products Browsing</a></div>
