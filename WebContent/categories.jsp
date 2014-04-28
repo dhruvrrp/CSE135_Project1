@@ -50,27 +50,6 @@ Hello, <%= session.getAttribute("session_username") %>!
  
   <!-- End Header -->
   
-  <div class="row" id="shift">
-    <div class="row">
-      <div class="panel">
-      
-        <h3>Add a new category</h3><p>
-        <form action="categories.jsp" method="post">
-        <input type="hidden" value="insert" name="action">
-            Category name: 
-                <input type="text" name="param_catname" autofocus="autofocus"/>
-            Description: 
-                <input type="text" name="param_desc"/>
-        <input type="submit" value="Submit" class="button">
-        </form>
-        
-        <br>
-        <br>
-        
-        <h3>Edit existing categories</h3>
-        
-        
-    
     
   <!-- *****************************************JSP*************************************************** -->
     
@@ -84,7 +63,33 @@ Hello, <%= session.getAttribute("session_username") %>!
             Connection conn = DriverManager.getConnection(
             		          "jdbc:postgresql://localhost:5432/CSE135", "postgres", "calcium");
             
-        %>
+    %>
+            <!-- Insert text forms -->
+            <div class="row" id="shift">
+                <div class="row">
+                    <div class="panel">
+                        <span id="welcome">Hello <%= session.getAttribute("session_username") %> </span>
+                        <br>
+                        <h2>Add categories</h2><hr>
+                        <table border="1">
+                            <tr>
+                                <th>Name</th>
+                                <th>Description</th>
+                            </tr>
+              
+                            <tr>
+                            <form action="categories.jsp" method="post">
+                                <input type="hidden" name="action" value="insert">
+                                <th><input name="cat_name" autofocus="autofocus"></th>
+                                <th><input name="cat_desc"></th>
+                                <th><input type="submit" value="Insert" class="button"></th>
+                            </form>
+                            </tr>
+                        </table>
+                        <br>
+                        <br>
+
+     
             <!------ INSERT CODE ------>
         <%
             // Check if an insertion is requested
@@ -99,8 +104,8 @@ Hello, <%= session.getAttribute("session_username") %>!
                 PreparedStatement pstmt = conn.prepareStatement("INSERT INTO Categories (name, description) " +
                                           "VALUES (?, ?)");
                 
-                pstmt.setString(1, request.getParameter("param_catname"));
-                pstmt.setString(2, request.getParameter("param_desc"));
+                pstmt.setString(1, request.getParameter("cat_name"));
+                pstmt.setString(2, request.getParameter("cat_desc"));
                 int rowCount = pstmt.executeUpdate();
                 
                 // Commit transaction
@@ -124,8 +129,8 @@ Hello, <%= session.getAttribute("session_username") %>!
                                                                 "SET name = ?, description = ? " +
                                                                 "WHERE category_id = ?");
                 
-                pstmt.setString(1, request.getParameter("param_catname"));
-                pstmt.setString(2, request.getParameter("param_desc"));
+                pstmt.setString(1, request.getParameter("cat_name"));
+                pstmt.setString(2, request.getParameter("cat_desc"));
                 pstmt.setInt   (3, Integer.parseInt(request.getParameter("param_id")));
                 int rowCount = pstmt.executeUpdate();
                 
@@ -147,6 +152,7 @@ Hello, <%= session.getAttribute("session_username") %>!
         %>
         
         <!------ ITERATION CODE ------>
+        <h2>Modify existing categories</h2>
         <table border="1">
         <tr>
             <th>ID</th>
@@ -163,8 +169,8 @@ Hello, <%= session.getAttribute("session_username") %>!
                     <input type="hidden" value="<%=rs.getInt("category_id")%>" name="param_id" size="15" />
                     <%=rs.getInt("category_id") %>
                 </td>
-                <td><input value="<%=rs.getString("name")%>" name="param_catname" size="15" /></td>
-                <td><input value="<%=rs.getString("description")%>" name="param_desc" size="15" /></td>
+                <td><input value="<%=rs.getString("name")%>" name="cat_name" size="15" /></td>
+                <td><input value="<%=rs.getString("description")%>" name="cat_desc" size="15" /></td>
             <!-- Update button -->
             <td><input type="submit" value="Update" class="button" ></td>
             </form>
