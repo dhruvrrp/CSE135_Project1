@@ -113,7 +113,10 @@
           						<td><input type="text" name="prod_price" value="<%= rset_prod.getInt("price") %>"></td>
           						<td><input type="submit" value="Update"><input type="submit" value="Delete"></td>
           						</tr>
-          					<% } %>
+          					<%
+          						rset_current.close();
+          					} 
+          					%>
           					
           				</table>
           			</div>
@@ -122,7 +125,12 @@
  		
  		
  		<% 
- 			
+ 			//close connections to db
+ 			rset_cat.close();
+ 			rset_prod.close();
+ 			stmt_cat.close();
+ 			stmt_prod.close();
+ 			conn.close();
  			}
  			catch (SQLException e)
  	    	{
