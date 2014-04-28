@@ -77,7 +77,7 @@
  	 		    Statement stmt = conn.createStatement();
  			    ResultSet rset_user = stmt.executeQuery("SELECT name FROM users WHERE name='" + 
  	 				 								    request.getParameter("param_username") + "'");
-
+				//Check if username is valid
                 if(rset_user.next()) 
                 { 
                     // Save username in session
@@ -85,7 +85,7 @@
                     session.setAttribute("session_username", name);
                     
                     // Redirect to home page
-                    String redirectURL = "index.html";
+                    String redirectURL = "home.jsp";
                     response.sendRedirect(redirectURL);
                 } 
                 // Else invalid username

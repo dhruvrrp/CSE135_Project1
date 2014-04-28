@@ -14,6 +14,17 @@ div.large-4 a {
 	width: 25px;
 }
 
+#welcome {
+	display: block;
+	position: relative;
+	text-align: right;
+	color: red;
+}
+
+div.center {
+	text-align: center;
+}
+
 
 /******signUp.jsp*****/
 #shift {

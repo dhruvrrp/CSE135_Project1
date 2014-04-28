@@ -58,15 +58,29 @@
  			
  			//get the role of the current user who owns this session
  			ResultSet rset_role = stmt.executeQuery("SELECT role FROM users WHERE name='" + 
- 											session.getAttribute("sesson_username") + "'" );
+ 											session.getAttribute("session_username") + "'" );
+ 			//get the tuple (there should only be one)
+ 			rset_role.next();
+ 			String user_role = rset_role.getString("role");
+ 			
  		%>
  			<div class="row" id="shift">
       			<div class="row">
           			<div class="panel">     
-          				<h3>Hello <%= session.getAttribute("session_username") %>! You are a 
-          				<%= rset_role.getString("role") %>
-          				</h3>       
-       	  				<a href="categories.jsp" class="button">Products</a>
+          				<span id="welcome">Hello <%= session.getAttribute("session_username") %> </span>
+          				<br>
+          				<h4>Welcome <%= session.getAttribute("session_username") %>! These are the
+          				options you can choose because you are a(n)
+          				<%= user_role %> :
+          				</h4>    
+          				<% if(user_role != null && user_role.equals("owner")) { %>   
+       	  				<div class="center">
+       	  					<a href="categories.jsp" class="button">Categories</a>
+       	  					<a href="" class="button">Products</a>
+       	  				</div>
+       	  				<% } else if(user_role != null && user_role.equals("customer")) { %>
+       	  					<div class="center"><a href="" class="button">Products Browsing</a></div>
+       	  				<% } %>
           			</div>
     			</div>
   			</div>
