@@ -111,7 +111,7 @@
           						<td><input type="text" name="prod_name" value="<%= rset_prod.getString("name") %>"></td>
           						<td><input type="text" name="prod_category" value="<%= current_category %>"></td>
           						<td><input type="text" name="prod_price" value="<%= rset_prod.getInt("price") %>"></td>
-          						<td><input type="submit" value="Update"><input type="submit" value="Delete"></td>
+          						<td><input type="submit" value="Update" class="small button"><input type="submit" value="Delete" class="small button"></td>
           						</tr>
           					<%
           						rset_current.close();
