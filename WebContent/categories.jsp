@@ -126,7 +126,8 @@ Hello, <%= session.getAttribute("session_username") %>!
                 <form action="categories.jsp" method="post">
                 <input type="hidden" value="update" name="action"/>
                     <td>
-                        <input value="<%=rs.getInt("category_id")%>" name="param_id" size="15" />
+                        <input type="hidden" value="<%=rs.getInt("category_id")%>" name="param_id" size="15" />
+                        <%=rs.getInt("category_id") %>
                     </td>
                     <td>
                         <input value="<%=rs.getString("name")%>" name="param_catname" size="15" />
