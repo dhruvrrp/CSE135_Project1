@@ -86,13 +86,24 @@
   			</div>
  		
  		
- 		<% }
- 		catch(Exception e) {
- 			
- 		}
- 		finally{
- 			
- 		}
+ 		<% 
+ 			rset_role.close();
+			stmt.close();
+			conn.close();
+ 			}
+ 			catch (SQLException e)
+ 	    	{
+ 	       	 	out.println(e.getMessage());
+ 	       	 	e.printStackTrace();
+ 	       	 	return;
+ 	    	}
+ 	    	catch (Exception e)
+ 	    	{
+ 	     		out.println(e.getMessage());
+ 	    	}
+ 			finally {
+ 				//throws exception if you try to close here?
+ 			}
         %>
  <!-- *********************************************************************************************** -->
  
