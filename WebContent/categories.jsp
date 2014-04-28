@@ -86,8 +86,6 @@ Hello, <%= session.getAttribute("session_username") %>!
                             </form>
                             </tr>
                         </table>
-                        <br>
-                        <br>
 
      
             <!------ INSERT CODE ------>
@@ -96,21 +94,50 @@ Hello, <%= session.getAttribute("session_username") %>!
             String action = request.getParameter("action");
             if (action != null && action.equals("insert"))
             {
-                // Begin transaction
-                conn.setAutoCommit(false);
+            	String strCatName = request.getParameter("cat_name");
+                String strCatDesc = request.getParameter("cat_desc");
                 
-                // Create the PreparedStatement and use it to INSERT
-                //   the Category attribuets INTO the Categories table
-                PreparedStatement pstmt = conn.prepareStatement("INSERT INTO Categories (name, description) " +
-                                          "VALUES (?, ?)");
+            	Statement statement = conn.createStatement();
+                ResultSet rs_dupcat = statement.executeQuery("SELECT * FROM Categories " + 
+                                                             "WHERE name = '" + request.getParameter("cat_name") + "'");
                 
-                pstmt.setString(1, request.getParameter("cat_name"));
-                pstmt.setString(2, request.getParameter("cat_desc"));
-                int rowCount = pstmt.executeUpdate();
+                // Check for empty text fields and throw error if true
+                if (strCatName == "" || strCatDesc == "")
+                {
+                	out.println("ERROR ADDING NEW CATEGORY: ");
+                	if (strCatName == "")
+                	    out.println("The category name cannot be empty.");
+                	if (strCatDesc == "")
+                		out.println("The category description cannot be empty.");
+                }
+                else if (rs_dupcat.next())
+                {
+                	out.println("ERROR ADDING NEW CATEGORY: Category name \"" + request.getParameter("cat_name") + 
+                			    "\" already exists! Please choose a different name.");
+                }
+                else
+                {
+                    // Begin transaction
+                    conn.setAutoCommit(false);
                 
-                // Commit transaction
-                conn.commit();
-                conn.setAutoCommit(true);
+                    // Create the PreparedStatement and use it to INSERT
+                    //   the Category attribuets INTO the Categories table
+                    PreparedStatement pstmt = conn.prepareStatement("INSERT INTO Categories (name, description) " +
+                    	                      "VALUES (?, ?)");
+                
+                    pstmt.setString(1, request.getParameter("cat_name"));
+                    pstmt.setString(2, request.getParameter("cat_desc"));
+                    int rowCount = pstmt.executeUpdate();
+                
+                    // Commit transaction
+                    conn.commit();
+                    conn.setAutoCommit(true);
+                    
+                    if (request.getParameter("cat_name") != "" && request.getParameter("cat_desc") != "")
+                    {
+                    	out.println("The category \"" + request.getParameter("cat_name") + "\" has been added!");
+                    }
+                }
             }
             
         %>
@@ -120,23 +147,47 @@ Hello, <%= session.getAttribute("session_username") %>!
             // Check if an updated is requested
             if (action != null && action.equals("update"))
             {
-                // Begin transaction
-                conn.setAutoCommit(false);
+                String strCatName = request.getParameter("cat_name");
+                String strCatDesc = request.getParameter("cat_desc");
                 
-                // Create the PreparedStatement and use it to UPDATE
-                //   Category values in the Categories table
-                PreparedStatement pstmt = conn.prepareStatement("UPDATE Categories " +
-                                                                "SET name = ?, description = ? " +
-                                                                "WHERE category_id = ?");
+                Statement statement = conn.createStatement();
+                ResultSet rs_dupcat = statement.executeQuery("SELECT * FROM Categories " + 
+                                                             "WHERE name = '" + request.getParameter("cat_name") + "'");
                 
-                pstmt.setString(1, request.getParameter("cat_name"));
-                pstmt.setString(2, request.getParameter("cat_desc"));
-                pstmt.setInt   (3, Integer.parseInt(request.getParameter("cat_id")));
-                int rowCount = pstmt.executeUpdate();
+                // Check for empty text fields and throw error if true
+                if (strCatName == "" || strCatDesc == "")
+                {
+                	out.println("ERROR UPDATING EXISTING CATEGORY: ");
+                    if (strCatName == "")
+                        out.println("The category name cannot be empty.");
+                    if (strCatDesc == "")
+                        out.println("The category description cannot be empty.");
+                }
+                else if (rs_dupcat.next())
+                {
+                    out.println("ERROR UPDATING EXISTING CATEGORY: Category name \"" + request.getParameter("cat_name") + 
+                                "\" already exists! Please choose a different name.");
+                }
+                else
+                {
+                    // Begin transaction
+                    conn.setAutoCommit(false);
                 
-                // Commit transaction
-                conn.commit();
-                conn.setAutoCommit(true);
+                    // Create the PreparedStatement and use it to UPDATE
+                    //   Category values in the Categories table
+                    PreparedStatement pstmt = conn.prepareStatement("UPDATE Categories " +
+                                                                    "SET name = ?, description = ? " +
+                                                                    "WHERE category_id = ?");
+                
+                    pstmt.setString(1, request.getParameter("cat_name"));
+                    pstmt.setString(2, request.getParameter("cat_desc"));
+                    pstmt.setInt   (3, Integer.parseInt(request.getParameter("cat_id")));
+                    int rowCount = pstmt.executeUpdate();
+                
+                    // Commit transaction
+                    conn.commit();
+                    conn.setAutoCommit(true);
+                }
             }
         %>
         
@@ -179,6 +230,9 @@ Hello, <%= session.getAttribute("session_username") %>!
         %>
         
         <!------ ITERATION CODE ------>
+        <br><br>
+        <br><br>
+        
         <h2>Modify existing categories</h2>
         <table border="1">
         <tr>
@@ -225,6 +279,7 @@ Hello, <%= session.getAttribute("session_username") %>!
         }
     %>
         </table>
+
     
             <!------ Close the connection code ------>
     <%      
