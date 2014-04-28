@@ -1,4 +1,4 @@
-<!-- ************* FOR GETTING THE STORED USERNAME ***********
+<!-- ************* FOR GETTING THE STORED USERNAME, JUST SAVING FOR FUTURE REF ***********
 <body>
 Hello, <%= session.getAttribute("session_username") %>!
 </body> 
