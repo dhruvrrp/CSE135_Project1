@@ -129,15 +129,15 @@ Hello, <%= session.getAttribute("session_username") %>!
                         <input type="hidden" value="<%=rs.getInt("category_id")%>" name="param_id" size="15" />
                         <%=rs.getInt("category_id") %>
                     </td>
-                    <td>
-                        <input value="<%=rs.getString("name")%>" name="param_catname" size="15" />
-                    </td>
-                    <td>
-                        <input value="<%=rs.getString("description")%>" name="param_desc" size="15" />
-                    </td>
-                <td>
-                    <input type="submit" value="Update" class="button" >
-                </td>
+                    <td><input value="<%=rs.getString("name")%>" name="param_catname" size="15" /></td>
+                    <td><input value="<%=rs.getString("description")%>" name="param_desc" size="15" /></td>
+                <td><input type="submit" value="Update" class="button" ></td>
+                </form>
+                
+                <form action="categories.jsp" method="post">
+                    <input type="hidden" value="Delete" name="action"/>
+                    <input type="hidden" value="<%=rs.getInt("category_id")%>" name="param_id"/>
+                <td><input type="submit" value="Delete" class="button"/></td>
                 </form>
                 </tr>
                 
