@@ -74,11 +74,9 @@
 							if(request.getParameter("sea") != null)
 							{
 								Statement stmt_sea = conn.createStatement();
-								String q = "SELECT * FROM products WHERE name LIKE '%"+ request.getParameter("prod_search")+"%'";
+								String q = "SELECT * FROM products WHERE name ILIKE '%"+ request.getParameter("prod_search")+"%'";
 								ResultSet rset_sea = stmt_sea.executeQuery(q);
 								
-								if(rset_sea.next())
-								{
 									%>
 									<table border="1">
           							<tr>
@@ -87,14 +85,18 @@
           								<th>Category</th>
           								<th>Price</th>
           							</tr>
-          							<tr>
+          							
+          						<% 	while(rset_sea.next())
+									{%>
+										<tr>
           								<td><%= rset_sea.getInt("product_id") %></td>
           								<td><%= rset_sea.getString("name") %></td>
           								<td><%= rset_sea.getString("category") %></td>
           								<td><%= rset_sea.getInt("price") %></td>
           							</tr>
-          							</table>
-								<%}
+								<%}%>
+								</table>
+								<%
 							}
 						%>
           				<table border="1">
