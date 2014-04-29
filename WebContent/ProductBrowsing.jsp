@@ -65,40 +65,9 @@
           			<div class="panel">     
           				<span id="welcome">Hello <%= session.getAttribute("session_username") %> </span>
           				<br>
-          				<form action="ProductBrowsing.jsp" method="POST">
-          					<input type="hidden" name="sea" value="yohoho">
-          					Search for Products: <input type="search" name="prod_search">
-          					<input type="submit" value="search">
-						</form>
-						<%
-							if(request.getParameter("sea") != null)
-							{
-								Statement stmt_sea = conn.createStatement();
-								String q = "SELECT * FROM products WHERE name ILIKE '%"+ request.getParameter("prod_search")+"%'";
-								ResultSet rset_sea = stmt_sea.executeQuery(q);
-								
-									%>
-									<table border="1">
-          							<tr>
-          								<th>Product SKU</th>
-          								<th>Name</th>
-          								<th>Category</th>
-          								<th>Price</th>
-          							</tr>
-          							
-          						<% 	while(rset_sea.next())
-									{%>
-										<tr>
-          								<td><%= rset_sea.getInt("product_id") %></td>
-          								<td><%= rset_sea.getString("name") %></td>
-          								<td><%= rset_sea.getString("category") %></td>
-          								<td><%= rset_sea.getInt("price") %></td>
-          							</tr>
-								<%}%>
-								</table>
-								<%
-							}
-						%>
+          				
+          				
+          				
           				<table border="1">
           					<tr>
           						<th>Category ID</th>
@@ -108,17 +77,59 @@
           					
           					<%-- Populate the table --%>
           					<% while(rset_cat.next()) { %>
-
+          					<form action="ProductBrowsing.jsp" method="POST">
           						<tr>
           						<td><%= rset_cat.getInt("category_id") %></td>
-          						<td><%= rset_cat.getString("name") %></td>
+          						<td><%=rset_cat.getString("name")%>: <input type="radio" name="BUTTONN" value =<%=rset_cat.getString("name")%>> </td>
           						<td><%= rset_cat.getString("description") %></td>
           						</tr>
           					<%
           					} 
           					%>
-          					
+          					Search for Products: <input type="search" name="prod_search">
+          					<input type="submit" value="Submit">
+          					</form>
           				</table>
+
+
+						<%
+							System.out.println("CAT "+request.getParameter("BUTTONN"));
+						
+							Statement stmt_sea = conn.createStatement();
+							String q = "SELECT * FROM products WHERE name ILIKE '%"+ request.getParameter("prod_search")+"%'";
+							boolean check = true;
+
+							System.out.println("AAAA"+ request.getParameter("prod_search"));
+							System.out.println("QQ  " +q);
+							if(!((String)request.getParameter("BUTTONN")).equals(""))
+							{
+								q = q + " AND category = '"+request.getParameter("BUTTONN") +"'";
+								System.out.println("I'm here");
+							}
+							System.out.println(q);
+							ResultSet rset_sea = stmt_sea.executeQuery(q);
+							
+								%>
+								<table border="1">
+         							<tr>
+         								<th>Product SKU</th>
+         								<th>Name</th>
+         								<th>Category</th>
+         								<th>Price</th>
+         							</tr>
+         							
+         						<% 	
+         						while(rset_sea.next()&&check)
+								{%>
+									<tr>
+         								<td><%= rset_sea.getInt("product_id") %></td>
+         								<td><%= rset_sea.getString("name") %></td>
+         								<td><%= rset_sea.getString("category") %></td>
+         								<td><%= rset_sea.getInt("price") %></td>
+         							</tr>
+							<%}%>
+								</table>
+							
           			</div>
     			</div>
   			</div>
