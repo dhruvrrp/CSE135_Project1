@@ -53,7 +53,7 @@ Hello, <%= session.getAttribute("session_username") %>!
     
   <!-- *****************************************JSP*************************************************** -->
     
-    <%@ page language="java" import="java.sql.*" %>
+    <%@ page language="java" import="java.sql.*" %> <%@ page import="java.util.*"%>
     
     <!-- Connect to database -->
     <%
@@ -127,6 +127,9 @@ Hello, <%= session.getAttribute("session_username") %>!
                     conn.commit();
                     conn.setAutoCommit(true);
                     
+                    statement.close();
+                    rs_dupcat.close();
+                    
                     if (request.getParameter("cat_name") != "")
                     {
                     	out.println("The category \"" + request.getParameter("cat_name") + "\" has been added!");
@@ -178,6 +181,11 @@ Hello, <%= session.getAttribute("session_username") %>!
                     // Commit transaction
                     conn.commit();
                     conn.setAutoCommit(true);
+                    
+                    out.println("The category \"" + request.getParameter("cat_name") + "\" has been updated!");
+                    
+                    statement.close();
+                    rs_dupcat.close();
                 }
             }
         %>
@@ -187,23 +195,39 @@ Hello, <%= session.getAttribute("session_username") %>!
             // Check if a delete is requested
             if (action != null && action.equals("delete"))
             {
-                // Begin transaction
-                conn.setAutoCommit(false);
+	            // Fill ResultSet with Products of the Category that is to be deleted  
+	            Statement statement3 = conn.createStatement();
+                ResultSet rs_nodelete2 = statement3.executeQuery("SELECT * FROM Products " + 
+                                                                 "WHERE Products.category = " + request.getParameter("cat_id"));
                 
-                Statement statement2 = conn.createStatement();
-
+                // Check if there are Products attached to the Category, else DELETE as normal
+                if ((rs_nodelete2.next()))
+                {
+                    out.println("ERROR DELETING CATEGORY: A product has been added to the category \"" + 
+                                request.getParameter("cat_name") + "\".");
+                }
+                else
+                {
+                    // Begin transaction
+                    conn.setAutoCommit(false);
                
-                // Create the PreparedStatement and use it to
-                //   DELETE Categories FROM the Categories table
-                PreparedStatement pstmt = conn.prepareStatement("DELETE FROM Categories " +
-                		                                        "WHERE category_id = ? ");
-                pstmt.setInt(1, Integer.parseInt(request.getParameter("cat_id")));
-                int rowCount = pstmt.executeUpdate();
+                    // Create the PreparedStatement and use it to
+                    //   DELETE Categories FROM the Categories table
+                    PreparedStatement pstmt = conn.prepareStatement("DELETE FROM Categories " +
+                    		                                        "WHERE category_id = ? ");
+                    pstmt.setInt(1, Integer.parseInt(request.getParameter("cat_id")));
+                    int rowCount = pstmt.executeUpdate();
                 
-                
-                // Commit transaction
-                conn.commit();
-                conn.setAutoCommit(true);
+                    // Commit transaction
+                    conn.commit();
+                    conn.setAutoCommit(true);
+                    
+                    // Close stuff
+                    statement3.close();
+                    rs_nodelete2.close();
+                    
+                    out.println("The category \"" + request.getParameter("cat_name") + "\" has been deleted!");
+                }
             }
         %>
             
@@ -255,6 +279,7 @@ Hello, <%= session.getAttribute("session_username") %>!
             <form action="categories.jsp" method="post">
                 <input type="hidden" value="delete" name="action"/>
                 <input type="hidden" value="<%=rs_allcats.getInt("category_id")%>" name="cat_id"/>
+                <input type="hidden" value="<%=rs_allcats.getString("name")%>" name="cat_name"/>
     <% 
             // Only display Delete button if there are no Products
             //   attached to the current Category
