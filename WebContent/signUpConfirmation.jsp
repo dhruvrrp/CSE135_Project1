@@ -1,5 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
+	
+<% String ERROR_DUPLICATE_USERNAME = "23505";
+   String ERROR_MISSING_USERNAME   = "23514";%>
+   
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -97,11 +101,18 @@
 		    {
 		
 		    	// If the user already exists
-		    	if(e.getSQLState().equals("23505"))
+		    	if(e.getSQLState().equals(ERROR_DUPLICATE_USERNAME))
 		    	{
-		        	out.println("Sorry, that username already exists! Please try a different one.");
+		        	out.println("Sign up FAILED! That username already exists, please try a different one.");
 		        	return;
 		    	}
+		    	
+		    	if(e.getSQLState().equals(ERROR_MISSING_USERNAME))
+		    	{
+		    		out.println("Sign up FAILED! You must enter a username.");
+		    		return;
+		    	}
+		    	
 		    	out.println(e.getSQLState());
 		        e.printStackTrace();
 		        return;
