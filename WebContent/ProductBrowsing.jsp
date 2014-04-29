@@ -96,19 +96,28 @@
 							System.out.println("CAT "+request.getParameter("BUTTONN"));
 						
 							Statement stmt_sea = conn.createStatement();
-							String q = "SELECT * FROM products WHERE name ILIKE '%"+ request.getParameter("prod_search")+"%'";
+							String q="";
+							String a = request.getParameter("prod_search");
+							//System.out.println("WTFFF " + a.length());
+							if(a == null)
+							{
+								System.out.println("WTFFF");
+								q = "SELECT * FROM products WHERE name ILIKE '%%'";
+							}
+							else
+							{
+								q = "SELECT * FROM products WHERE name ILIKE '%"+ a+"%'";
+							}
 							boolean check = true;
-
-							System.out.println("AAAA"+ request.getParameter("prod_search"));
+							System.out.println("AAA "+ a);
 							System.out.println("QQ  " +q);
-							if(!((String)request.getParameter("BUTTONN")).equals(""))
+							if((String)request.getParameter("BUTTONN") != null)
 							{
 								q = q + " AND category = '"+request.getParameter("BUTTONN") +"'";
 								System.out.println("I'm here");
 							}
 							System.out.println(q);
 							ResultSet rset_sea = stmt_sea.executeQuery(q);
-							
 								%>
 								<table border="1">
          							<tr>
