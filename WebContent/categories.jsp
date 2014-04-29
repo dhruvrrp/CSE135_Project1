@@ -102,7 +102,7 @@ Hello, <%= session.getAttribute("session_username") %>!
                 // Check for empty text fields and throw error if true
                 if (strCatName == "")
                 {
-                	    out.println("ERROR ADDING NEW CATEGORY: The category name cannot be empty.");
+                    out.println("ERROR ADDING NEW CATEGORY: The category name cannot be empty.");
                 }
                 else if (rs_dupcat.next())
                 {
@@ -259,7 +259,7 @@ Hello, <%= session.getAttribute("session_username") %>!
             // Get ResultSet containing Products attached to the current Category
         	stmt_nodelete = conn.createStatement();
         	rs_nodelete = stmt_nodelete.executeQuery("SELECT * FROM Products " + 
-                                                  "WHERE Products.category = " + rs_allcats.getInt("category_id"));
+                                                     "WHERE Products.category = " + rs_allcats.getInt("category_id"));
     %>      <tr>
             <form action="categories.jsp" method="post">
             <input type="hidden" value="update" name="action"/>
