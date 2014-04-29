@@ -53,7 +53,7 @@ Hello, <%= session.getAttribute("session_username") %>!
     
   <!-- *****************************************JSP*************************************************** -->
     
-    <%@ page language="java" import="java.sql.*" %> <%@ page import="java.util.*"%>
+    <%@ page language="java" import="java.sql.*" %>
     
     <!-- Connect to database -->
     <%
@@ -239,9 +239,6 @@ Hello, <%= session.getAttribute("session_username") %>!
             // Use the created Statement to SELECT the Category attributes
             //   from the Categories table
             ResultSet rs_allcats = statement.executeQuery("SELECT * FROM Categories ORDER BY category_id");
-            
-
-            
         %>
         
         <!------ ITERATION CODE ------>
