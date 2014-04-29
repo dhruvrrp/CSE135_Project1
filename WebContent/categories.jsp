@@ -61,7 +61,8 @@ Hello, <%= session.getAttribute("session_username") %>!
         {
             Class.forName("org.postgresql.Driver");
             Connection conn = DriverManager.getConnection(
-            		          "jdbc:postgresql://localhost:5432/CSE135", "postgres", "calcium");
+            		          "jdbc:postgresql://localhost:5432/CSE135", 
+            		          "postgres", "calcium");
             
     %>
             <!-- Insert text forms -->
@@ -76,7 +77,6 @@ Hello, <%= session.getAttribute("session_username") %>!
                                 <th>Name</th>
                                 <th>Description</th>
                             </tr>
-              
                             <tr>
                             <form action="categories.jsp" method="post">
                                 <input type="hidden" name="action" value="insert">
@@ -94,10 +94,10 @@ Hello, <%= session.getAttribute("session_username") %>!
             if (action != null && action.equals("insert"))
             {
             	String strCatName = request.getParameter("cat_name");
-                
-            	Statement statement = conn.createStatement();
-                ResultSet rs_dupcat = statement.executeQuery("SELECT * FROM Categories " + 
-                                                             "WHERE name = '" + request.getParameter("cat_name") + "'");
+            	Statement stmt_dupcat = conn.createStatement();
+                ResultSet rs_dupcat = stmt_dupcat.executeQuery("SELECT * FROM Categories " + 
+                                                               "WHERE name = '" + 
+                                                               request.getParameter("cat_name") + "'");
                 
                 // Check for empty text fields and throw error if true
                 if (strCatName == "")
@@ -127,7 +127,7 @@ Hello, <%= session.getAttribute("session_username") %>!
                     conn.commit();
                     conn.setAutoCommit(true);
                     
-                    statement.close();
+                    stmt_dupcat.close();
                     rs_dupcat.close();
                     
                     if (request.getParameter("cat_name") != "")
@@ -146,8 +146,8 @@ Hello, <%= session.getAttribute("session_username") %>!
             {
                 String strCatName = request.getParameter("cat_name");
                 
-                Statement statement = conn.createStatement();
-                ResultSet rs_dupcat = statement.executeQuery("SELECT * FROM Categories " + 
+                Statement stmt_dupcat = conn.createStatement();
+                ResultSet rs_dupcat = stmt_dupcat.executeQuery("SELECT * FROM Categories " + 
                                                              "WHERE name = '" + request.getParameter("cat_name") + "'");
                 
                 // Check for 1) empty text field and 2) duplicate category name
@@ -184,7 +184,7 @@ Hello, <%= session.getAttribute("session_username") %>!
                     
                     out.println("The category \"" + request.getParameter("cat_name") + "\" has been updated!");
                     
-                    statement.close();
+                    stmt_dupcat.close();
                     rs_dupcat.close();
                 }
             }
@@ -196,8 +196,8 @@ Hello, <%= session.getAttribute("session_username") %>!
             if (action != null && action.equals("delete"))
             {
 	            // Fill ResultSet with Products of the Category that is to be deleted  
-	            Statement statement3 = conn.createStatement();
-                ResultSet rs_nodelete2 = statement3.executeQuery("SELECT * FROM Products " + 
+	            Statement stmt_nodelete2 = conn.createStatement();
+                ResultSet rs_nodelete2 = stmt_nodelete2.executeQuery("SELECT * FROM Products " + 
                                                                  "WHERE Products.category = " + request.getParameter("cat_id"));
                 
                 // Check if there are Products attached to the Category, else DELETE as normal
@@ -223,7 +223,7 @@ Hello, <%= session.getAttribute("session_username") %>!
                     conn.setAutoCommit(true);
                     
                     // Close stuff
-                    statement3.close();
+                    stmt_nodelete2.close();
                     rs_nodelete2.close();
                     
                     out.println("The category \"" + request.getParameter("cat_name") + "\" has been deleted!");
@@ -234,11 +234,11 @@ Hello, <%= session.getAttribute("session_username") %>!
             <!------ SELECT CODE ------>
         <%
             // Create the Statement
-            Statement statement = conn.createStatement();
+            Statement stmt_allcats = conn.createStatement();
             
             // Use the created Statement to SELECT the Category attributes
             //   from the Categories table
-            ResultSet rs_allcats = statement.executeQuery("SELECT * FROM Categories ORDER BY category_id");
+            ResultSet rs_allcats = stmt_allcats.executeQuery("SELECT * FROM Categories ORDER BY category_id");
         %>
         
         <!------ ITERATION CODE ------>
@@ -253,12 +253,12 @@ Hello, <%= session.getAttribute("session_username") %>!
         </tr>
     <%
         ResultSet rs_nodelete = null;
-        Statement statement2 = null;
+        Statement stmt_nodelete = null;
         while(rs_allcats.next())
         {
             // Get ResultSet containing Products attached to the current Category
-        	statement2 = conn.createStatement();
-        	rs_nodelete = statement2.executeQuery("SELECT * FROM Products " + 
+        	stmt_nodelete = conn.createStatement();
+        	rs_nodelete = stmt_nodelete.executeQuery("SELECT * FROM Products " + 
                                                   "WHERE Products.category = " + rs_allcats.getInt("category_id"));
     %>      <tr>
             <form action="categories.jsp" method="post">
@@ -300,8 +300,8 @@ Hello, <%= session.getAttribute("session_username") %>!
             rs_nodelete.close();
             
             // Close the Statements
-            statement.close();
-            statement2.close();
+            stmt_allcats.close();
+            stmt_nodelete.close();
     
             // Close the connection
             conn.close();
