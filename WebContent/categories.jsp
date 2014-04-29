@@ -263,14 +263,10 @@ Hello, <%= session.getAttribute("session_username") %>!
     %>      <tr>
             <form action="categories.jsp" method="post">
             <input type="hidden" value="update" name="action"/>
-                <td>
-                    <input type="hidden" value="<%=rs_allcats.getInt("category_id")%>" name="cat_id" />
-                    <%=rs_allcats.getInt("category_id") %>
-                </td>
+                <td><input type="hidden" value="<%=rs_allcats.getInt("category_id")%>" name="cat_id" /><%=rs_allcats.getInt("category_id") %></td>
                 <td><input value="<%=rs_allcats.getString("name")%>" name="cat_name" /></td>
                 <td><input value="<%=rs_allcats.getString("description")%>" name="cat_desc"/></td>
-            <!-- Update button -->
-            <td><input type="submit" value="Update" class="button" ></td>
+                <td><input type="submit" value="Update" class="button" ></td>
             </form>
             
             <form action="categories.jsp" method="post">
@@ -280,8 +276,8 @@ Hello, <%= session.getAttribute("session_username") %>!
     <% 
             // Only display Delete button if there are no Products
             //   attached to the current Category
-            if (!(rs_nodelete.next())) {  
-    %>          <!-- Delete button -->    
+            if (!(rs_nodelete.next())) 
+            {  %>   
                 <td><input type="submit" value="Delete" class="button"/></td> 
     <%      } 
     %>
