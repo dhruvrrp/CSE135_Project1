@@ -48,12 +48,12 @@
 		<div class="row">
 			<div class="panel">
 
-				<!-- *****************************************JSP*************************************************** -->
+		<!-- *****************************************JSP*************************************************** -->
 
-				<%-- Set the scripting language to Java and import the java.sql package--%>
-				<%@ page language="java" import="java.sql.*"%>
+		<%-- Set the scripting language to Java and import the java.sql package--%>
+		<%@ page language="java" import="java.sql.*"%>
 
-				<%
+	<%
         try 
         {        
             Class.forName("org.postgresql.Driver");
@@ -117,16 +117,10 @@
 
     %>
 
-				<!-- *********************************************************************************************** -->
+		<!-- *********************************************************************************************** -->
 
-				<h2>
-					Sign up SUCCESSFUL! Welcome,
-					<%= request.getParameter("param_name") %>!
-				</h2>
-				<h4>
-					Return to <a href="index.html">home page</a> to login
-				</h4>
-
+		<h2>Sign up SUCCESSFUL! Welcome, <%= request.getParameter("param_name") %>!</h2>
+		<h4>Return to <a href="index.html">home page</a> to login</h4>
 
 			</div>
 		</div>
