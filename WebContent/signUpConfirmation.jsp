@@ -92,14 +92,14 @@
             conn.close();
     
         }
-		//Specific error handling
+		    // Specific error handling
 		    catch (SQLException e) 
-		{
+		    {
 		
-		    	//If the user already exists
+		    	// If the user already exists
 		    	if(e.getSQLState().equals("23505"))
 		    	{
-		        	out.println("Sorry username already exists! Please try a different one");
+		        	out.println("Sorry, that username already exists! Please try a different one.");
 		        	return;
 		    	}
 		    	out.println(e.getSQLState());
@@ -107,10 +107,11 @@
 		        return;
 		    }
 		
-			//TO-DO Catch if age inputted is not a number
+			// TODO: Catch if age is not a number
 		
 		    catch (Exception e) 
 		    {
+		    	out.println("Sign up FAILED!");
 		        out.println(e.getMessage());
 		        return;
 		    }
