@@ -78,13 +78,17 @@
  			
  			//check for insert action
  			else if(action!=null && action.equals("insert")) {
+ 				//transaction
+ 				conn.setAutoCommit(false);
+ 				
  				//first we need to find what category was in the insert
  				Statement stmt = conn.createStatement();
  				ResultSet rset_ = stmt.executeQuery("SELECT category_id FROM categories WHERE name='" +
  									request.getParameter("prod_category") + "'");
  				rset_.next();
+ 				System.out.println("value :" + request.getParameter("prod_category"));
  				int cat_id = rset_.getInt("category_id");
- 				
+ 				System.out.println("oh");
  				PreparedStatement pstmt = conn.prepareStatement("INSERT INTO products (name,sku,category,price)" + 
  																	"VALUES (?,?,?,?)");
  				pstmt.setString(1,request.getParameter("prod_name"));
@@ -94,10 +98,12 @@
  				
  				
  				int count = pstmt.executeUpdate();
+ 				conn.commit();   //end transaction
  				System.out.println(count);
  				pstmt.close();
  				rset_.close();
  				stmt.close();
+ 				conn.setAutoCommit(true); //reset autocommit back to true
  			}
  			
  		%>
@@ -139,7 +145,7 @@
           						<input type="hidden" name="action" value="insert">
           						<th><input type="text" name="prod_sku" autofocus="autofocus"></th>
           						<th><input type="text" name="prod_name"></th>
-          						<th><select name="prod_cat">
+          						<th><select name="prod_category">
           								<% rset_cat = stmt_cat.executeQuery("SELECT * FROM categories");
           								   while(rset_cat.next()) { %>
           								<option value="<%= rset_cat.getString("name") %>"><%= rset_cat.getString("name") %></option>
