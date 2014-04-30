@@ -56,37 +56,28 @@
  			
  			Statement stmt_prod = conn.createStatement();
  			Statement stmt_cat = conn.createStatement();
- 			
- 			//get all tuples from the products table
- 			ResultSet rset_prod = stmt_prod.executeQuery("SELECT * FROM products");
+
  			
  			//get all category tuples
  			ResultSet rset_cat = stmt_cat.executeQuery("SELECT * FROM categories");
+ 			 			
  			
- 			
- 			
- 			
- 			
- 			
- 			//insert,update,delete, and search
- 			String search_param = request.getParameter("search_for");
- 			
- 			
+ 			//insert,update,delete, and search handling
  			Statement stmt_prod_filter = conn.createStatement();
- 			ResultSet rset_prod_filter = stmt_prod_filter.executeQuery("SELECT * FROM products");
+ 			ResultSet rset_prod_filter = stmt_prod_filter.executeQuery("SELECT * FROM products WHERE 1=0");
  			
  			//get the requested action (if applicable)
  			String action = request.getParameter("action");
  			
  			//check if search was selected
  			if(action!=null && action.equals("search")) {
- 				System.out.println("entered here: " + request.getParameter("search_for"));
+ 				System.out.println("searched for: " + request.getParameter("search_for"));
  				rset_prod_filter = stmt_prod_filter.executeQuery("SELECT * FROM products" +
 							" WHERE name LIKE '%" + request.getParameter("search_for")+"%'");
  			}
  			
  			//check for insert action
- 			if(action!=null && action.equals("insert")) {
+ 			else if(action!=null && action.equals("insert")) {
  				//first we need to find what category was in the insert
  				Statement stmt = conn.createStatement();
  				ResultSet rset_ = stmt.executeQuery("SELECT category_id FROM categories WHERE name='" +
@@ -126,19 +117,20 @@
           			<div class="panel">     
           				<span id="welcome">Hello <%= session.getAttribute("session_username") %> </span>
           				<br>
-          				<h4>Search for products</h4>
+          				<h4>Search for products by name</h4>
           				<form method="GET" action="products.jsp"> 
           					<input id="search_bar" type="text" name="search_for">
           					<input type="submit" value="Search" class="button">
           					<input type="hidden" value="search" name="action">
           				</form><hr><br>
-          				<h4>Add or modify products here</h4><hr>
+          				<h4>View, add or modify products here</h4><hr>
           				<table border="1">
           					<tr>
           						<th>Product SKU</th>
           						<th>Name</th>
           						<th>Category</th>
           						<th>Price</th>
+          						<th colspan="2">Action</th>
           					</tr>
           					
           					<!-- Insert form -->
@@ -192,8 +184,9 @@
  		
  		<% 
  			//close connections to db
+ 			rset_prod_filter.close();
+ 			stmt_prod_filter.close();
  			rset_cat.close();
- 			rset_prod.close();
  			stmt_cat.close();
  			stmt_prod.close();
  			conn.close();
