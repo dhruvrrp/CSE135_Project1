@@ -197,8 +197,11 @@
             String action = request.getParameter("action");
             if (action != null && action.equals("delete"))
             {
-	            // Fill ResultSet with Products of the Category that is to be deleted  
-	            Statement stmt_nodelete2 = conn.createStatement();
+                // Begin transaction
+                conn.setAutoCommit(false);
+                
+                // Fill ResultSet with Products of the Category that is to be deleted  
+                Statement stmt_nodelete2 = conn.createStatement();
                 ResultSet rs_nodelete2 = stmt_nodelete2.executeQuery("SELECT * FROM Products " + 
                                                                      "WHERE Products.category = " + 
                                                                      request.getParameter("cat_id"));
@@ -207,14 +210,11 @@
                 if ((rs_nodelete2.next()))
                 {
                     out.println("ERROR DELETING CATEGORY: " + 
-                    		    "A product has been added to the category \"" + 
+                                "A product has been added to the category \"" + 
                                 request.getParameter("cat_name") + "\" and thus can no longer be deleted.");
                 }
                 else
                 {
-                    // Begin transaction
-                    conn.setAutoCommit(false);
-               
                     // Create the PreparedStatement and use it to
                     //   DELETE Categories FROM the Categories table
                     PreparedStatement pstmt = conn.prepareStatement("DELETE FROM Categories " +
@@ -233,7 +233,7 @@
                     out.println("The category \"" +
                                 request.getParameter("cat_name") + 
                     		    "\" has been deleted!");
-                }
+                 } 
             }
         %>
             
