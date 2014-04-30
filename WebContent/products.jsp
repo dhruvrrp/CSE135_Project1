@@ -80,7 +80,7 @@
  			else if(action!=null && action.equals("insert")) {
  				//transaction
  				conn.setAutoCommit(false);
- 				
+ 				try {
  				//first we need to find what category was in the insert
  				Statement stmt = conn.createStatement();
  				ResultSet rset_ = stmt.executeQuery("SELECT category_id FROM categories WHERE name='" +
@@ -91,6 +91,8 @@
  				System.out.println("oh");
  				PreparedStatement pstmt = conn.prepareStatement("INSERT INTO products (name,sku,category,price)" + 
  																	"VALUES (?,?,?,?)");
+ 				
+ 				//might need to do checks with these
  				pstmt.setString(1,request.getParameter("prod_name"));
  				pstmt.setString(2, request.getParameter("prod_sku"));
  				pstmt.setInt(3, cat_id);
@@ -98,12 +100,51 @@
  				
  				
  				int count = pstmt.executeUpdate();
+ 				
+ 				if(count == 0) {
+ 					out.println("Failure to insert new product.");	
+ 					throw new SQLException();
+ 				}
+ 				
  				conn.commit();   //end transaction
- 				System.out.println(count);
  				pstmt.close();
  				rset_.close();
  				stmt.close();
  				conn.setAutoCommit(true); //reset autocommit back to true
+ 				
+ 				}
+ 				catch(SQLException e){
+ 					out.println("Failure to insert new product.");
+ 				}
+ 			}
+ 			//if action was an update
+ 			else if(action!=null && action.equals("update")) {
+ 				conn.setAutoCommit(false);  //transactions, yo!
+ 				
+ 				PreparedStatement pstmt_update = conn.prepareStatement("UPDATE products" + 
+ 								" SET name=?, sku=?, category=?, price=? " + "WHERE product_id=" + 
+ 								request.getParameter("pkey"));
+ 				
+ 				//get the category id
+ 				Statement stmt_catID = conn.createStatement();
+ 				ResultSet rset_catID = stmt_catID.executeQuery("SELECT category_id FROM categories WHERE" +
+ 								" name='" + request.getParameter("prod_cat") + "'"); 
+ 				
+ 				rset_catID.next();
+ 				int cat_id = rset_catID.getInt("category_id");
+ 				
+ 				pstmt_update.setString(1, request.getParameter("prod_name"));
+ 				pstmt_update.setString(2, request.getParameter("prod_sku"));
+ 				pstmt_update.setInt(3, cat_id);
+ 				pstmt_update.setInt(4, Integer.parseInt(request.getParameter("prod_price")));
+ 				
+ 				pstmt_update.executeUpdate();
+ 				conn.commit();
+ 				conn.setAutoCommit(true);
+ 				System.out.println("entered2");
+ 				rset_catID.close();
+ 				stmt_catID.close();
+ 				pstmt_update.close();												
  			}
  			
  		%>
@@ -160,7 +201,10 @@
           					<%-- Populate the table --%>
           					<% while(rset_prod_filter.next()) { %>
           						<% 
-          							//get the integer id of the current product
+          						    //get the primary key id of the current product
+          						    int product_pkey = rset_prod_filter.getInt("product_id");
+          						    
+          							//get the integer id of category the current product
           							int category_id = rset_prod_filter.getInt("category");
           						
           							//create a statement to retrieve name of current category
@@ -172,11 +216,9 @@
           						    
           						    //get the category name as a string
           						   	String current_category = rset_current.getString("name");
-          						    
-          						  //<td><input type="text" name="prod_category" value="<%= current_category "></td>
-          						   
           						%>
           						<tr>
+          						<form action="products.jsp" method="POST">
           						<td><input type="text" name="prod_sku" value="<%= rset_prod_filter.getString("sku") %>"></td>
           						<td><input type="text" name="prod_name" value="<%= rset_prod_filter.getString("name") %>"></td>
           						<td><select name="prod_cat">
@@ -192,6 +234,9 @@
           						</td>
           						<td><input type="text" name="prod_price" value="<%= rset_prod_filter.getInt("price") %>"></td>
           						<td><input type="submit" value="Update" class="small button"></td>
+          						<input type="hidden" name="action" value="update">
+          						<input type="hidden" name="pkey" value="<%= product_pkey %>">
+          						</form>
           						<td><input type="submit" value="Delete" class="small button"></td>
           						</tr>
           					<%
