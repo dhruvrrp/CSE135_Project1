@@ -220,7 +220,7 @@ Hello, <%= session.getAttribute("session_username") %>!
                 {
                     out.println("ERROR DELETING CATEGORY: " + 
                     		    "A product has been added to the category \"" + 
-                                request.getParameter("cat_name") + "\".");
+                                request.getParameter("cat_name") + "\" and thus can no longer be deleted.");
                 }
                 else
                 {
