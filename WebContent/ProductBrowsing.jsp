@@ -129,11 +129,18 @@
          							
          						<% 	
          						while(rset_sea.next()&&check)
-								{%>
+								{
+								
+         							Statement stmt_catname = conn.createStatement();
+         							ResultSet rset_catname = stmt_catname.executeQuery("SELECT Categories.name FROM Categories, Products " + 
+         								                                               "WHERE Categories.category_id = '" + 
+         								                                               rset_sea.getString("category") + "'");
+								    rset_catname.next();
+								%>
 									<tr>
          								<td><%= rset_sea.getInt("product_id") %></td>
          								<td><%= rset_sea.getString("name") %></td>
-         								<td><%= rset_sea.getString("category") %></td>
+         								<td><%= rset_catname.getString("name") %></td>
          								<td><%= rset_sea.getInt("price") %></td>
          							</tr>
 							<%}%>
