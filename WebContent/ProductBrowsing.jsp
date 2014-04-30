@@ -137,13 +137,15 @@
          								                                               rset_sea.getString("category") + "'");
 								    rset_catname.next();
 								%>
+									<form action="ProductOrder.jsp" method="POST">
 									<tr>
          								<td><%= rset_sea.getString("sku") %></td>
-         								<td><%= rset_sea.getString("name") %></td>
+         								<td><input type="submit" name="prod_pur" value =<%=rset_sea.getString("name")%>></td>
          								<td><%= rset_catname.getString("name") %></td>
          								<td><%= rset_sea.getInt("price") %></td>
          							</tr>
 							<%}%>
+							</form>
 								</table>
 							
           			</div>
