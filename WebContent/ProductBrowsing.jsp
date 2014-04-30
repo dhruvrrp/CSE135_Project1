@@ -80,7 +80,7 @@
           					<form action="ProductBrowsing.jsp" method="POST">
           						<tr>
           						<td><%= rset_cat.getInt("category_id") %></td>
-          						<td><%=rset_cat.getString("name")%>: <input type="radio" name="BUTTONN" value =<%=rset_cat.getString("name")%>> </td>
+          						<td><%=rset_cat.getString("name")%>: <input type="radio" name="BUTTONN" value =<%=rset_cat.getInt("category_id")%>> </td>
           						<td><%= rset_cat.getString("description") %></td>
           						</tr>
           					<%
