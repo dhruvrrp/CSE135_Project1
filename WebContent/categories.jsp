@@ -97,16 +97,19 @@ Hello, <%= session.getAttribute("session_username") %>!
             	Statement stmt_dupcat = conn.createStatement();
                 ResultSet rs_dupcat = stmt_dupcat.executeQuery("SELECT * FROM Categories " + 
                                                                "WHERE name = '" + 
-                                                               request.getParameter("cat_name") + "'");
+                                                               request.getParameter("cat_name") + 
+                                                               "'");
                 
                 // Check for empty text fields and throw error if true
                 if (strCatName == "")
                 {
-                    out.println("ERROR ADDING NEW CATEGORY: The category name cannot be empty.");
+                    out.println("ERROR ADDING NEW CATEGORY: " + 
+                    	        "The category name cannot be empty.");
                 }
                 else if (rs_dupcat.next())
                 {
-                	out.println("ERROR ADDING NEW CATEGORY: Category name \"" + request.getParameter("cat_name") + 
+                	out.println("ERROR ADDING NEW CATEGORY: Category name \"" + 
+                		        request.getParameter("cat_name") + 
                 			    "\" already exists! Please choose a different name.");
                 }
                 else
@@ -116,8 +119,9 @@ Hello, <%= session.getAttribute("session_username") %>!
                 
                     // Create the PreparedStatement and use it to INSERT
                     //   the Category attribuets INTO the Categories table
-                    PreparedStatement pstmt = conn.prepareStatement("INSERT INTO Categories (name, description) " +
-                    	                      "VALUES (?, ?)");
+                    PreparedStatement pstmt = conn.prepareStatement("INSERT INTO Categories " + 
+                    		                                        "(name, description) " +
+                    	                                            "VALUES (?, ?)");
                 
                     pstmt.setString(1, request.getParameter("cat_name"));
                     pstmt.setString(2, request.getParameter("cat_desc"));
@@ -132,7 +136,9 @@ Hello, <%= session.getAttribute("session_username") %>!
                     
                     if (request.getParameter("cat_name") != "")
                     {
-                    	out.println("The category \"" + request.getParameter("cat_name") + "\" has been added!");
+                    	out.println("The category \"" + 
+                    			    request.getParameter("cat_name") + 
+                    			    "\" has been added!");
                     }
                 }
             }
@@ -141,25 +147,31 @@ Hello, <%= session.getAttribute("session_username") %>!
         
             <!------ UPDATE CODE ------>
         <%
-            // Check if an updated is requested
+            // Check if an update is requested
             if (action != null && action.equals("update"))
             {
                 String strCatName = request.getParameter("cat_name");
                 
                 Statement stmt_dupcat = conn.createStatement();
                 ResultSet rs_dupcat = stmt_dupcat.executeQuery("SELECT * FROM Categories " + 
-                                                             "WHERE name = '" + request.getParameter("cat_name") + "'");
+                                                               "WHERE name = '" + 
+                                                               request.getParameter("cat_name") + 
+                                                               "'");
                 
                 // Check for 1) empty text field and 2) duplicate category name
-                //   Allows updating description of a given category w/o throwing "duplicate category" error
+                //   Allows updating description of a given category w/o throwing 
+                //   "duplicate category" error
                 if (strCatName == "")
                 {
-                        out.println("ERROR UPDATING EXISTING CATEGORY: The category name cannot be empty.");
+                        out.println("ERROR UPDATING EXISTING CATEGORY: " + 
+                        	        "The category name cannot be empty.");
                 }
                 else if (rs_dupcat.next() 
-                		 && Integer.parseInt(request.getParameter("cat_id")) != rs_dupcat.getInt("category_id"))
+                		 && Integer.parseInt(request.getParameter("cat_id")) 
+                		 != rs_dupcat.getInt("category_id"))
                 {
-                    out.println("ERROR UPDATING EXISTING CATEGORY: Category name \"" + request.getParameter("cat_name") + 
+                    out.println("ERROR UPDATING EXISTING CATEGORY: Category name \"" + 
+                    	        request.getParameter("cat_name") + 
                                 "\" already exists! Please choose a different name.");
                 }
                 else
@@ -182,7 +194,9 @@ Hello, <%= session.getAttribute("session_username") %>!
                     conn.commit();
                     conn.setAutoCommit(true);
                     
-                    out.println("The category \"" + request.getParameter("cat_name") + "\" has been updated!");
+                    out.println("The category \"" + 
+                    		    request.getParameter("cat_name") + 
+                    		    "\" has been updated!");
                     
                     stmt_dupcat.close();
                     rs_dupcat.close();
@@ -198,12 +212,14 @@ Hello, <%= session.getAttribute("session_username") %>!
 	            // Fill ResultSet with Products of the Category that is to be deleted  
 	            Statement stmt_nodelete2 = conn.createStatement();
                 ResultSet rs_nodelete2 = stmt_nodelete2.executeQuery("SELECT * FROM Products " + 
-                                                                 "WHERE Products.category = " + request.getParameter("cat_id"));
+                                                                     "WHERE Products.category = " + 
+                                                                     request.getParameter("cat_id"));
                 
                 // Check if there are Products attached to the Category, else DELETE as normal
                 if ((rs_nodelete2.next()))
                 {
-                    out.println("ERROR DELETING CATEGORY: A product has been added to the category \"" + 
+                    out.println("ERROR DELETING CATEGORY: " + 
+                    		    "A product has been added to the category \"" + 
                                 request.getParameter("cat_name") + "\".");
                 }
                 else
@@ -226,7 +242,9 @@ Hello, <%= session.getAttribute("session_username") %>!
                     stmt_nodelete2.close();
                     rs_nodelete2.close();
                     
-                    out.println("The category \"" + request.getParameter("cat_name") + "\" has been deleted!");
+                    out.println("The category \"" +
+                                request.getParameter("cat_name") + 
+                    		    "\" has been deleted!");
                 }
             }
         %>
@@ -238,7 +256,9 @@ Hello, <%= session.getAttribute("session_username") %>!
             
             // Use the created Statement to SELECT the Category attributes
             //   from the Categories table
-            ResultSet rs_allcats = stmt_allcats.executeQuery("SELECT * FROM Categories ORDER BY category_id");
+            ResultSet rs_allcats = stmt_allcats.executeQuery("SELECT * " +
+            		                                         "FROM Categories " + 
+            		                                         "ORDER BY category_id");
         %>
         
         <!------ ITERATION CODE ------>
@@ -259,11 +279,13 @@ Hello, <%= session.getAttribute("session_username") %>!
             // Get ResultSet containing Products attached to the current Category
         	stmt_nodelete = conn.createStatement();
         	rs_nodelete = stmt_nodelete.executeQuery("SELECT * FROM Products " + 
-                                                     "WHERE Products.category = " + rs_allcats.getInt("category_id"));
+                                                     "WHERE Products.category = " + 
+                                                     rs_allcats.getInt("category_id"));
     %>      <tr>
             <form action="categories.jsp" method="post">
             <input type="hidden" value="update" name="action"/>
-                <td><input type="hidden" value="<%=rs_allcats.getInt("category_id")%>" name="cat_id" /><%=rs_allcats.getInt("category_id") %></td>
+                <td><input type="hidden" value="<%=rs_allcats.getInt("category_id")%>" name="cat_id" />
+                    <%=rs_allcats.getInt("category_id") %></td>
                 <td><input value="<%=rs_allcats.getString("name")%>" name="cat_name" /></td>
                 <td><input value="<%=rs_allcats.getString("description")%>" name="cat_desc"/></td>
                 <td><input type="submit" value="Update" class="button" ></td>
