@@ -77,8 +77,7 @@
  	 		    Statement stmt_user = conn.createStatement();
  			    ResultSet rset_user = stmt_user.executeQuery("SELECT * FROM Users WHERE name='" + 
  	 				 								         request.getParameter("param_username") + "'");
-/*  			    Statement stmt_userid = conn.createStatement();
- 			    ResultSet rset_userid = stmt_userid.executeQuery("SELECT user_id FROM Users WHERE"); */
+
 				//Check if username is valid
                 if(rset_user.next()) 
                 { 
