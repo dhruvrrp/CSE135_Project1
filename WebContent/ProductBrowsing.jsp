@@ -138,7 +138,7 @@
 								    rset_catname.next();
 								%>
 									<tr>
-         								<td><%= rset_sea.getInt("product_id") %></td>
+         								<td><%= rset_sea.getString("sku") %></td>
          								<td><%= rset_sea.getString("name") %></td>
          								<td><%= rset_catname.getString("name") %></td>
          								<td><%= rset_sea.getInt("price") %></td>
