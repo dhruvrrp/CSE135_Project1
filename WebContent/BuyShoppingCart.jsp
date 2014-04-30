@@ -82,8 +82,9 @@
         <table border="1">
         <tr>
             <th>Product</th>
-            <th>Quantity</th>
             <th>Price per unit</th>
+            <th>Quantity</th>
+            <th>Subtotal</th>
         </tr>
     <%
         ResultSet rs_prodname = null;
@@ -100,12 +101,10 @@
     %>      <tr>
             <form action="BuyShoppingCart.jsp" method="post">
             <!-- <input type="hidden" value="update" name="action"/> -->
-                <td><input type="hidden" value="<%=rs_prodname.getString("name")%>" name="prod_name" />
-                    <%=rs_prodname.getString("name") %></td>
-                <td><input type="hidden" value="<%=rs_shopcart.getInt("quantity")%>" name="prod_quan" />
-                    <%=rs_shopcart.getInt("quantity") %></td>
-                <td><input type="hidden" value="<%=rs_shopcart.getFloat("product_price")%>" name="prod_price"/>
-                    <%=rs_shopcart.getFloat("product_price") %></td>
+                <td><%=rs_prodname.getString("name") %></td>
+                <td><%=rs_shopcart.getFloat("product_price") %></td>
+                <td><%=rs_shopcart.getInt("quantity") %></td>
+                <td><%=rs_shopcart.getFloat("product_price") * rs_shopcart.getInt("quantity") %></td>
                <!--  <td><input type="submit" value="Update" class="button" ></td> -->
             </form>
             
