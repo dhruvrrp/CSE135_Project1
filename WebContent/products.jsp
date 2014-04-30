@@ -139,7 +139,12 @@
           						<input type="hidden" name="action" value="insert">
           						<th><input type="text" name="prod_sku" autofocus="autofocus"></th>
           						<th><input type="text" name="prod_name"></th>
-          						<th>
+          						<th><select name="prod_cat">
+          								<% rset_cat = stmt_cat.executeQuery("SELECT * FROM categories");
+          								   while(rset_cat.next()) { %>
+          								<option value="<%= rset_cat.getString("name") %>"><%= rset_cat.getString("name") %></option>
+          								<% } %>
+          							</select>
           						</th>
           						<th><input type="text" name="prod_price"></th>
           						<th><input type="submit" value="Insert" class="button"></th>
@@ -161,12 +166,24 @@
           						    
           						    //get the category name as a string
           						   	String current_category = rset_current.getString("name");
+          						    
+          						  //<td><input type="text" name="prod_category" value="<%= current_category "></td>
           						   
           						%>
           						<tr>
           						<td><input type="text" name="prod_sku" value="<%= rset_prod_filter.getString("sku") %>"></td>
           						<td><input type="text" name="prod_name" value="<%= rset_prod_filter.getString("name") %>"></td>
-          						<td><input type="text" name="prod_category" value="<%= current_category %>"></td>
+          						<td><select name="prod_cat">
+          								<% rset_cat = stmt_cat.executeQuery("SELECT * FROM categories");
+          								   while(rset_cat.next()) { 
+          								   if(rset_cat.getString("name").equals(current_category)) { %>
+          								   		<option value="<%= current_category %>" selected><%= current_category %></option>   
+          								  <% } else {
+          								 %>
+          								<option value="<%= rset_cat.getString("name") %>"><%= rset_cat.getString("name") %></option>
+          								<% } }%>
+          							</select>
+          						</td>
           						<td><input type="text" name="prod_price" value="<%= rset_prod_filter.getInt("price") %>"></td>
           						<td><input type="submit" value="Update" class="small button"></td>
           						<td><input type="submit" value="Delete" class="small button"></td>
