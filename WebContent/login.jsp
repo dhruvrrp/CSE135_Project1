@@ -74,15 +74,19 @@
  			    conn.setAutoCommit(false);
  			
  	  		    // Initialization 
- 	 		    Statement stmt = conn.createStatement();
- 			    ResultSet rset_user = stmt.executeQuery("SELECT name FROM users WHERE name='" + 
- 	 				 								    request.getParameter("param_username") + "'");
+ 	 		    Statement stmt_user = conn.createStatement();
+ 			    ResultSet rset_user = stmt_user.executeQuery("SELECT * FROM Users WHERE name='" + 
+ 	 				 								         request.getParameter("param_username") + "'");
+/*  			    Statement stmt_userid = conn.createStatement();
+ 			    ResultSet rset_userid = stmt_userid.executeQuery("SELECT user_id FROM Users WHERE"); */
 				//Check if username is valid
                 if(rset_user.next()) 
                 { 
                     // Save username in session
-                    String name = request.getParameter("param_username");
-                    session.setAttribute("session_username", name);
+                    String username = request.getParameter("param_username");
+                    int userid = rset_user.getInt("user_id");
+                    session.setAttribute("session_username", username);
+                    session.setAttribute("session_userid", userid);
                     
                     // Redirect to home page
                     String redirectURL = "home.jsp";
