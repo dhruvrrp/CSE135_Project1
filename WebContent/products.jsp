@@ -119,7 +119,7 @@
  			}
  			//if action was an update
  			else if(action!=null && action.equals("update")) {
- 				conn.setAutoCommit(false);  //transactions, yo!
+ 				conn.setAutoCommit(false);  //transactions 
  				
  				PreparedStatement pstmt_update = conn.prepareStatement("UPDATE products" + 
  								" SET name=?, sku=?, category=?, price=? " + "WHERE product_id=" + 
