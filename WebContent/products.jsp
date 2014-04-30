@@ -63,8 +63,27 @@
  			//get all category tuples
  			ResultSet rset_cat = stmt_cat.executeQuery("SELECT * FROM categories");
  			
+ 			
+ 			
+ 			
+ 			
+ 			
+ 			//insert,update,delete, and search
+ 			String search_param = request.getParameter("search_for");
+ 			
+ 			
+ 			Statement stmt_prod_filter = conn.createStatement();
+ 			ResultSet rset_prod_filter = stmt_prod_filter.executeQuery("SELECT * FROM products");
+ 			
  			//get the requested action (if applicable)
  			String action = request.getParameter("action");
+ 			
+ 			//check if search was selected
+ 			if(action!=null && action.equals("search")) {
+ 				System.out.println("entered here: " + request.getParameter("search_for"));
+ 				rset_prod_filter = stmt_prod_filter.executeQuery("SELECT * FROM products" +
+							" WHERE name LIKE '%" + request.getParameter("search_for")+"%'");
+ 			}
  			
  			//check for insert action
  			if(action!=null && action.equals("insert")) {
@@ -108,10 +127,10 @@
           				<span id="welcome">Hello <%= session.getAttribute("session_username") %> </span>
           				<br>
           				<h4>Search for products</h4>
-          				<form method="GET" action=""> 
-          					<input id="search_bar" type="search" name="search_for">
+          				<form method="GET" action="products.jsp"> 
+          					<input id="search_bar" type="text" name="search_for">
           					<input type="submit" value="Search" class="button">
-          					<input type="hidden" value="action" name="search">
+          					<input type="hidden" value="search" name="action">
           				</form><hr><br>
           				<h4>Add or modify products here</h4><hr>
           				<table border="1">
@@ -136,10 +155,10 @@
           					</form>
           					</tr>
           					<%-- Populate the table --%>
-          					<% while(rset_prod.next()) { %>
+          					<% while(rset_prod_filter.next()) { %>
           						<% 
           							//get the integer id of the current product
-          							int category_id = rset_prod.getInt("category");
+          							int category_id = rset_prod_filter.getInt("category");
           						
           							//create a statement to retrieve name of current category
           						   	Statement get_cat = conn.createStatement();
@@ -153,10 +172,10 @@
           						   
           						%>
           						<tr>
-          						<td><input type="text" name="prod_sku" value="<%= rset_prod.getString("sku") %>"></td>
-          						<td><input type="text" name="prod_name" value="<%= rset_prod.getString("name") %>"></td>
+          						<td><input type="text" name="prod_sku" value="<%= rset_prod_filter.getString("sku") %>"></td>
+          						<td><input type="text" name="prod_name" value="<%= rset_prod_filter.getString("name") %>"></td>
           						<td><input type="text" name="prod_category" value="<%= current_category %>"></td>
-          						<td><input type="text" name="prod_price" value="<%= rset_prod.getInt("price") %>"></td>
+          						<td><input type="text" name="prod_price" value="<%= rset_prod_filter.getInt("price") %>"></td>
           						<td><input type="submit" value="Update" class="small button"></td>
           						<td><input type="submit" value="Delete" class="small button"></td>
           						</tr>
