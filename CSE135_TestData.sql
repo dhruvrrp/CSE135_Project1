@@ -84,9 +84,9 @@ INSERT INTO Products (name, sku, category, price) VALUES('chair',       'FR002',
 INSERT INTO Products (name, sku, category, price) VALUES('sofa',        'FR003', 4,   60);
 INSERT INTO Products (name, sku, category, price) VALUES('bed',         'FR004', 4,   100);
 
-INSERT INTO Product_Order VALUES(1, 4, 1);
-INSERT INTO Product_Order VALUES(1, 6, 1);
-INSERT INTO Product_Order VALUES(2, 6, 1);
-INSERT INTO Product_Order VALUES(3, 4, 1);
-INSERT INTO Product_Order VALUES(3, 9, 1);
+INSERT INTO Shopping_Cart VALUES(1, 4, 400,  1);
+INSERT INTO Shopping_Cart VALUES(1, 6, 1299, 1);
+INSERT INTO Shopping_Cart VALUES(2, 6, 1299, 1);
+INSERT INTO Shopping_Cart VALUES(3, 4, 400,  1);
+INSERT INTO Shopping_Cart VALUES(3, 9, 1,    1);
 

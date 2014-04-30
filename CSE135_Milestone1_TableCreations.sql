@@ -3,7 +3,7 @@
 DROP TABLE IF EXISTS Users CASCADE;
 CREATE TABLE Users
 (
-   user_id        SERIAL         PRIMARY KEY,
+   user_id    SERIAL     PRIMARY KEY,
    name           VARCHAR(50)    NOT NULL UNIQUE,
    role           VARCHAR(8)     NOT NULL,
    age            INTEGER        NOT NULL,
@@ -27,7 +27,7 @@ CREATE TABLE Roles
 DROP TABLE IF EXISTS Categories CASCADE;
 CREATE TABLE Categories
 (
-    category_id   SERIAL         PRIMARY KEY,
+    category_id   SERIAL     PRIMARY KEY,
     name          VARCHAR(20)    NOT NULL UNIQUE,
     description   TEXT,
     CHECK         (name <> '')
@@ -36,7 +36,7 @@ CREATE TABLE Categories
 DROP TABLE IF EXISTS Products CASCADE;
 CREATE TABLE Products
 (
-    product_id    SERIAL         PRIMARY KEY,
+    product_id    SERIAL     PRIMARY KEY,
     name          VARCHAR(30),
     sku           VARCHAR(10)    NOT NULL UNIQUE,
     category      INTEGER        REFERENCES Categories(category_id) ON UPDATE CASCADE,
@@ -46,12 +46,22 @@ CREATE TABLE Products
 );
 
 DROP TABLE IF EXISTS Product_Order CASCADE;
-CREATE TABLE Product_Order
+CREATE TABLE Shopping_Cart
 (
-    customer_name INTEGER        REFERENCES Users (user_id),
-    product_sku   INTEGER        REFERENCES Products(product_id),
+    customer_name INTEGER    REFERENCES Users (user_id),
+    product_sku   INTEGER    REFERENCES Products(product_id),
+    product_price FLOAT,
     quantity      INTEGER
 );
+
+/* PRODUCT_ORDER CHANGED NAME TO SHOPPING_CART
+     ALSO ADDED PRODUCT_PRICE ATTR */
+
+
+
+
+
+
 
 
 
