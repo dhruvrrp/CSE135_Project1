@@ -47,38 +47,46 @@
   <div class="row" id="shift">
       <div class="row">
           <div class="panel">
-              <span id="welcome">Hello <%= session.getAttribute("session_username") %>, <!-- TESTING SESSION_USERID, DELETE LATER --><%= session.getAttribute("session_userid")%> </span>
+              <span id="welcome">Hello <%= session.getAttribute("session_username") %>, 
+              <!-- TESTING SESSION_USERID, DELETE LATER --><%= session.getAttribute("session_userid")%> </span>
   
   
   
-  <!-- *****************************************JSP*************************************************** -->
+   <!-- *****************************************JSP*************************************************** -->
     
-    <%@ page language="java" import="java.sql.*" %>
+   <%@ page language="java" import="java.sql.*" %>
     
     <!-- Connect to database -->
     <%
-        try
-        {
-            Class.forName("org.postgresql.Driver");
-            Connection conn = DriverManager.getConnection(
-                              "jdbc:postgresql://localhost:5432/CSE135", 
-                              "postgres", "calcium");
+    try
+    {
+        Class.forName("org.postgresql.Driver");
+        Connection conn = DriverManager.getConnection(
+                          "jdbc:postgresql://localhost:5432/CSE135", 
+                          "postgres", "calcium");
     %>
         <!------ SELECT CODE ------>
-        <%
-            // Create the Statement
-            Statement stmt_shopcart = conn.createStatement();
+    <%
+        // Use the created Statement to SELECT the Shopping_Cart attributes
+        //   from the Shopping_Cart table    
+        Statement stmt_shopcart = conn.createStatement();
+        ResultSet rs_shopcart = stmt_shopcart.executeQuery("SELECT * " +
+                                                           "FROM Shopping_Cart " + 
+                                                           "WHERE customer_name = " + 
+                                                           session.getAttribute("session_userid"));
             
-            // Use the created Statement to SELECT the Category attributes
-            //   from the Categories table
-            ResultSet rs_shopcart = stmt_shopcart.executeQuery("SELECT * " +
-                                                               "FROM Shopping_Cart " + 
-                                                               "WHERE customer_name = " + session.getAttribute("session_userid"));
-        %>
+        // Get total price of User's Shopping_Cart
+        Statement stmt_total = conn.createStatement();
+        ResultSet rs_total = stmt_total.executeQuery("SELECT SUM(product_price * quantity) AS total " +
+        		                                     "FROM Shopping_Cart " +
+        		                                     "WHERE customer_name = " + 
+        		                                     session.getAttribute("session_userid"));
+        rs_total.next();
+    %>
         
         <!------ ITERATION CODE ------>
 
-        <h2>Your shopping cart</h2>
+        <h3>Your shopping cart</h3>
         <table border="1">
         <tr>
             <th>Product</th>
@@ -91,59 +99,70 @@
         Statement stmt_prodname = null;
         while(rs_shopcart.next())
         {
-            // Get ResultSet containing Products attached to the current Category
+            // Get Product's name to be displayed instead of product_sku
             stmt_prodname = conn.createStatement();
             rs_prodname = stmt_prodname.executeQuery("SELECT name FROM Products " + 
                                                      "WHERE Products.product_id = " + 
                                                      rs_shopcart.getInt("product_sku"));
             rs_prodname.next();
             
+            // Display contents of User's Shopping_Cart
     %>      <tr>
             <form action="BuyShoppingCart.jsp" method="post">
-            <!-- <input type="hidden" value="update" name="action"/> -->
                 <td><%=rs_prodname.getString("name") %></td>
                 <td><%=rs_shopcart.getFloat("product_price") %></td>
                 <td><%=rs_shopcart.getInt("quantity") %></td>
                 <td><%=rs_shopcart.getFloat("product_price") * rs_shopcart.getInt("quantity") %></td>
-               <!--  <td><input type="submit" value="Update" class="button" ></td> -->
             </form>
-            
-<%--             <form action="categories.jsp" method="post">
-                <input type="hidden" value="delete" name="action"/>
-                <input type="hidden" value="<%=rs_allcats.getInt("category_id")%>" name="cat_id"/>
-                <input type="hidden" value="<%=rs_allcats.getString("name")%>" name="cat_name"/>
-            </form>
-            </tr> --%>
     <%
         }
     %>
         </table>
+        
+        <!------ Order total ------>
+        <h4>Order total</h4>
+        <table border="1">
+            <td><%=rs_total.getFloat("total") %></td>
+        </table>
+        
+        <!-- Purchase order -->
+        <br><br><br><br>
+        <h3>Want to place your order?</h3>
+            <form method="post" action="BuyShoppingCart.jsp">
+              Credit card number: <input type="text" name="card" />
+              <input type="submit" value="Purchase!" class="button">
+            </form> 
   
-              <!------ Close the connection code ------>
+    <!------ Close the connection code ------>
     <%      
-            // Close the ResultSet
-            rs_shopcart.close();
-            rs_prodname.close();
+        // Close the ResultSet
+        rs_shopcart.close();
+        rs_prodname.close();
+        rs_total.close();
             
-            // Close the Statements
-            stmt_shopcart.close();
-            stmt_prodname.close();
+        // Close the Statements
+        stmt_shopcart.close();
+        stmt_prodname.close();
+        stmt_total.close();
     
-            // Close the connection
-            conn.close();
-        }
-        catch (SQLException e)
-        {
-            out.println(e.getMessage());
-            e.printStackTrace();
-            return;
-        }
-        catch (Exception e)
-        {
-            out.println(e.getMessage());
-        }
+        // Close the connection
+        conn.close();
+    }
+    catch (SQLException e)
+    {
+        out.println(e.getMessage());
+        e.printStackTrace();
+        return;
+    }
+    catch (Exception e)
+    {
+        out.println(e.getMessage());
+    }
         
     %>
+  
+  
+   <!-- *********************************************************************************************** -->
   
   
   
