@@ -45,7 +45,7 @@
   <!-- End Header -->
  <!-- *****************************************JSP*************************************************** -->
  	
- 	<!-- Set language to java, and import sqql package -->
+ 	<!-- Set language to java, and import sql package -->
  	<%@ page language="java" import="java.sql.*" %>
  	    
  	    <!-- Connect to DataBase -->
@@ -63,12 +63,56 @@
  			//get all category tuples
  			ResultSet rset_cat = stmt_cat.executeQuery("SELECT * FROM categories");
  			
+ 			//get the requested action (if applicable)
+ 			String action = request.getParameter("action");
+ 			
+ 			//check for insert action
+ 			if(action!=null && action.equals("insert")) {
+ 				//first we need to find what category was in the insert
+ 				Statement stmt = conn.createStatement();
+ 				ResultSet rset_ = stmt.executeQuery("SELECT category_id FROM categories WHERE name='" +
+ 									request.getParameter("prod_category") + "'");
+ 				rset_.next();
+ 				int cat_id = rset_.getInt("category_id");
+ 				
+ 				PreparedStatement pstmt = conn.prepareStatement("INSERT INTO products (name,sku,category,price)" + 
+ 																	"VALUES (?,?,?,?)");
+ 				pstmt.setString(1,request.getParameter("prod_name"));
+ 				pstmt.setString(2, request.getParameter("prod_sku"));
+ 				pstmt.setInt(3, cat_id);
+ 				pstmt.setInt(4, Integer.parseInt(request.getParameter("prod_price")));
+ 				
+ 				
+ 				int count = pstmt.executeUpdate();
+ 				System.out.println(count);
+ 				pstmt.close();
+ 				rset_.close();
+ 				stmt.close();
+ 			}
+ 			
  		%>
+ 			<div id="prod_search">
+  				<p><b>Filter</b></p>
+  				<ul>
+  					<li><a href="">All Products</a></li>
+  					<% while(rset_cat.next()) { %>
+  						<li><a href=""><%= rset_cat.getString("name") %></a></li>
+  					<% } %>
+  				</ul>
+  			</div>
+ 		
+ 		
  			<div class="row" id="shift">
       			<div class="row">
           			<div class="panel">     
           				<span id="welcome">Hello <%= session.getAttribute("session_username") %> </span>
           				<br>
+          				<h4>Search for products</h4>
+          				<form method="GET" action=""> 
+          					<input id="search_bar" type="search" name="search_for">
+          					<input type="submit" value="Search" class="button">
+          					<input type="hidden" value="action" name="search">
+          				</form><hr><br>
           				<h4>Add or modify products here</h4><hr>
           				<table border="1">
           					<tr>
@@ -80,11 +124,12 @@
           					
           					<!-- Insert form -->
           					<tr>
-          					<form action="" method="POST">
+          					<form action="products.jsp" method="POST">
           						<input type="hidden" name="action" value="insert">
           						<th><input type="text" name="prod_sku" autofocus="autofocus"></th>
           						<th><input type="text" name="prod_name"></th>
-          						<th><input type="text" name="prod_category"></th>
+          						<th>
+          						</th>
           						<th><input type="text" name="prod_price"></th>
           						<th><input type="submit" value="Insert" class="button"></th>
           						<th></th>

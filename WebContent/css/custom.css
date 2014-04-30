@@ -25,6 +25,16 @@ div.center {
 	text-align: center;
 }
 
+#prod_search {
+	width: 140px;
+	position: absolute;
+	left: 10px;
+}
+
+#prod_search ul {
+	list-style: none;
+}
+
 
 /******signUp.jsp*****/
 #shift {
