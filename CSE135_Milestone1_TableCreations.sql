@@ -45,7 +45,7 @@ CREATE TABLE Products
     CHECK         (price >= 0)
 );
 
-DROP TABLE IF EXISTS Product_Order CASCADE;
+DROP TABLE IF EXISTS Shopping_Cart CASCADE;
 CREATE TABLE Shopping_Cart
 (
     customer_name INTEGER    REFERENCES Users (user_id),
