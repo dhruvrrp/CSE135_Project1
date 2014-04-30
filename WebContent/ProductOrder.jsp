@@ -67,7 +67,7 @@
 
 						<%
 							String new_item = (String)request.getParameter("prod_pur");
-							//int user_id = (int)session.getAttribute("session_id");
+							//int user_id = (int)session.getAttribute("session_userid");
 							
 							//REMOVE THIS LINE LATER> TESTING ONLY
 							
