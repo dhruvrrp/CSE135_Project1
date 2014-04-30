@@ -1,11 +1,7 @@
-<!-- ************* FOR GETTING THE STORED USERNAME, JUST SAVING FOR FUTURE REF ***********
-<body>
-Hello, <%= session.getAttribute("session_username") %>!
-</body> 
-     *********************************************************-->
-
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+<% String ERROR_DUPLICATE_CATNAME = "23505";
+   String ERROR_MISSING_CATNAME   = "23514";%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -50,6 +46,7 @@ Hello, <%= session.getAttribute("session_username") %>!
  
   <!-- End Header -->
   
+     
     
   <!-- *****************************************JSP*************************************************** -->
     
@@ -65,7 +62,7 @@ Hello, <%= session.getAttribute("session_username") %>!
             		          "postgres", "calcium");
             
     %>
-            <!-- Insert text forms -->
+            <!------ Insert text forms ------>
             <div class="row" id="shift">
                 <div class="row">
                     <div class="panel">
@@ -78,41 +75,23 @@ Hello, <%= session.getAttribute("session_username") %>!
                                 <th>Description</th>
                             </tr>
                             <tr>
-                            <form action="categories.jsp" method="post">
+                                <form action="categories.jsp" method="post">
                                 <input type="hidden" name="action" value="insert">
-                                <th><input name="cat_name" autofocus="autofocus"></th>
-                                <th><input name="cat_desc"></th>
-                                <th><input type="submit" value="Insert" class="button"></th>
-                            </form>
+                                    <th><input name="cat_name" autofocus="autofocus"></th>
+                                    <th><input name="cat_desc"></th>
+                                    <th><input type="submit" value="Insert" class="button"></th>
+                                </form>
                             </tr>
                         </table>
-     
+
+
             <!------ INSERT CODE ------>
         <%
-            // Check if an insertion is requested
-            String action = request.getParameter("action");
-            if (action != null && action.equals("insert"))
+            try
             {
-            	String strCatName = request.getParameter("cat_name");
-            	Statement stmt_dupcat = conn.createStatement();
-                ResultSet rs_dupcat = stmt_dupcat.executeQuery("SELECT * FROM Categories " + 
-                                                               "WHERE name = '" + 
-                                                               request.getParameter("cat_name") + 
-                                                               "'");
-                
-                // Check for empty text fields and throw error if true
-                if (strCatName == "")
-                {
-                    out.println("ERROR ADDING NEW CATEGORY: " + 
-                    	        "The category name cannot be empty.");
-                }
-                else if (rs_dupcat.next())
-                {
-                	out.println("ERROR ADDING NEW CATEGORY: Category name \"" + 
-                		        request.getParameter("cat_name") + 
-                			    "\" already exists! Please choose a different name.");
-                }
-                else
+                // Check if an insertion is requested
+                String action = request.getParameter("action");
+                if (action != null && action.equals("insert"))
                 {
                     // Begin transaction
                     conn.setAutoCommit(false);
@@ -131,9 +110,6 @@ Hello, <%= session.getAttribute("session_username") %>!
                     conn.commit();
                     conn.setAutoCommit(true);
                     
-                    stmt_dupcat.close();
-                    rs_dupcat.close();
-                    
                     if (request.getParameter("cat_name") != "")
                     {
                     	out.println("The category \"" + 
@@ -142,39 +118,33 @@ Hello, <%= session.getAttribute("session_username") %>!
                     }
                 }
             }
+            catch (SQLException e)
+            {
+                if (e.getSQLState().equals(ERROR_DUPLICATE_CATNAME))
+                {
+                    out.println("ERROR ADDING NEW CATEGORY: Category name \"" + 
+                    		    request.getParameter("cat_name") + 
+                                "\" already exists! Please choose a different name.");
+                }
             
+                if (e.getSQLState().equals(ERROR_MISSING_CATNAME))
+                {
+                    out.println("ERROR ADDING NEW CATEGORY: " + 
+                                "The category name cannot be empty.");
+                }
+                
+                return;
+            
+            }
         %>
         
             <!------ UPDATE CODE ------>
         <%
-            // Check if an update is requested
-            if (action != null && action.equals("update"))
+            try
             {
-                String strCatName = request.getParameter("cat_name");
-                
-                Statement stmt_dupcat = conn.createStatement();
-                ResultSet rs_dupcat = stmt_dupcat.executeQuery("SELECT * FROM Categories " + 
-                                                               "WHERE name = '" + 
-                                                               request.getParameter("cat_name") + 
-                                                               "'");
-                
-                // Check for 1) empty text field and 2) duplicate category name
-                //   Allows updating description of a given category w/o throwing 
-                //   "duplicate category" error
-                if (strCatName == "")
-                {
-                        out.println("ERROR UPDATING EXISTING CATEGORY: " + 
-                        	        "The category name cannot be empty.");
-                }
-                else if (rs_dupcat.next() 
-                		 && Integer.parseInt(request.getParameter("cat_id")) 
-                		 != rs_dupcat.getInt("category_id"))
-                {
-                    out.println("ERROR UPDATING EXISTING CATEGORY: Category name \"" + 
-                    	        request.getParameter("cat_name") + 
-                                "\" already exists! Please choose a different name.");
-                }
-                else
+                // Check if an update is requested
+                String action = request.getParameter("action");
+                if (action != null && action.equals("update"))
                 {
                     // Begin transaction
                     conn.setAutoCommit(false);
@@ -198,15 +168,33 @@ Hello, <%= session.getAttribute("session_username") %>!
                     		    request.getParameter("cat_name") + 
                     		    "\" has been updated!");
                     
-                    stmt_dupcat.close();
-                    rs_dupcat.close();
+
                 }
             }
+            catch (SQLException e)
+            {
+                if (e.getSQLState().equals(ERROR_DUPLICATE_CATNAME))
+                {
+                    out.println("ERROR UPDATING EXISTING CATEGORY: Category name \"" + 
+                                request.getParameter("cat_name") + 
+                                "\" already exists! Please choose a different name.");
+                }
+            
+                if (e.getSQLState().equals(ERROR_MISSING_CATNAME))
+                {
+                    out.println("ERROR UPDATING EXISTING CATEGORY: " + 
+                                "The category name cannot be empty.");
+                }
+            
+                return;
+            }
+            
         %>
         
             <!------ DELETE CODE ------>
         <%
             // Check if a delete is requested
+            String action = request.getParameter("action");
             if (action != null && action.equals("delete"))
             {
 	            // Fill ResultSet with Products of the Category that is to be deleted  
@@ -326,13 +314,13 @@ Hello, <%= session.getAttribute("session_username") %>!
         }
         catch (SQLException e)
         {
-        	out.println(e.getMessage());
-        	e.printStackTrace();
-        	return;
+            out.println(e.getMessage());
+            e.printStackTrace();
+            return;
         }
         catch (Exception e)
         {
-        	out.println(e.getMessage());
+            out.println(e.getMessage());
         }
         
     %>
