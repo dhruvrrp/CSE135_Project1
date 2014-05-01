@@ -108,12 +108,11 @@
             
             // Display contents of User's Shopping_Cart
     %>      <tr>
-            <form action="BuyShoppingCart.jsp" method="post">
-                <td><%=rs_prodname.getString("name") %></td>
-                <td><%=rs_shopcart.getFloat("product_price") %></td>
-                <td><%=rs_shopcart.getInt("quantity") %></td>
-                <td><%=rs_shopcart.getFloat("product_price") * rs_shopcart.getInt("quantity") %></td>
-            </form>
+                <td align=center><%=rs_prodname.getString("name") %></td>
+                <td align=center><%=rs_shopcart.getFloat("product_price") %></td>
+                <td align=center><%=rs_shopcart.getInt("quantity") %></td>
+                <td align=center><%=rs_shopcart.getFloat("product_price") * rs_shopcart.getInt("quantity") %></td>
+            </tr>
     <%
         }
     %>
@@ -128,15 +127,15 @@
         <!-- Purchase order -->
         <br><br><br><br>
         <h3>Want to place your order?</h3>
-            <form method="post" action="BuyShoppingCart.jsp">
+            <form method="post" action="BuyShoppingCartConfirmation.jsp">
               Credit card number: <input type="text" name="card" />
               <input type="submit" value="Purchase!" class="button">
             </form> 
   
     <!------ Close the connection code ------>
     <%      
-        // Close the ResultSet
-        rs_shopcart.close();
+    // Close the ResultSet
+    rs_shopcart.close();
         rs_prodname.close();
         rs_total.close();
             

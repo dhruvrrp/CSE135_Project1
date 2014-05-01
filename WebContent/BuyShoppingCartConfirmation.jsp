@@ -5,7 +5,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta http-equiv="Content-Style-Type" content="text/css">
-  <title>Shopping Cart</title>
+  <title>Order Confirmation</title>
   <meta name="Author" content="Allen Gong">
   <meta name="description" content="Best place to get your goodies">
   
@@ -52,10 +52,122 @@
               
               
               
+        <!-- *****************************************JSP*************************************************** -->
+        
+        <%-- Set the scripting language to Java and import the java.sql package--%>
+        <%@ page language="java" import="java.sql.*"%>
+
+    <%
+        try 
+        {        
+            Class.forName("org.postgresql.Driver");
+
+            // Make a connection to the Oracle datasource "CSE135"
+            Connection conn = DriverManager.getConnection(
+                              "jdbc:postgresql://localhost:5432/CSE135", "postgres", "calcium");
+            
+            
+    %>
+    
+            <!------ SELECT CODE ------>
+    <%
+        // Use the created Statement to SELECT the Shopping_Cart attributes
+        //   from the Shopping_Cart table    
+        Statement stmt_shopcart = conn.createStatement();
+        ResultSet rs_shopcart = stmt_shopcart.executeQuery("SELECT * " +
+                                                           "FROM Shopping_Cart " + 
+                                                           "WHERE customer_name = " + 
+                                                           session.getAttribute("session_userid"));
+    
+        // Get total price of User's Shopping_Cart
+        Statement stmt_total = conn.createStatement();
+        ResultSet rs_total = stmt_total.executeQuery("SELECT SUM(product_price * quantity) AS total " +
+                                                     "FROM Shopping_Cart " +
+                                                     "WHERE customer_name = " + 
+                                                     session.getAttribute("session_userid"));
+        rs_total.next();
+    %>
+            <!-- Order receipt -->
+            <h3 align=center>Thank you for your order, <%=session.getAttribute("session_username") %>! </h3>
+            <h4 align=center>Your receipt is below</h4>
+            <br>
+            <br>
+            <br>
+            <br>
+            <table align=center border="1">
+        <tr>
+            <th>Product</th>
+            <th>Price per unit</th>
+            <th>Quantity</th>
+            <th>Subtotal</th>
+        </tr>
+    <%
+        ResultSet rs_prodname = null;
+        Statement stmt_prodname = null;
+        while(rs_shopcart.next())
+        {
+            // Get Product's name to be displayed instead of product_sku
+            stmt_prodname = conn.createStatement();
+            rs_prodname = stmt_prodname.executeQuery("SELECT name FROM Products " + 
+                                                     "WHERE Products.product_id = " + 
+                                                     rs_shopcart.getInt("product_sku"));
+            rs_prodname.next();
+            
+            // Display contents of User's Shopping_Cart
+    %>      <tr>
+                <td align=center><%=rs_prodname.getString("name") %></td>
+                <td align=center><%=rs_shopcart.getFloat("product_price") %></td>
+                <td align=center><%=rs_shopcart.getInt("quantity") %></td>
+                <td align=center><%=rs_shopcart.getFloat("product_price") * rs_shopcart.getInt("quantity") %></td>
+            </tr>
+    <%
+        }
+    %>
+        </table>
+        
+        <!------ Order total ------>
+        <h5 align=center>Order total</h5>
+        <table align=center border="1">
+            <td><%=rs_total.getFloat("total") %></td>
+        </table>
+        
+        <!-- **** NEED TO DROP TABLE AND THEN... **** --> 
+        
+        <form method="post" action="ProductBrowsing.jsp">
+            <input type="submit" value="Return to browsing" class="button">
+        </form> 
               
-              
-              
-              
+
+            <!------ Close the connection code ------>
+    <%      
+/*             // Close the ResultSet
+            rs_allcats.close();
+            rs_nodelete.close();
+            
+            // Close the Statements
+            stmt_allcats.close();
+            stmt_nodelete.close(); */
+    
+            // Close the connection
+            conn.close();
+        }
+        catch (SQLException e)
+        {
+            out.println(e.getMessage());
+            e.printStackTrace();
+            return;
+        }
+        catch (Exception e)
+        {
+            out.println(e.getMessage());
+        }
+        
+    %>
+  
+  
+  <!-- *********************************************************************************************** -->   
+
+
           </div>
       </div>
   </div>
