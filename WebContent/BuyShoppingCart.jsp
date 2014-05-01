@@ -54,7 +54,7 @@
   
    <!-- *****************************************JSP*************************************************** -->
     
-   <%@ page language="java" import="java.sql.*" %>
+   <%@ page language="java" import="java.sql.*" import="java.util.*"%> 
     
     <!-- Connect to database -->
     <%
@@ -106,12 +106,19 @@
                                                      rs_shopcart.getInt("product_sku"));
             rs_prodname.next();
             
+            // Print two decimal places
+            java.util.Formatter formatted_price = new java.util.Formatter();
+            formatted_price.format("%.2f", rs_shopcart.getFloat("product_price"));
+            
+            java.util.Formatter formatted_subtotal = new java.util.Formatter();
+            formatted_subtotal.format("%.2f", rs_shopcart.getFloat("product_price") * rs_shopcart.getInt("quantity"));
+            
             // Display contents of User's Shopping_Cart
     %>      <tr>
                 <td align=center><%=rs_prodname.getString("name") %></td>
-                <td align=center><%=rs_shopcart.getFloat("product_price") %></td>
+                <td align=center><%=formatted_price %></td>
                 <td align=center><%=rs_shopcart.getInt("quantity") %></td>
-                <td align=center><%=rs_shopcart.getFloat("product_price") * rs_shopcart.getInt("quantity") %></td>
+                <td align=center><%=formatted_subtotal %></td>
             </tr>
     <%
         }
@@ -119,9 +126,15 @@
         </table>
         
         <!------ Order total ------>
+    <%
+        // Print two decimal places    
+        java.util.Formatter formatted_total = new java.util.Formatter();
+        formatted_total.format("%.2f", rs_total.getFloat("total"));
+    %>
+        
         <h4>Order total</h4>
         <table border="1">
-            <td><%=rs_total.getFloat("total") %></td>
+            <td><%=formatted_total %></td>
         </table>
         
         <!-- Purchase order -->
