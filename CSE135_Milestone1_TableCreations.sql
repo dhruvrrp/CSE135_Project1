@@ -50,7 +50,6 @@ CREATE TABLE Shopping_Cart
 (
     customer_name INTEGER    REFERENCES Users (user_id),
     product_sku   INTEGER    REFERENCES Products(product_id),
-    product_price FLOAT,
     quantity      INTEGER
 );
 
