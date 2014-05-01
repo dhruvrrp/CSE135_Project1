@@ -130,17 +130,16 @@
          						<% 	
          						while(rset_sea.next()&&check)
 								{
-								
          							Statement stmt_catname = conn.createStatement();
          							ResultSet rset_catname = stmt_catname.executeQuery("SELECT Categories.name FROM Categories, Products " + 
          								                                               "WHERE Categories.category_id = '" + 
          								                                               rset_sea.getString("category") + "'");
-								    rset_catname.next();
+         							rset_catname.next();
 								%>
 									<form action="ProductOrder.jsp" method="POST">
 									<tr>
          								<td><%= rset_sea.getString("sku") %></td>
-         								<td><input type="submit" name="prod_pur" value =<%=rset_sea.getString("name")%>></td>
+         								<td><input type="submit" name="prod_pur" value ="<%=rset_sea.getString("name")%>"></td>
          								<td><%= rset_catname.getString("name") %></td>
          								<td><%= rset_sea.getInt("price") %></td>
          							</tr>

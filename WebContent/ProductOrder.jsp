@@ -67,8 +67,8 @@
 
 						<%
 							String new_item = (String)request.getParameter("prod_pur");
+						
 							//int user_id = (int)session.getAttribute("session_userid");
-							
 							//REMOVE THIS LINE LATER> TESTING ONLY
 							
 							int user_id = 1;
@@ -87,13 +87,14 @@
          								<td><%=new_item %></td>
          								<td><input type="text" name="quant"></td>
          							</tr>
-         					<input type="hidden" name="action1" value=<%=new_item %>>
+         					<input type="hidden" name="action1" value="<%=new_item %>">
          					</table>
          					<input type="submit" value="Insert">
          					</form>
 							<%
 							if(request.getParameter("quant") != null)
 							{
+							//	System.out.println();
 								String quan = request.getParameter("quant");
 								quantity = Integer.parseInt(quan);
 								new_item = request.getParameter("action1");
@@ -105,23 +106,38 @@
 								else
 								{
 									Statement stmt_allprod = conn.createStatement();
+									System.out.println(new_item);
          							ResultSet rset_allprod = stmt_allprod.executeQuery("SELECT * FROM products WHERE name = '"+new_item+"'");
 								    rset_allprod.next();
 								    
-									conn.setAutoCommit(false);
-					                
+								    Statement stmt_check = conn.createStatement();
+								    ResultSet rset_check = stmt_check.executeQuery("SELECT * FROM shopping_cart " +
+								    												"WHERE product_sku = '"+rset_allprod.getInt("product_id")+"'");
+								    System.out.println("AAAAAAAA");
+								    conn.setAutoCommit(false);
+									if(rset_check.next())
+									{
+										quantity += rset_check.getInt("quantity");
+										PreparedStatement pstmt_check = conn.prepareStatement("UPDATE shopping_cart " + 
+		                                        "SET quantity = ? " +
+	                                            "WHERE product_sku = ?");
+										pstmt_check.setInt(1, quantity);
+										pstmt_check.setInt(2, rset_check.getInt("product_sku"));
+										int rowCount = pstmt_check.executeUpdate();
+									}
+									else
+									{
 				                    // Create the PreparedStatement and use it to INSERT
 				                    //   the Category attribuets INTO the Categories table
-				                    PreparedStatement pstmt_quan = conn.prepareStatement("INSERT INTO shopping_cart " + 
+				                  		 PreparedStatement pstmt_quan = conn.prepareStatement("INSERT INTO shopping_cart " + 
 				                    		                                        "(customer_name, product_sku, product_price, quantity) " +
 				                    	                                            "VALUES (?, ?, ?, ?)");
-				                
-				                    pstmt_quan.setInt(1, user_id);
-				                    pstmt_quan.setInt(2, rset_allprod.getInt("product_id"));
-				                    pstmt_quan.setFloat(3, rset_allprod.getFloat("price"));
-				                    pstmt_quan.setInt(4, quantity);
-				                    int rowCount = pstmt_quan.executeUpdate();
-				                
+						                 pstmt_quan.setInt(1, user_id);
+						                 pstmt_quan.setInt(2, rset_allprod.getInt("product_id"));
+						                 pstmt_quan.setFloat(3, rset_allprod.getFloat("price"));
+						                 pstmt_quan.setInt(4, quantity);
+						                 int rowCount = pstmt_quan.executeUpdate();
+									}
 				                    // Commit transaction
 				                    conn.commit();
 				                    conn.setAutoCommit(true);
@@ -129,6 +145,7 @@
 								}
 							}
 							ResultSet rset_prodo = stmt_prodo.executeQuery("SELECT * FROM shopping_cart WHERE customer_name = "+user_id);
+
 %>							<table border="1">
          							<tr>
          								<th>Product Name</th>
@@ -141,6 +158,7 @@
 							{
 							
 								Statement stmt_prodn = conn.createStatement();
+								System.out.println("AAAAAAAA");
 								ResultSet rset_prodn = stmt_prodn.executeQuery("SELECT * FROM products WHERE product_id = "+rset_prodo.getInt("product_sku"));
 								rset_prodn.next();
 							%>
