@@ -66,87 +66,6 @@
  			Statement stmt_prod_filter = conn.createStatement();
  			ResultSet rset_prod_filter = stmt_prod_filter.executeQuery("SELECT * FROM products WHERE 1=0");
  			
- 			//get the requested action (if applicable)
- 			String action = request.getParameter("action");
- 			
- 			//check if search was selected
- 			if(action!=null && action.equals("search")) {
- 				System.out.println("searched for: " + request.getParameter("search_for"));
- 				rset_prod_filter = stmt_prod_filter.executeQuery("SELECT * FROM products" +
-							" WHERE name ILIKE '%" + request.getParameter("search_for")+"%'");
- 			}
- 			
- 			//check for insert action
- 			else if(action!=null && action.equals("insert")) {
- 				//transaction
- 				conn.setAutoCommit(false);
- 				try {
- 				//first we need to find what category was in the insert
- 				Statement stmt = conn.createStatement();
- 				ResultSet rset_ = stmt.executeQuery("SELECT category_id FROM categories WHERE name='" +
- 									request.getParameter("prod_category") + "'");
- 				rset_.next();
- 				System.out.println("value :" + request.getParameter("prod_category"));
- 				int cat_id = rset_.getInt("category_id");
- 				System.out.println("oh");
- 				PreparedStatement pstmt = conn.prepareStatement("INSERT INTO products (name,sku,category,price)" + 
- 																	"VALUES (?,?,?,?)");
- 				
- 				//might need to do checks with these
- 				pstmt.setString(1,request.getParameter("prod_name"));
- 				pstmt.setString(2, request.getParameter("prod_sku"));
- 				pstmt.setInt(3, cat_id);
- 				pstmt.setInt(4, Integer.parseInt(request.getParameter("prod_price")));
- 				
- 				
- 				int count = pstmt.executeUpdate();
- 				
- 				if(count == 0) {
- 					out.println("Failure to insert new product.");	
- 					throw new SQLException();
- 				}
- 				
- 				conn.commit();   //end transaction
- 				pstmt.close();
- 				rset_.close();
- 				stmt.close();
- 				conn.setAutoCommit(true); //reset autocommit back to true
- 				
- 				}
- 				catch(SQLException e){
- 					out.println("Failure to insert new product.");
- 				}
- 			}
- 			//if action was an update
- 			else if(action!=null && action.equals("update")) {
- 				conn.setAutoCommit(false);  //transactions 
- 				
- 				PreparedStatement pstmt_update = conn.prepareStatement("UPDATE products" + 
- 								" SET name=?, sku=?, category=?, price=? " + "WHERE product_id=" + 
- 								request.getParameter("pkey"));
- 				
- 				//get the category id
- 				Statement stmt_catID = conn.createStatement();
- 				ResultSet rset_catID = stmt_catID.executeQuery("SELECT category_id FROM categories WHERE" +
- 								" name='" + request.getParameter("prod_cat") + "'"); 
- 				
- 				rset_catID.next();
- 				int cat_id = rset_catID.getInt("category_id");
- 				
- 				pstmt_update.setString(1, request.getParameter("prod_name"));
- 				pstmt_update.setString(2, request.getParameter("prod_sku"));
- 				pstmt_update.setInt(3, cat_id);
- 				pstmt_update.setInt(4, Integer.parseInt(request.getParameter("prod_price")));
- 				
- 				pstmt_update.executeUpdate();
- 				conn.commit();
- 				conn.setAutoCommit(true);
- 				System.out.println("entered2");
- 				rset_catID.close();
- 				stmt_catID.close();
- 				pstmt_update.close();												
- 			}
- 			
  		%>
  			<div id="prod_search">
   				<p><b>Filter</b></p>
@@ -162,6 +81,120 @@
  			<div class="row" id="shift">
       			<div class="row">
           			<div class="panel">     
+          			<%
+          			/////////////////////////////actions//////////////////////////////////
+          			//get the requested action (if applicable)
+         			String action = request.getParameter("action");
+         			
+         			//check if search was selected
+         			if(action!=null && action.equals("search")) {
+         				System.out.println("searched for: " + request.getParameter("search_for"));
+         				rset_prod_filter = stmt_prod_filter.executeQuery("SELECT * FROM products" +
+        							" WHERE name ILIKE '%" + request.getParameter("search_for")+"%'");
+         			}
+         			
+         			//check for insert action
+         			else if(action!=null && action.equals("insert")) {
+         				//transaction
+         				conn.setAutoCommit(false);
+         				try {
+         				//first we need to find what category was in the insert
+         				Statement stmt = conn.createStatement();
+         				ResultSet rset_ = stmt.executeQuery("SELECT category_id FROM categories WHERE name='" +
+         									request.getParameter("prod_category") + "'");
+         				rset_.next();
+         				int cat_id = rset_.getInt("category_id");
+         				PreparedStatement pstmt = conn.prepareStatement("INSERT INTO products (name,sku,category,price)" + 
+         																	"VALUES (?,?,?,?)");
+         				
+         				//might need to do checks with these
+         				pstmt.setString(1,request.getParameter("prod_name"));
+         				pstmt.setString(2, request.getParameter("prod_sku"));
+         				pstmt.setInt(3, cat_id);
+         				pstmt.setInt(4, Integer.parseInt(request.getParameter("prod_price")));
+         				
+         				int count = pstmt.executeUpdate();
+         				
+         				
+         				//if no rows were affected
+         				if(count == 0) {
+         					out.println("Failure to insert new product.");	
+         					throw new SQLException();
+         				}
+         				
+         				conn.commit();   //end transaction
+         				pstmt.close();
+         				rset_.close();
+         				stmt.close();
+         				conn.setAutoCommit(true); //reset autocommit back to true
+         				
+         				}
+         				catch(SQLException e){
+         					out.println("Failure to insert new product.");
+         				}
+         			}
+         			//if action was an update
+         			else if(action!=null && action.equals("update")) {
+         				
+         				try {
+         				conn.setAutoCommit(false);  //transactions 
+         				
+         				PreparedStatement pstmt_update = conn.prepareStatement("UPDATE products" + 
+         								" SET name=?, sku=?, category=?, price=? " + "WHERE product_id=" + 
+         								request.getParameter("pkey"));
+         				
+         				//get the category id
+         				Statement stmt_catID = conn.createStatement();
+         				ResultSet rset_catID = stmt_catID.executeQuery("SELECT category_id FROM categories WHERE" +
+         								" name='" + request.getParameter("prod_cat") + "'"); 
+         				
+         				rset_catID.next();
+         				int cat_id = rset_catID.getInt("category_id");
+         				
+         				pstmt_update.setString(1, request.getParameter("prod_name"));
+         				pstmt_update.setString(2, request.getParameter("prod_sku"));
+         				pstmt_update.setInt(3, cat_id);
+         				pstmt_update.setInt(4, Integer.parseInt(request.getParameter("prod_price")));
+         				
+         				pstmt_update.executeUpdate();
+         				conn.commit();
+         				conn.setAutoCommit(true);
+         				rset_catID.close();
+         				stmt_catID.close();
+         				pstmt_update.close();			
+         				}
+         				catch(SQLException e) {
+         					out.println("Failure to update product.");
+         				}
+         				catch (Exception e)
+         	 	    	{
+         	 	     		out.println(e.getMessage());
+         	 	    	}
+         			}
+         			else if(action!=null && action.equals("delete")) {
+         				try {
+         					conn.setAutoCommit(false);  //transaction power up!
+         					PreparedStatement pstmt_del = conn.prepareStatement("DELETE FROM products WHERE" +
+        							" product_id=" + request.getParameter("pkey"));
+         					
+         					pstmt_del.executeUpdate();
+         					
+         					conn.commit();
+         					conn.setAutoCommit(true);
+         					out.print("Deletion Successful - deleted: " + request.getParameter("prod_name"));
+         				}
+         				catch(SQLException e) {
+         					out.println("Failure to delete product.");
+         					out.println(e.getMessage());
+         					e.printStackTrace();
+         				}
+         				catch (Exception e)
+         	 	    	{
+         	 	     		out.println(e.getMessage());
+         	 	    	}
+         				
+         			}
+          			%>
           				<span id="welcome">Hello <%= session.getAttribute("session_username") %> </span>
           				<br>
           				<h4>Search for products by name</h4>
@@ -236,8 +269,13 @@
           						<td><input type="submit" value="Update" class="small button"></td>
           						<input type="hidden" name="action" value="update">
           						<input type="hidden" name="pkey" value="<%= product_pkey %>">
+          						</form>		
+          						<form>
+          							<input type="hidden" name="pkey" value="<%= product_pkey %>">
+          							<input type="hidden" name="prod_name" value="<%= rset_prod_filter.getString("name") %>">
+          							<input type="hidden" name="action" value="delete">
+          							<td><input type="submit" value="Delete" class="small button"></td>
           						</form>
-          						<td><input type="submit" value="Delete" class="small button"></td>
           						</tr>
           					<%
           						rset_current.close();
