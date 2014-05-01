@@ -35,7 +35,11 @@ div.center {
 	list-style: none;
 }
 
-
+#delete {
+	display: inline-block;
+	width: 1px;
+	border: 1px solid black;
+}
 /******signUp.jsp*****/
 #shift {
 	width: 940px;

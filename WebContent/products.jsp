@@ -141,7 +141,6 @@
  				pstmt_update.executeUpdate();
  				conn.commit();
  				conn.setAutoCommit(true);
- 				System.out.println("entered2");
  				rset_catID.close();
  				stmt_catID.close();
  				pstmt_update.close();												
@@ -237,7 +236,10 @@
           						<input type="hidden" name="action" value="update">
           						<input type="hidden" name="pkey" value="<%= product_pkey %>">
           						</form>
-          						<td><input type="submit" value="Delete" class="small button"></td>
+          						<form action="products.jsp" method="GET">
+          							<input type="hidden" name="action" value="delete">
+          							<td><input type="submit" value="Delete" class="small button"></td>
+          						</form>
           						</tr>
           					<%
           						rset_current.close();
