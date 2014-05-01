@@ -67,27 +67,27 @@
                               "jdbc:postgresql://localhost:5432/CSE135", "postgres", "calcium");
             
             
-    %>
+        %>
     
             <!------ SELECT CODE ------>
-    <%
-        // Use the created Statement to SELECT the Shopping_Cart attributes
-        //   from the Shopping_Cart table    
-        Statement stmt_shopcart = conn.createStatement();
-        ResultSet rs_shopcart = stmt_shopcart.executeQuery("SELECT * " +
-                                                           "FROM Shopping_Cart " + 
-                                                           "WHERE customer_name = " + 
-                                                           session.getAttribute("session_userid"));
+        <%
+            // Use the created Statement to SELECT the Shopping_Cart attributes
+            //   from the Shopping_Cart table    
+            Statement stmt_shopcart = conn.createStatement();
+            ResultSet rs_shopcart = stmt_shopcart.executeQuery("SELECT * " +
+                                                               "FROM Shopping_Cart " + 
+                                                               "WHERE customer_name = " + 
+                                                               session.getAttribute("session_userid"));
     
-        // Get total price of User's Shopping_Cart
-        Statement stmt_total = conn.createStatement();
-        ResultSet rs_total = stmt_total.executeQuery("SELECT SUM(Products.price * Shopping_Cart.quantity) AS total " +
-        		                                     "FROM Products, Shopping_Cart " +
-                                                     "WHERE customer_name = " + 
-                                                     session.getAttribute("session_userid") +
-                                                     " AND Products.product_id = Shopping_Cart.product_sku");
-        rs_total.next();
-    %>
+            // Get total price of User's Shopping_Cart
+            Statement stmt_total = conn.createStatement();
+            ResultSet rs_total = stmt_total.executeQuery("SELECT SUM(Products.price * Shopping_Cart.quantity) AS total " +
+        		                                         "FROM Products, Shopping_Cart " +
+                                                         "WHERE customer_name = " + 
+                                                         session.getAttribute("session_userid") +
+                                                         " AND Products.product_id = Shopping_Cart.product_sku");
+            rs_total.next();
+        %>
             <!-- Order receipt -->
             <h3 align=center>Thank you for your order, <%=session.getAttribute("session_username") %>! </h3>
             <h4 align=center>Your receipt is below</h4>
@@ -96,61 +96,65 @@
             <br>
             <br>
             <table align=center border="1">
-        <tr>
-            <th>Product</th>
-            <th>Price per unit</th>
-            <th>Quantity</th>
-            <th>Subtotal</th>
-        </tr>
-    <%
-        ResultSet rs_allprod = null;
-        Statement stmt_allprod = null;
-        while(rs_shopcart.next())
-        {
-            // Get Product's name to be displayed instead of product_sku
-            stmt_allprod = conn.createStatement();
-            rs_allprod = stmt_allprod.executeQuery("SELECT * FROM Products " + 
-                                                     "WHERE Products.product_id = " + 
-                                                     rs_shopcart.getInt("product_sku"));
-            rs_allprod.next();
-            
-         // Print two decimal places
-            java.util.Formatter formatted_price = new java.util.Formatter();
-            formatted_price.format("%.2f", rs_allprod.getFloat("price"));
-            
-            java.util.Formatter formatted_subtotal = new java.util.Formatter();
-            formatted_subtotal.format("%.2f", rs_allprod.getFloat("price") * rs_shopcart.getInt("quantity"));
-            
-            // Display contents of User's Shopping_Cart
-    %>      <tr>
-                <td align=center><%=rs_allprod.getString("name") %></td>
-                <td align=center><%=formatted_price %></td>
-                <td align=center><%=rs_shopcart.getInt("quantity") %></td>
-                <td align=center><%=formatted_subtotal %></td>
+            <tr>
+                <th>Product</th>
+                <th>Price per unit</th>
+                <th>Quantity</th>
+                <th>Subtotal</th>
             </tr>
-    <%
-        }
-    %>
-        </table>
+        <%
+            ResultSet rs_allprod = null;
+            Statement stmt_allprod = null;
+            while(rs_shopcart.next())
+            {
+                // Get Product's name to be displayed instead of product_sku
+                stmt_allprod = conn.createStatement();
+                rs_allprod = stmt_allprod.executeQuery("SELECT * FROM Products " + 
+                                                       "WHERE Products.product_id = " + 
+                                                       rs_shopcart.getInt("product_sku"));
+                rs_allprod.next();
+            
+                // Print two decimal places
+                java.util.Formatter formatted_price = new java.util.Formatter();
+                formatted_price.format("%.2f", rs_allprod.getFloat("price"));
+            
+                java.util.Formatter formatted_subtotal = new java.util.Formatter();
+                formatted_subtotal.format("%.2f", rs_allprod.getFloat("price") * rs_shopcart.getInt("quantity"));
+            
+                // Display contents of User's Shopping_Cart
+        %>      <tr>
+                    <td align=center><%=rs_allprod.getString("name") %></td>
+                    <td align=center><%=formatted_price %></td>
+                    <td align=center><%=rs_shopcart.getInt("quantity") %></td>
+                    <td align=center><%=formatted_subtotal %></td>
+                </tr>
+        <%
+            }
+        %>
+            </table>
         
-        <!------ Order total ------>
-    <%
-        // Print two decimal places    
-        java.util.Formatter formatted_total = new java.util.Formatter();
-        formatted_total.format("%.2f", rs_total.getFloat("total"));
-    %>
+            <!------ Order total ------>
+        <%
+            // Print two decimal places    
+            java.util.Formatter formatted_total = new java.util.Formatter();
+            formatted_total.format("%.2f", rs_total.getFloat("total"));
+        %>
         
-        <h4 align=center>Order total</h4>
-        <table align=center border="1">
-            <td><%=formatted_total %></td>
-        </table>
+            <h4 align=center>Order total</h4>
+            <table align=center border="1">
+                <td><%=formatted_total %></td>
+            </table>
         
-        <!-- **** NEED TO DROP TABLE AND THEN... **** --> 
-        
-        
-        <form method="post" action="ProductBrowsing.jsp">
-            <input type="submit" value="Return to browsing" class="button">
-        </form> 
+            <!-- **** NEED TO DROP TABLE AND THEN... **** --> 
+        <% 
+            PreparedStatement pstmt_dropcart = conn.prepareStatement("DELETE FROM Shopping_Cart " +
+            		                                                  "WHERE customer_name = " + 
+            		                                                  session.getAttribute("session_userid"));
+            int rowCount = pstmt_dropcart.executeUpdate();
+        %>
+            <form method="post" action="ProductBrowsing.jsp">
+                <input type="submit" value="Return to browsing" class="button">
+            </form> 
               
 
             <!------ Close the connection code ------>
