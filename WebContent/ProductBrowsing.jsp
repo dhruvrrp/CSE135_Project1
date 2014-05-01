@@ -80,7 +80,7 @@
           					<form action="ProductBrowsing.jsp" method="POST">
           						<tr>
           						<td><%= rset_cat.getInt("category_id") %></td>
-          						<td><%=rset_cat.getString("name")%>: <input type="radio" name="BUTTONN" value =<%=rset_cat.getInt("category_id")%>> </td>
+          						<td><input type="radio" name="BUTTONN" value =<%=rset_cat.getInt("category_id")%>> <%=rset_cat.getString("name")%>  </td>
           						<td><%= rset_cat.getString("description") %></td>
           						</tr>
           					<%
@@ -136,7 +136,7 @@
          								                                               rset_sea.getString("category") + "'");
          							rset_catname.next();
 								%>
-									<form action="ProductOrder.jsp" method="POST">
+									<form action="ProductOrder.jsp" method="GET">
 									<tr>
          								<td><%= rset_sea.getString("sku") %></td>
          								<td><input type="submit" name="prod_pur" value ="<%=rset_sea.getString("name")%>"></td>
