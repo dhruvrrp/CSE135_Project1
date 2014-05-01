@@ -58,8 +58,8 @@
         {
             Class.forName("org.postgresql.Driver");
             Connection conn = DriverManager.getConnection(
-            		          "jdbc:postgresql://localhost:5432/CSE135", 
-            		          "postgres", "calcium");
+                              "jdbc:postgresql://localhost:5432/CSE135", 
+                              "postgres", "calcium");
             
     %>
             <!------ Insert text forms ------>
@@ -99,8 +99,8 @@
                     // Create the PreparedStatement and use it to INSERT
                     //   the Category attribuets INTO the Categories table
                     PreparedStatement pstmt = conn.prepareStatement("INSERT INTO Categories " + 
-                    		                                        "(name, description) " +
-                    	                                            "VALUES (?, ?)");
+                                                                    "(name, description) " +
+                                                                    "VALUES (?, ?)");
                 
                     pstmt.setString(1, request.getParameter("cat_name"));
                     pstmt.setString(2, request.getParameter("cat_desc"));
@@ -112,9 +112,9 @@
                     
                     if (request.getParameter("cat_name") != "")
                     {
-                    	out.println("The category \"" + 
-                    			    request.getParameter("cat_name") + 
-                    			    "\" has been added!");
+                        out.println("The category \"" + 
+                                    request.getParameter("cat_name") + 
+                                    "\" has been added!");
                     }
                 }
             }
@@ -123,7 +123,7 @@
                 if (e.getSQLState().equals(ERROR_DUPLICATE_CATNAME))
                 {
                     out.println("ERROR ADDING NEW CATEGORY: Category name \"" + 
-                    		    request.getParameter("cat_name") + 
+                                request.getParameter("cat_name") + 
                                 "\" already exists! Please choose a different name.");
                 }
             
@@ -165,8 +165,8 @@
                     conn.setAutoCommit(true);
                     
                     out.println("The category \"" + 
-                    		    request.getParameter("cat_name") + 
-                    		    "\" has been updated!");
+                                request.getParameter("cat_name") + 
+                                "\" has been updated!");
                     
 
                 }
@@ -218,7 +218,7 @@
                     // Create the PreparedStatement and use it to
                     //   DELETE Categories FROM the Categories table
                     PreparedStatement pstmt = conn.prepareStatement("DELETE FROM Categories " +
-                    		                                        "WHERE category_id = ? ");
+                                                                    "WHERE category_id = ? ");
                     pstmt.setInt(1, Integer.parseInt(request.getParameter("cat_id")));
                     int rowCount = pstmt.executeUpdate();
                 
@@ -232,7 +232,7 @@
                     
                     out.println("The category \"" +
                                 request.getParameter("cat_name") + 
-                    		    "\" has been deleted!");
+                                "\" has been deleted!");
                  } 
             }
         %>
@@ -245,8 +245,8 @@
             // Use the created Statement to SELECT the Category attributes
             //   from the Categories table
             ResultSet rs_allcats = stmt_allcats.executeQuery("SELECT * " +
-            		                                         "FROM Categories " + 
-            		                                         "ORDER BY category_id");
+                                                             "FROM Categories " + 
+                                                             "ORDER BY category_id");
         %>
         
         <!------ ITERATION CODE ------>
@@ -265,8 +265,8 @@
         while(rs_allcats.next())
         {
             // Get ResultSet containing Products attached to the current Category
-        	stmt_nodelete = conn.createStatement();
-        	rs_nodelete = stmt_nodelete.executeQuery("SELECT * FROM Products " + 
+            stmt_nodelete = conn.createStatement();
+            rs_nodelete = stmt_nodelete.executeQuery("SELECT * FROM Products " + 
                                                      "WHERE Products.category = " + 
                                                      rs_allcats.getInt("category_id"));
     %>      <tr>
