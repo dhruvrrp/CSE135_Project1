@@ -88,9 +88,13 @@
          			
          			//check if search was selected
          			if(action!=null && action.equals("search")) {
-         				System.out.println("searched for: " + request.getParameter("search_for"));
          				rset_prod_filter = stmt_prod_filter.executeQuery("SELECT * FROM products" +
         							" WHERE name ILIKE '%" + request.getParameter("search_for")+"%'");
+         				
+         				if(!rset_prod_filter.isBeforeFirst()) {
+         					out.print("Sorry, no results found for \"" + request.getParameter("search_for") +
+         									"\"");
+         				}
          			}
          			
          			//check for insert action
@@ -127,6 +131,7 @@
          				rset_.close();
          				stmt.close();
          				conn.setAutoCommit(true); //reset autocommit back to true
+         				out.print("Insertion Successful - inserted: " + request.getParameter("prod_name"));
          				
          				}
          				catch(SQLException e){
@@ -161,7 +166,8 @@
          				conn.setAutoCommit(true);
          				rset_catID.close();
          				stmt_catID.close();
-         				pstmt_update.close();			
+         				pstmt_update.close();
+         				out.print("Update Successful - updated: " + request.getParameter("prod_name"));
          				}
          				catch(SQLException e) {
          					out.println("Failure to update product.");
@@ -203,7 +209,7 @@
           					<input type="submit" value="Search" class="button">
           					<input type="hidden" value="search" name="action">
           				</form><hr><br>
-          				<h4>View, add or modify products here</h4><hr>
+          				<h4>Add, view, or modify products here</h4><hr>
           				<table border="1">
           					<tr>
           						<th>Product SKU</th>
