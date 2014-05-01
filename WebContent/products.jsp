@@ -47,6 +47,7 @@
  	
  	<!-- Set language to java, and import sql package -->
  	<%@ page language="java" import="java.sql.*" %>
+ 	   	<% String ERROR_MISSING_CATNAME   = "23514"; %>
  	    
  	    <!-- Connect to DataBase -->
  		<% try {
@@ -135,7 +136,12 @@
          				
          				}
          				catch(SQLException e){
-         					out.println("Failure to insert new product.");
+         					//out.println("Failure to insert new product.");
+         					if (e.getSQLState().equals(ERROR_MISSING_CATNAME))
+                			{
+                    			out.println("ERROR: " + 
+                             			   "The product name cannot be empty.");
+               			    }
          				}
          			}
          			//if action was an update
