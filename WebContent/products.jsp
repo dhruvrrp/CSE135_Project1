@@ -73,7 +73,7 @@
  			if(action!=null && action.equals("search")) {
  				System.out.println("searched for: " + request.getParameter("search_for"));
  				rset_prod_filter = stmt_prod_filter.executeQuery("SELECT * FROM products" +
-							" WHERE name LIKE '%" + request.getParameter("search_for")+"%'");
+							" WHERE name ILIKE '%" + request.getParameter("search_for")+"%'");
  			}
  			
  			//check for insert action
