@@ -205,7 +205,7 @@
           				<br>
           				<h4>Search for products by name</h4>
           				<form method="GET" action="products.jsp"> 
-          					<input id="search_bar" type="text" name="search_for">
+          					<input id="search_bar" type="text" name="search_for" autofocus="autofocus">
           					<input type="submit" value="Search" class="button">
           					<input type="hidden" value="search" name="action">
           				</form><hr><br>
@@ -223,7 +223,7 @@
           					<tr>
           					<form action="products.jsp" method="POST">
           						<input type="hidden" name="action" value="insert">
-          						<th><input type="text" name="prod_sku" autofocus="autofocus"></th>
+          						<th><input type="text" name="prod_sku"></th>
           						<th><input type="text" name="prod_name"></th>
           						<th><select name="prod_category">
           								<% rset_cat = stmt_cat.executeQuery("SELECT * FROM categories");
@@ -257,7 +257,7 @@
           						   	String current_category = rset_current.getString("name");
           						%>
           						<tr>
-          						<form action="products.jsp" method="POST">
+          						<form action="products.jsp" method="GET">
           						<td><input type="text" name="prod_sku" value="<%= rset_prod_filter.getString("sku") %>"></td>
           						<td><input type="text" name="prod_name" value="<%= rset_prod_filter.getString("name") %>"></td>
           						<td><select name="prod_cat">
@@ -276,7 +276,7 @@
           						<input type="hidden" name="action" value="update">
           						<input type="hidden" name="pkey" value="<%= product_pkey %>">
           						</form>		
-          						<form>
+          						<form action="products.jsp" method="GET">
           							<input type="hidden" name="pkey" value="<%= product_pkey %>">
           							<input type="hidden" name="prod_name" value="<%= rset_prod_filter.getString("name") %>">
           							<input type="hidden" name="action" value="delete">
