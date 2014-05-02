@@ -18,6 +18,8 @@
 </head>
 <body>
  
+ 
+ 
  <!-- *****************************************JSP*************************************************** -->
  	
  	<!-- Set language to java, and import sqql package -->
@@ -80,9 +82,9 @@
       			<div class="row">
           			<div class="panel">     
           				<br>
-          				<h4>Welcome <%= session.getAttribute("session_username") %>! These are the
-          				options you can choose because you are a(n)
-          				<%= user_role %> :
+          				<h4>
+          				    Welcome, <%= session.getAttribute("session_username") %>! As one of our <%= user_role %>s,
+          				    feel free to peruse the following pages below.
           				</h4><br>    
           				<% if(user_role != null && user_role.equals("Owner")) { %>   
        	  				<div class="center">
