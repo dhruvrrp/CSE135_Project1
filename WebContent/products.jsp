@@ -401,7 +401,7 @@
           					<tr>
           					<form action="products.jsp" method="POST">
           						<input type="hidden" name="action" value="insert">
-          						<th><input type="text" name="prod_sku" placeholder="Insert Product SKU"></th>
+          						<th><input type="text" name="prod_sku" placeholder="Product SKU"></th>
           						<th><input type="text" name="prod_name" placeholder="Name"></th>
           						<th><select name="prod_category">
           								<% rset_cat = stmt_cat.executeQuery("SELECT * FROM categories");
