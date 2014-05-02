@@ -1,66 +1,64 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+	pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title>Product Order</title>
-  <meta name="Author" content="Allen Gong">
-  <meta name="description" content="Best place to get your goodies">
-  
-  <link rel="stylesheet" type="text/css" href="css/normalize.css">
-  <link rel="stylesheet" type="text/css" href="css/foundation.css">
-  <link rel="stylesheet" type="text/css" href="css/custom.css">
-  
-  <script type="text/javascript" src="js/vendor/jquery.js"></script>
-  <script type="text/javascript" src="js/foundation.min.js"></script>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title>Product Order</title>
+<meta name="Author" content="Allen Gong">
+<meta name="description" content="Best place to get your goodies">
+
+<link rel="stylesheet" type="text/css" href="css/normalize.css">
+<link rel="stylesheet" type="text/css" href="css/foundation.css">
+<link rel="stylesheet" type="text/css" href="css/custom.css">
+
+<script type="text/javascript" src="js/vendor/jquery.js"></script>
+<script type="text/javascript" src="js/foundation.min.js"></script>
 </head>
 <body>
 	<!-- Navigation -->
- 
-  <nav class="top-bar" data-topbar>
-    <ul class="title-area">
-      <!-- Title Area -->
-      <li class="name">
-        <h1>
-          <a href="home.jsp">
-            PYTS Home
-          </a>
-        </h1>
-      </li>
-      <li class="toggle-topbar menu-icon"><a href="#"><span>menu</span></a></li>
-    </ul>
-    
-    <!-- SHOPPING CART LINK -->
-    <section class="top-bar-section">
-      <!-- Right Nav Section -->
-      <ul class="right">
-        <li><span id="welcome">Hello, <%= session.getAttribute("session_username") %>! </span></li>
-        <li class="divider"></li>
-        <li><a href="BuyShoppingCart.jsp"><img id="cart" src="img/cart_icon.png" alt="" title="My Cart"></a></li>
-        <li class="divider"></li>
-      </ul>
-    </section>
-  </nav>
- 
-  <!-- End Top Bar -->
- 
-  <!-- Header -->
-  <div class="row">
-    <div class="large-12 columns">
-      <img src="img/yts_header.png" alt=""><br><br>
-    </div>
-  </div>
- 
-  <!-- End Header -->
- <!-- *****************************************JSP*************************************************** -->
- 	
- 	<!-- Set language to java, and import sql package -->
- 	<%@ page language="java" import="java.sql.*" %>
- 	    
- 	    <!-- Connect to DataBase -->
- 		<% try {
+
+	<nav class="top-bar" data-topbar>
+	<ul class="title-area">
+		<!-- Title Area -->
+		<li class="name">
+			<h1>
+				<a href="home.jsp"> PYTS Home </a>
+			</h1>
+		</li>
+		<li class="toggle-topbar menu-icon"><a href="#"><span>menu</span></a></li>
+	</ul>
+
+	<!-- SHOPPING CART LINK --> <section class="top-bar-section">
+	<!-- Right Nav Section -->
+	<ul class="right">
+		<li><span id="welcome">Hello, <%= session.getAttribute("session_username") %>!
+		</span></li>
+		<li class="divider"></li>
+		<li><a href="BuyShoppingCart.jsp"><img id="cart"
+				src="img/cart_icon.png" alt="" title="My Cart"></a></li>
+		<li class="divider"></li>
+	</ul>
+	</section> </nav>
+
+	<!-- End Top Bar -->
+
+	<!-- Header -->
+	<div class="row">
+		<div class="large-12 columns">
+			<img src="img/yts_header.png" alt=""><br> <br>
+		</div>
+	</div>
+
+	<!-- End Header -->
+	<!-- *****************************************JSP*************************************************** -->
+
+	<!-- Set language to java, and import sql package -->
+	<%@ page language="java" import="java.sql.*"%>
+
+	<!-- Connect to DataBase -->
+	<% try {
             Class.forName("org.postgresql.Driver");
  			Connection conn = DriverManager.getConnection(
  							  "jdbc:postgresql://localhost:5432/CSE135", "postgres", "calcium");
@@ -69,39 +67,49 @@
  			
  			
  		%>
- 			<div class="row" id="shift">
-      			<div class="row">
-          			<div class="panel">
-          		        <br>
-          				
+	<div class="row" id="shift">
+		<div class="row">
+			<div class="panel">
+				<br>
 
-						<%
+
+				<%
 							String new_item = (String)request.getParameter("prod_pur");
 							int user_id =  (Integer)session.getAttribute("session_userid");
 							int quantity = 0;
+							
+							Statement stmt_del = conn.createStatement();
+							ResultSet rset_del = stmt_del.executeQuery("SELECT * FROM products WHERE name = '"+new_item+"'");
+							if(!rset_del.isBeforeFirst())
+							{
+								out.println("The product you added just got deleted!!!");
+								%><meta http-equiv="refresh"
+					content="5;URL='ProductBrowsing.jsp'" />
+				<%
+							}
+							else
+							{
 							%>
-							<form action="ProductOrder.jsp" method="POST">
-							<table border="1">
-         							<tr>
-         								<th>Product Name</th>
-         								<th>Quantity</th>
-         							</tr>
-         							<tr>
-         								<td><%=new_item %></td>
-         								<td><input type="text" name="quant"></td>
-         							</tr>
-         					<input type="hidden" name="action1" value="<%=new_item %>">
-         					</table>
-         					<input type="submit" value="Add to cart" class="button">
-         					</form>
-							<%
+				<form action="ProductOrder.jsp" method="POST">
+					<table border="1">
+						<tr>
+							<th>Product Name</th>
+							<th>Quantity</th>
+						</tr>
+						<tr>
+							<td><%=new_item %></td>
+							<td><input type="text" name="quant"></td>
+						</tr>
+						<input type="hidden" name="action1" value="<%=new_item %>">
+					</table>
+					<input type="submit" value="Add to cart" class="button">
+				</form>
+				<%
 							if(request.getParameter("quant") != null)
 							{
-							//	System.out.println();
 								String quan = request.getParameter("quant");
 								quantity = Integer.parseInt(quan);
 								new_item = request.getParameter("action1");
-								System.out.println(quantity + " New item "+ new_item);
 								if(quantity <= 0)
 								{
 									out.println("Quantity needs to be more than 0!!!");
@@ -109,7 +117,6 @@
 								else
 								{
 									Statement stmt_allprod = conn.createStatement();
-									System.out.println(new_item);
          							ResultSet rset_allprod = stmt_allprod.executeQuery("SELECT * FROM products WHERE name = '"+new_item+"'");
 								    rset_allprod.next();
 								    
@@ -117,7 +124,6 @@
 								    ResultSet rset_check = stmt_check.executeQuery("SELECT * FROM shopping_cart " +
 								    												"WHERE product_sku = '"+rset_allprod.getInt("product_id")+"'" +
 								    											    "AND customer_name = " + session.getAttribute("session_userid"));
-								    System.out.println("AAAAAAAA");
 								    conn.setAutoCommit(false);
 									if(rset_check.next())
 									{
@@ -150,39 +156,39 @@
 							}
 							ResultSet rset_prodo = stmt_prodo.executeQuery("SELECT * FROM shopping_cart WHERE customer_name = "+user_id);
 
-%>							<table border="1">
-         							<tr>
-         								<th>Product Name</th>
-         								<th>Individual Price</th>
-         								<th>Quantity</th>
-         								<th>Total Price</th>
-         							</tr>
-         							<%
+%>
+				<table border="1">
+					<tr>
+						<th>Product Name</th>
+						<th>Individual Price</th>
+						<th>Quantity</th>
+						<th>Total Price</th>
+					</tr>
+					<%
 							while(rset_prodo.next())
 							{
 							
 								Statement stmt_prodn = conn.createStatement();
-								System.out.println("AAAAAAAA");
 								ResultSet rset_prodn = stmt_prodn.executeQuery("SELECT * FROM products WHERE product_id = "+rset_prodo.getInt("product_sku"));
 								rset_prodn.next();
 							%>
-								<tr>
-     								<td><%= rset_prodn.getString("name") %></td>
-     								<td><%=rset_prodn.getInt("price")%></td>
-     								<td><%= rset_prodo.getInt("quantity") %></td>
-     								<td><%= rset_prodn.getInt("price") * rset_prodo.getInt("quantity") %></td>
-     							</tr>
-     						
-						<%}%>
-						</table>
-						
-							
-          			</div>
-    			</div>
-  			</div>
- 		
- 		
- 		<% 
+					<tr>
+						<td><%= rset_prodn.getString("name") %></td>
+						<td><%=rset_prodn.getInt("price")%></td>
+						<td><%= rset_prodo.getInt("quantity") %></td>
+						<td><%= rset_prodn.getInt("price") * rset_prodo.getInt("quantity") %></td>
+					</tr>
+
+					<%}%>
+				</table>
+
+
+			</div>
+		</div>
+	</div>
+
+
+	<% }
  			//close connections to db
  		//	rset_cat.close();
  			//stmt_cat.close();
@@ -201,28 +207,30 @@
  			finally {
  				//throws exception if you try to close here?
  			}
+	
         %>
- <!-- *********************************************************************************************** -->
- 
-  <!-- Footer -->
-  
-  <footer class="row">
-  <div class="large-12 columns"><hr />
-      <div class="row">
- 
-        <div class="large-6 columns">
-            <p>&copy; Allen Gong, Dhruv Kaushal, Jasmine Nguyen.</p>
-        </div>
-      </div>
-  </div>
-  </footer>
-  <script src="../assets/js/jquery.js"></script>
-    <script src="../assets/js/templates/foundation.js"></script>
-    <script>
-      $(document).foundation();
+	<!-- *********************************************************************************************** -->
 
-      var doc = document.documentElement;
-      doc.setAttribute('data-useragent', navigator.userAgent);
-      </script>
+	<!-- Footer -->
+
+	<footer class="row">
+	<div class="large-12 columns">
+		<hr />
+		<div class="row">
+
+			<div class="large-6 columns">
+				<p>&copy; Allen Gong, Dhruv Kaushal, Jasmine Nguyen.</p>
+			</div>
+		</div>
+	</div>
+	</footer>
+	<script src="../assets/js/jquery.js"></script>
+	<script src="../assets/js/templates/foundation.js"></script>
+	<script>
+		$(document).foundation();
+
+		var doc = document.documentElement;
+		doc.setAttribute('data-useragent', navigator.userAgent);
+	</script>
 </body>
 </html>

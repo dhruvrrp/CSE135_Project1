@@ -75,9 +75,9 @@
  			<div id="prod_search">
   				<p><b>Filter</b></p>
   				<ul>
-  					<li><a href="ProductBrowsing.jsp?BUTTONN=">All Products</a></li>
+  					<li><a href="ProductBrowsing.jsp?catid=">All Products</a></li>
   					<% while(rset_cat.next()) { %>
-  						<li><a href="ProductBrowsing.jsp?BUTTONN=<%=rset_cat.getInt("category_id")%>"><%= rset_cat.getString("name") %></a></li>
+  						<li><a href="ProductBrowsing.jsp?catid=<%=rset_cat.getInt("category_id")%>"><%= rset_cat.getString("name") %></a></li>
   					<% } %>
   				</ul>
   			</div>
@@ -92,8 +92,8 @@
           				
           					<%
           					String link ="";
-          					if(request.getParameter("BUTTONN") != null)
-          						link = "ProductBrowsing.jsp?BUTTONN="+request.getParameter("BUTTONN");
+          					if(request.getParameter("catid") != null)
+          						link = "ProductBrowsing.jsp?catid="+request.getParameter("catid");
           					%>
 
           					<form action="<%=link%>" method="POST">
@@ -104,31 +104,24 @@
 
 
 						<%
-							System.out.println("CAT "+request.getParameter("BUTTONN") + "X");
 						
 							Statement stmt_sea = conn.createStatement();
-							String q="";
+							String que="";
 							String a = request.getParameter("prod_search");
-							//System.out.println("WTFFF " + a.length());
 							if(a == null)
 							{
-								System.out.println("WTFFF");
-								q = "SELECT * FROM products WHERE name ILIKE '%%'";
+								que = "SELECT * FROM products WHERE name ILIKE '%%'";
 							}
 							else
 							{
-								q = "SELECT * FROM products WHERE name ILIKE '%"+ a+"%'";
+								que = "SELECT * FROM products WHERE name ILIKE '%"+a+"%'";
 							}
 							boolean check = true;
-							System.out.println("AAA "+ a);
-							System.out.println("QQ  " +q);
-							if((String)request.getParameter("BUTTONN") != null && !request.getParameter("BUTTONN").equals(""))
+							if((String)request.getParameter("catid") != null && !request.getParameter("catid").equals(""))
 							{
-								q = q + " AND category = '"+request.getParameter("BUTTONN") +"'";
-								System.out.println("I'm here");
+								que = que + " AND category = '"+request.getParameter("catid") +"'";
 							}
-							System.out.println(q);
-							ResultSet rset_sea = stmt_sea.executeQuery(q);
+							ResultSet rset_sea = stmt_sea.executeQuery(que);
 								%>
 								<table border="1">
          							<tr>
