@@ -17,7 +17,10 @@
   <script type="text/javascript" src="js/foundation.min.js"></script>
 </head>
 <body>
-	<!-- *****************************************JSP*************************************************** -->
+    
+    
+    
+    <!-- *****************************************JSP*************************************************** -->
     
    <%@ page language="java" import="java.sql.*" import="java.util.*"%> 
     
@@ -32,8 +35,8 @@
                           "postgres", "calcium");
         
         if(session.getAttribute("session_username") == null) {
-        	noUser = true;
-        	throw new SQLException();
+            noUser = true;
+            throw new SQLException();
         }
         
     %>
@@ -57,7 +60,7 @@
     <section class="top-bar-section">
       <!-- Right Nav Section -->
       <ul class="right">
-      	<li><span id="welcome">Hello, <%= session.getAttribute("session_username") %></span></li>
+        <li><span id="welcome">Hello, <%= session.getAttribute("session_username") %></span></li>
         <li class="divider"></li>
         <li><a href="BuyShoppingCart.jsp"><img id="cart" src="img/cart_icon.png" alt="" title="My Cart"></a></li>
         <li class="divider"></li>
@@ -89,17 +92,29 @@
                                                            "FROM Shopping_Cart " + 
                                                            "WHERE customer_name = " + 
                                                            session.getAttribute("session_userid"));
-            
+        
+        // Alternative message for an empty cart
+        if (!(rs_shopcart.isBeforeFirst()))
+        {
+    %>      <h3 align=center>
+                Looks like your cart is empty! 
+                Let's <a href="ProductBrowsing.jsp">browse</a> for some products.
+            </h3>
+    <%      return;
+        }
+        
+        
         // Get total price of User's Shopping_Cart
         Statement stmt_total = conn.createStatement();
         ResultSet rs_total = stmt_total.executeQuery("SELECT SUM(Products.price * Shopping_Cart.quantity) AS total " +
-        		                                     "FROM Products, Shopping_Cart " +
-        		                                     "WHERE customer_name = " + 
-        		                                     session.getAttribute("session_userid") +
-        		                                     " AND Products.product_id = Shopping_Cart.product_sku");
+                                                     "FROM Products, Shopping_Cart " +
+                                                     "WHERE customer_name = " + 
+                                                     session.getAttribute("session_userid") +
+                                                     " AND Products.product_id = Shopping_Cart.product_sku");
         rs_total.next();
     %>
         
+
         <!------ ITERATION CODE ------>
 
         <h3>Your shopping cart</h3>
@@ -140,26 +155,21 @@
         }
     %>
         </table>
+        <br>
         
-        <!------ Order total ------>
-    <%
-        // Print two decimal places    
-        java.util.Formatter formatted_total = new java.util.Formatter();
-        formatted_total.format("%.2f", rs_total.getFloat("total"));
-    %>
-        <h4>Order total</h4>
-        <table border="1">
-            <td><%=formatted_total %></td>
-        </table>
+    <%  // Add more items if desired %>    
+        <form method="post" action="ProductBrowsing.jsp">
+            <input type="submit" value="Add more items" class="button small">
+        </form>
         
         <!-- Purchase order -->
         <br><br><br><br>
         <h3>Want to place your order?</h3>
             <form method="post" action="BuyShoppingCartConfirmation.jsp">
                 Name on card: 
-                    <input type="text" name="card_name" />
+                    <input type="text" name="card_name" placeholder="John Smith" />
                 Credit card number: 
-                    <input type="text" name="card_num" size="10" />
+                    <input type="text" name="card_num" placeholder="0000 0000 0000 0000" size="10" />
                 Expiration date: <br>
                     <input name="card_mon" size="2" maxlength="2" placeholder="mm"/>
                     <input name="card_yr" size="2" maxlength="4" placeholder="yyyy" />
@@ -167,21 +177,22 @@
                     <br>
                     <br>
                 <input type="submit" value="Purchase!" class="button">
-            </form> 
+            </form>
+
             </div>
       </div>
-  	</div>
-  	<!-- Footer -->
+    </div>
+    <!-- Footer -->
  
-  	<footer class="row">
-  		<div class="large-12 columns"><hr />
-   	   		<div class="row">
-    	   		<div class="large-6 columns">
-       	   	 	<p>&copy; Allen Gong, Dhruv Kaushal, Jasmine Nguyen.</p>
-      	  		</div>
-     		</div>
-  		</div>
-  	</footer>
+    <footer class="row">
+        <div class="large-12 columns"><hr />
+            <div class="row">
+                <div class="large-6 columns">
+                <p>&copy; Allen Gong, Dhruv Kaushal, Jasmine Nguyen.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
   
         <!------ Close the connection code ------>
     <%      
@@ -200,18 +211,19 @@
     }
     catch (SQLException e)
     {
-    	if(noUser) {
-    		out.println("You must be logged in to view this page!");
-    	}
-    	else {
-        	out.println(e.getMessage());
-        	e.printStackTrace();
-    	}
+        if(noUser) {
+            out.println("You must be logged in to view this page!");
+        }
+        else {
+            out.println(e.getMessage());
+            e.printStackTrace();
+        }
     }
     catch (Exception e)
     {
         out.println(e.getMessage());
     }
+    finally {}
         
     %>
   

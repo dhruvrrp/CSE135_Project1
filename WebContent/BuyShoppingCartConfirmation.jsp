@@ -36,7 +36,7 @@
     <section class="top-bar-section">
       <!-- Right Nav Section -->
       <ul class="right">
-      	<li><span id="welcome">Hello <%= session.getAttribute("session_username") %>!</span></li>
+        <li><span id="welcome">Hello, <%= session.getAttribute("session_username") %>! </span></li>
         <li class="divider"></li>
         <li><a href="BuyShoppingCart.jsp"><img id="cart" src="img/cart_icon.png" alt="" title="My Cart"></a></li>
         <li class="divider"></li>
@@ -90,7 +90,7 @@
             // Get total price of User's Shopping_Cart
             Statement stmt_total = conn.createStatement();
             ResultSet rs_total = stmt_total.executeQuery("SELECT SUM(Products.price * Shopping_Cart.quantity) AS total " +
-        		                                         "FROM Products, Shopping_Cart " +
+                                                         "FROM Products, Shopping_Cart " +
                                                          "WHERE customer_name = " + 
                                                          session.getAttribute("session_userid") +
                                                          " AND Products.product_id = Shopping_Cart.product_sku");
@@ -162,8 +162,8 @@
             // Create the PreparedStatement and use it to
             //   DELETE the User's Shopping_Cart
             PreparedStatement pstmt_dropcart = conn.prepareStatement("DELETE FROM Shopping_Cart " +
-            		                                                  "WHERE customer_name = " + 
-            		                                                  session.getAttribute("session_userid"));
+                                                                      "WHERE customer_name = " + 
+                                                                      session.getAttribute("session_userid"));
             int rowCount = pstmt_dropcart.executeUpdate();
             
             // Commit transaction
@@ -201,6 +201,7 @@
         {
             out.println(e.getMessage());
         }
+        finally {}
         
     %>
   
@@ -235,3 +236,4 @@
 </body>
 </html>
   
+
