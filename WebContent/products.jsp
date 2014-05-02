@@ -60,11 +60,12 @@
  			
  			//get all category tuples
  			ResultSet rset_cat = stmt_cat.executeQuery("SELECT * FROM categories");
- 			 			
  			
- 			//insert,update,delete, and search handling
+ 			//insert,update,delete, and search handling 
  			Statement stmt_prod_filter = conn.createStatement();
- 			ResultSet rset_prod_filter = stmt_prod_filter.executeQuery("SELECT * FROM products WHERE 1=0");
+ 			
+ 			//used to be WHERE 1=0
+ 			ResultSet rset_prod_filter = stmt_prod_filter.executeQuery("SELECT * FROM products");
  			
  		%>
  			<div id="prod_search">
@@ -99,9 +100,9 @@
          			
          			//check for insert action
          			else if(action!=null && action.equals("insert")) {
-         				//transaction
-         				conn.setAutoCommit(false);
          				try {
+         				
+         				
          				//first we need to find what category was in the insert
          				Statement stmt = conn.createStatement();
          				ResultSet rset_ = stmt.executeQuery("SELECT category_id FROM categories WHERE name='" +
@@ -111,6 +112,13 @@
          				PreparedStatement pstmt = conn.prepareStatement("INSERT INTO products (name,sku,category,price)" + 
          																	"VALUES (?,?,?,?)");
          				
+         				if(request.getParameter("prod_name").equals("")) {
+         					throw new SQLException();
+         				}
+         				
+         				//transaction
+         				conn.setAutoCommit(false);
+         				
          				//might need to do checks with these
          				pstmt.setString(1,request.getParameter("prod_name"));
          				pstmt.setString(2, request.getParameter("prod_sku"));
@@ -118,29 +126,31 @@
          				pstmt.setDouble(4, Double.parseDouble(request.getParameter("prod_price")));
          				
          				int count = pstmt.executeUpdate();
+         				conn.commit();   //end transaction
          				
          				
          				//if no rows were affected
          				if(count == 0) {
          					out.println("Failure to insert new product.");	
-         					throw new SQLException();
+         					return;
          				}
-         				
-         				conn.commit();   //end transaction
+         	
          				pstmt.close();
          				rset_.close();
          				stmt.close();
-         				conn.setAutoCommit(true); //reset autocommit back to true
          				out.print("Insertion Successful - inserted: " + request.getParameter("prod_name"));
          				
+         				//reset the products displayed in table
+     					rset_prod_filter = stmt_prod_filter.executeQuery("SELECT * FROM products");
          				}
          				catch(SQLException e){
-         					//out.println("Failure to insert new product.");
-         					if (e.getSQLState().equals(ERROR_MISSING_CATNAME))
-                			{
-                    			out.println("ERROR: " + 
-                             			   "The product name cannot be empty.");
-               			    }
+         					out.println("Failure to insert new product.");
+         				}
+         				catch(Exception e) {
+         					out.println("Failure to insert new product");
+         				}
+         				finally {
+         					conn.setAutoCommit(true); //reset autocommit back to true
          				}
          			}
          			//if action was an update
@@ -164,7 +174,7 @@
          				pstmt_update.setString(1, request.getParameter("prod_name"));
          				pstmt_update.setString(2, request.getParameter("prod_sku"));
          				pstmt_update.setInt(3, cat_id);
-         				pstmt_update.setInt(4, Integer.parseInt(request.getParameter("prod_price")));
+         				pstmt_update.setDouble(4, Double.parseDouble(request.getParameter("prod_price")));
          				
          				pstmt_update.executeUpdate();
          				conn.commit();
@@ -173,6 +183,9 @@
          				stmt_catID.close();
          				pstmt_update.close();
          				out.print("Update Successful - updated: " + request.getParameter("prod_name"));
+         				
+         				//reset the products displayed in table
+     					rset_prod_filter = stmt_prod_filter.executeQuery("SELECT * FROM products");
          				}
          				catch(SQLException e) {
          					out.println("Failure to update product.");
@@ -194,6 +207,9 @@
          					conn.commit();
          					conn.setAutoCommit(true);
          					out.print("Deletion Successful - deleted: " + request.getParameter("prod_name"));
+         					
+         					//reset the products displayed in table
+         					rset_prod_filter = stmt_prod_filter.executeQuery("SELECT * FROM products");
          				}
          				catch(SQLException e) {
          					out.println("Failure to delete product.");
@@ -206,6 +222,7 @@
          	 	    	}
          				
          			}
+         			
           			%>
           				<span id="welcome">Hello <%= session.getAttribute("session_username") %> </span>
           				<br>
