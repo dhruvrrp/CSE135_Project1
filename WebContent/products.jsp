@@ -36,7 +36,7 @@
     <section class="top-bar-section">
       <!-- Right Nav Section -->
       <ul class="right">
-      	<li><span id="welcome">Hello <%= session.getAttribute("session_username") %> </span></li>
+      	<li><span id="welcome">Hello, <%= session.getAttribute("session_username") %>! </span></li>
         <li class="divider"></li>
         <li><a href="BuyShoppingCart.jsp"><img id="cart" src="img/cart_icon.png" alt="" title="My Cart"></a></li>
         <li class="divider"></li>
