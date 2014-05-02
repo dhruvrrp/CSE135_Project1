@@ -64,7 +64,8 @@
 
             // Make a connection to the Oracle datasource "CSE135"
             Connection conn = DriverManager.getConnection(
-                              "jdbc:postgresql://localhost:5432/CSE135", "postgres", "calcium");
+                              "jdbc:postgresql://localhost:5432/CSE135", 
+                              "postgres", "calcium");
             
             
         %>
@@ -139,19 +140,30 @@
             java.util.Formatter formatted_total = new java.util.Formatter();
             formatted_total.format("%.2f", rs_total.getFloat("total"));
         %>
-        
+        <%  // Display the order total %>
             <h4 align=center>Order total</h4>
             <table align=center border="1">
                 <td><%=formatted_total %></td>
             </table>
         
-            <!-- **** NEED TO DROP TABLE AND THEN... **** --> 
+        
+            <!------ Purchase successful! Clear the User's Shopping_Cart ------>
         <% 
+            // Begin transaction
+            conn.setAutoCommit(false);
+        
+            // Create the PreparedStatement and use it to
+            //   DELETE the User's Shopping_Cart
             PreparedStatement pstmt_dropcart = conn.prepareStatement("DELETE FROM Shopping_Cart " +
             		                                                  "WHERE customer_name = " + 
             		                                                  session.getAttribute("session_userid"));
             int rowCount = pstmt_dropcart.executeUpdate();
+            
+            // Commit transaction
+            conn.commit();
+            conn.setAutoCommit(true);
         %>
+        
             <form method="post" action="ProductBrowsing.jsp">
                 <input type="submit" value="Return to browsing" class="button">
             </form> 
