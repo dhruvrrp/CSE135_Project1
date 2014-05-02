@@ -17,8 +17,9 @@ div.large-4 a {
 #welcome {
 	display: block;
 	position: relative;
-	text-align: right;
-	color: #33B5E5;
+	right: 15px;
+	top: 11px;
+	color: white;
 }
 
 #cart {
