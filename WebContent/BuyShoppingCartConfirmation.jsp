@@ -100,7 +100,7 @@
         %>
             <!-- Order receipt -->
             <h3 align=center>Thank you for your order, <%=session.getAttribute("session_username") %>! </h3>
-            <h4 align=center>Your receipt is below</h4>
+            <h4 align=center>Your receipt is below.</h4>
             <br>
             <br>
             <br>
@@ -134,9 +134,9 @@
                 // Display contents of User's Shopping_Cart
         %>      <tr>
                     <td align=center><%=rs_allprod.getString("name") %></td>
-                    <td align=center><%=formatted_price %></td>
+                    <td align=center>$<%=formatted_price %></td>
                     <td align=center><%=rs_shopcart.getInt("quantity") %></td>
-                    <td align=center><%=formatted_subtotal %></td>
+                    <td align=center>$<%=formatted_subtotal %></td>
                 </tr>
         <%
             }
@@ -152,7 +152,7 @@
         <%  // Display the order total %>
             <h4 align=center>Order total</h4>
             <table align=center border="1">
-                <td><%=formatted_total %></td>
+                <td>$<%=formatted_total %></td>
             </table>
         
         

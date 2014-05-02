@@ -146,9 +146,9 @@
             // Display contents of User's Shopping_Cart
     %>      <tr>
                 <td align=center><%=rs_allprod.getString("name") %></td>
-                <td align=center><%=formatted_price %></td>
+                <td align=center>$<%=formatted_price %></td>
                 <td align=center><%=rs_shopcart.getInt("quantity") %></td>
-                <td align=center><%=formatted_subtotal %></td>
+                <td align=center>$<%=formatted_subtotal %></td>
             </tr>
     <%
         }
@@ -163,7 +163,7 @@
     %>
         <h4>Order total</h4>
         <table border="1">
-            <td><%=formatted_total %></td>
+            <td>$<%=formatted_total %></td>
         </table>
         <br>
         
