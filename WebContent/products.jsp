@@ -231,6 +231,15 @@
          			//check if action was delete
          			else if(action!=null && action.equals("delete")) {
          				try {
+         					//prelimary check if product is still present for deletion
+         					Statement test = conn.createStatement();
+         					ResultSet test_rset = test.executeQuery("SELECT * FROM products WHERE product_id='" +
+         							request.getParameter("pkey") + "'");
+         					
+         					if(!test_rset.isBeforeFirst()) {
+         						throw new SQLException(); //move flow to catch
+         					}
+         					
          					conn.setAutoCommit(false);  //transaction power up!
          					PreparedStatement pstmt_del = conn.prepareStatement("DELETE FROM products WHERE" +
         							" product_id=" + request.getParameter("pkey"));
@@ -241,17 +250,18 @@
          					conn.setAutoCommit(true);
          					out.print("Deletion Successful - deleted: " + request.getParameter("prod_name"));
          					
+         					pstmt_del.close();
+         					
          					//reset the products displayed in table
          					rset_prod_filter = stmt_prod_filter.executeQuery("SELECT * FROM products");
          				}
          				catch(SQLException e) {
          					out.println("Failure to delete product.");
-         					out.println(e.getMessage());
-         					e.printStackTrace();
          				}
          				catch (Exception e)
          	 	    	{
          	 	     		out.println(e.getMessage());
+         	 	     		e.printStackTrace();
          	 	    	}
          				
          			}
