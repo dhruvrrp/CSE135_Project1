@@ -64,21 +64,11 @@
  			//insert,update,delete, and search handling 
  			Statement stmt_prod_filter = conn.createStatement();
  			
- 			//used to be WHERE 1=0
+ 			//select all products for display
  			ResultSet rset_prod_filter = stmt_prod_filter.executeQuery("SELECT * FROM products");
  			
  		%>
- 			<div id="prod_search">
-  				<p><b>Filter</b></p>
-  				<ul>
-  					<li><a href="">All Products</a></li>
-  					<% while(rset_cat.next()) { %>
-  						<li><a href=""><%= rset_cat.getString("name") %></a></li>
-  					<% } %>
-  				</ul>
-  			</div>
- 		
- 		
+
  			<div class="row" id="shift">
       			<div class="row">
           			<div class="panel">     
@@ -101,8 +91,7 @@
          			//check for insert action
          			else if(action!=null && action.equals("insert")) {
          				try {
-         				
-         				
+ 
          				//first we need to find what category was in the insert
          				Statement stmt = conn.createStatement();
          				ResultSet rset_ = stmt.executeQuery("SELECT category_id FROM categories WHERE name='" +
@@ -250,6 +239,8 @@
          					conn.setAutoCommit(true);
          					out.print("Deletion Successful - deleted: " + request.getParameter("prod_name"));
          					
+         					test.close();
+         					test_rset.close();
          					pstmt_del.close();
          					
          					//reset the products displayed in table
@@ -263,10 +254,65 @@
          	 	     		out.println(e.getMessage());
          	 	     		e.printStackTrace();
          	 	    	}
+         				finally {
+         					//ensure ac is true
+         					conn.setAutoCommit(true);
+         				}
+         			}
+         			//last check for category filtering selection
+         			else if(request.getParameter("categoryName") != null) {
+         				try {
+         					//check if a category other than "All Products" was selected
+         					if(request.getParameter("categoryName") != "All Products") {
+         						//get the category id
+         						Statement cat_stmt = conn.createStatement();
+         						ResultSet cat_rset = cat_stmt.executeQuery("SELECT category_id FROM categories WHERE name='" +
+         						request.getParameter("categoryName") + "'");
+         						cat_rset.next(); 								//get the tuple
+         						int cat_id = cat_rset.getInt("category_id");	//get the category ID
+         						
+         						System.out.println(cat_id);
          				
+         						//filter display based on category
+         						rset_prod_filter = stmt_prod_filter.executeQuery("SELECT * FROM products" +
+         							" WHERE category=" + cat_id);
+         						
+         						//close connections made
+         						cat_stmt.close();
+         						cat_rset.close();
+         					}
+         					//else "All Products" was selected so display everything
+         					else {
+         						System.out.println("entered");
+         						rset_prod_filter = stmt_prod_filter.executeQuery("SELECT * FROM products");
+         					}
+         				}
+         				catch(SQLException e) {
+         					//simply reset the products displayed in table
+         					rset_prod_filter = stmt_prod_filter.executeQuery("SELECT * FROM products");
+         				}
+         				catch(Exception e) {
+         					System.out.println("wtf just happened");
+         				}
+         				finally {
+         					//don't need to perform any post-action processes
+         				}
          			}
          			
           			%>
+          				
+          				<!--  CATEGORY LINKS ON LEFT HAND SIDE -->
+ 						<div id="prod_search">
+  							<p><b>Filter</b></p>
+  							<ul>
+  								<li><a href="products.jsp?categoryName=All Products">All Products</a></li>
+  								<% while(rset_cat.next()) { %>
+  									<li><a href="products.jsp?categoryName=<%= rset_cat.getString("name") %>">
+  									<%= rset_cat.getString("name") %></a></li>
+  								<% } %>
+  							</ul>
+  						</div>
+  						
           				<span id="welcome">Hello <%= session.getAttribute("session_username") %> </span>
           				<br>
           				<h4>Search for products by name</h4>
@@ -274,6 +320,11 @@
           					<input id="search_bar" type="text" name="search_for" autofocus="autofocus">
           					<input type="submit" value="Search" class="button">
           					<input type="hidden" value="search" name="action">
+          					
+          					<% if(request.getParameter("categoryName") != null) { %>
+          						<input type="hidden" name="categoryName" value="<%= request.getParameter("categoryName") %>">
+          					<%	} %>
+          					
           				</form><hr><br>
           				<h4>Add, view, or modify products here</h4><hr>
           				<table border="1">
