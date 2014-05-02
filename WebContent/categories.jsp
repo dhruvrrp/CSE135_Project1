@@ -50,11 +50,11 @@
     
   <!-- *****************************************JSP*************************************************** -->
     
-    <%@ page language="java" import="java.sql.*" %>
+     <%@ page language="java" import="java.sql.*" %>
     
-    <!-- Connect to database -->
-    <%
-        try
+  <!-- Connect to database -->
+  <%
+       try
         {
             Class.forName("org.postgresql.Driver");
             Connection conn = DriverManager.getConnection(
@@ -196,10 +196,7 @@
             // Check if a delete is requested
             String action = request.getParameter("action");
             if (action != null && action.equals("delete"))
-            {
-                // Begin transaction
-                conn.setAutoCommit(false);
-                
+            {   
                 // Fill ResultSet with Products of the Category that is to be deleted  
                 Statement stmt_nodelete2 = conn.createStatement();
                 ResultSet rs_nodelete2 = stmt_nodelete2.executeQuery("SELECT * FROM Products " + 
@@ -215,7 +212,10 @@
                 }
                 else
                 {
-                    // Create the PreparedStatement and use it to
+                    // Begin transaction
+                    conn.setAutoCommit(false);
+                	
+                	// Create the PreparedStatement and use it to
                     //   DELETE Categories FROM the Categories table
                     PreparedStatement pstmt = conn.prepareStatement("DELETE FROM Categories " +
                                                                     "WHERE category_id = ? ");
@@ -249,54 +249,54 @@
                                                              "ORDER BY category_id");
         %>
         
-        <!------ ITERATION CODE ------>
-        <br><br><br><br>
+            <!------ ITERATION CODE ------>
+            <br><br><br><br>
         
-        <h2>Modify existing categories</h2>
-        <table border="1">
-        <tr>
-            <th>ID</th>
-            <th>Category</th>
-            <th>Description</th>
-        </tr>
-    <%
-        ResultSet rs_nodelete = null;
-        Statement stmt_nodelete = null;
-        while(rs_allcats.next())
-        {
-            // Get ResultSet containing Products attached to the current Category
-            stmt_nodelete = conn.createStatement();
-            rs_nodelete = stmt_nodelete.executeQuery("SELECT * FROM Products " + 
-                                                     "WHERE Products.category = " + 
-                                                     rs_allcats.getInt("category_id"));
-    %>      <tr>
-            <form action="categories.jsp" method="post">
-            <input type="hidden" value="update" name="action"/>
-                <td><input type="hidden" value="<%=rs_allcats.getInt("category_id")%>" name="cat_id" />
-                    <%=rs_allcats.getInt("category_id") %></td>
-                <td><input value="<%=rs_allcats.getString("name")%>" name="cat_name" /></td>
-                <td><input value="<%=rs_allcats.getString("description")%>" name="cat_desc"/></td>
-                <td><input type="submit" value="Update" class="button" ></td>
-            </form>
-            
-            <form action="categories.jsp" method="post">
-                <input type="hidden" value="delete" name="action"/>
-                <input type="hidden" value="<%=rs_allcats.getInt("category_id")%>" name="cat_id"/>
-                <input type="hidden" value="<%=rs_allcats.getString("name")%>" name="cat_name"/>
-    <% 
-            // Only display Delete button if there are no Products
-            //   attached to the current Category
-            if (!(rs_nodelete.next())) 
-            {  %>   
-                <td><input type="submit" value="Delete" class="button"/></td> 
-    <%      } 
-    %>
-            </form>
+            <h2>Modify existing categories</h2>
+            <table border="1">
+            <tr>
+                <th>ID</th>
+                <th>Category</th>
+                <th>Description</th>
             </tr>
-    <%
-        }
-    %>
-        </table>
+        <%
+            ResultSet rs_nodelete = null;
+            Statement stmt_nodelete = null;
+            while(rs_allcats.next())
+            {
+                // Get ResultSet containing Products attached to the current Category
+                stmt_nodelete = conn.createStatement();
+                rs_nodelete = stmt_nodelete.executeQuery("SELECT * FROM Products " + 
+                                                         "WHERE Products.category = " + 
+                                                         rs_allcats.getInt("category_id"));
+        %>          <tr>
+                <form action="categories.jsp" method="post">
+                <input type="hidden" value="update" name="action"/>
+                    <td><input type="hidden" value="<%=rs_allcats.getInt("category_id")%>" name="cat_id" />
+                        <%=rs_allcats.getInt("category_id") %></td>
+                    <td><input value="<%=rs_allcats.getString("name")%>" name="cat_name" /></td>
+                    <td><input value="<%=rs_allcats.getString("description")%>" name="cat_desc"/></td>
+                    <td><input type="submit" value="Update" class="button" ></td>
+                </form>
+            
+                <form action="categories.jsp" method="post">
+                    <input type="hidden" value="delete" name="action"/>
+                    <input type="hidden" value="<%=rs_allcats.getInt("category_id")%>" name="cat_id"/>
+                    <input type="hidden" value="<%=rs_allcats.getString("name")%>" name="cat_name"/>
+        <% 
+                // Only display Delete button if there are no Products
+                //   attached to the current Category
+                if (!(rs_nodelete.next())) 
+                {  %>   
+                    <td><input type="submit" value="Delete" class="button"/></td> 
+        <%          } 
+        %>
+                </form>
+                </tr>
+        <%
+            }
+        %>
+            </table>
 
     
             <!------ Close the connection code ------>
