@@ -189,6 +189,7 @@
          				rset_.close();
          				stmt.close();
          				out.print("Insertion Successful - inserted: " + request.getParameter("prod_name"));
+         				out.println();
          				
          				//reset the products displayed in table
      					rset_prod_filter = stmt_prod_filter.executeQuery("SELECT * FROM products");
@@ -432,6 +433,10 @@
           						    
           						    //get the category name as a string
           						   	String current_category = rset_current.getString("name");
+          						    
+          							//format to print two decimal places for price
+          				            java.util.Formatter formatted_price = new java.util.Formatter();
+          				            formatted_price.format("%.2f", rset_prod_filter.getFloat("price"));
           						%>
           						<tr>
           						
@@ -450,14 +455,14 @@
           								<% } }%>
           							</select>
           						</td>
-          						<td><input type="text" name="prod_price" value="<%= rset_prod_filter.getFloat("price") %>"></td>
+          						<td><input type="text" name="prod_price" value="<%= formatted_price %>"></td>
           						<td><input type="submit" value="Update" class="small button"></td>
           						<input type="hidden" name="action" value="update">
           						<input type="hidden" name="pkey" value="<%= product_pkey %>">
           						</form>		
           						
           						<!-- DELETE FORM -->
-          						<form action="products.jsp" method="GET">
+          						<form action="products.jsp" method="POST">
           							<input type="hidden" name="pkey" value="<%= product_pkey %>">
           							<input type="hidden" name="prod_name" value="<%= rset_prod_filter.getString("name") %>">
           							<input type="hidden" name="action" value="delete">
