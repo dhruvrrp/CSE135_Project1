@@ -139,10 +139,10 @@
 								%>
 									<form action="ProductOrder.jsp" method="GET">
 									<tr>
-         								<td><%= rset_sea.getString("sku") %></td>
+         								<td align="center"><%= rset_sea.getString("sku") %></td>
          								<td align="center"><input type="submit" class="button small" name="prod_pur" value ="<%=rset_sea.getString("name")%>"></td>
-         								<td><%= rset_catname.getString("name") %></td>
-         								<td><%= rset_sea.getInt("price") %></td>
+         								<td align="center"><%= rset_catname.getString("name") %></td>
+         								<td align="center"><%= rset_sea.getInt("price") %></td>
          							</tr>
 							<%}%>
 							</form>
