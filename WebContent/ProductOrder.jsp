@@ -123,12 +123,11 @@
 				                    // Create the PreparedStatement and use it to INSERT
 				                    //   the Category attribuets INTO the Categories table
 				                  		 PreparedStatement pstmt_quan = conn.prepareStatement("INSERT INTO shopping_cart " + 
-				                    		                                        "(customer_name, product_sku, product_price, quantity) " +
-				                    	                                            "VALUES (?, ?, ?, ?)");
+				                    		                                        "(customer_name, product_sku, quantity) " +
+				                    	                                            "VALUES (?, ?, ?)");
 						                 pstmt_quan.setInt(1, user_id);
 						                 pstmt_quan.setInt(2, rset_allprod.getInt("product_id"));
-						                 pstmt_quan.setFloat(3, rset_allprod.getFloat("price"));
-						                 pstmt_quan.setInt(4, quantity);
+						                 pstmt_quan.setInt(3, quantity);
 						                 int rowCount = pstmt_quan.executeUpdate();
 									}
 				                    // Commit transaction
