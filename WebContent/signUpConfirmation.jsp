@@ -123,7 +123,6 @@
 		    catch (Exception e) 
 		    {
 		    	out.println("Sign up FAILED!");
-		        out.println(e.getMessage());
 		        return;
 		    }
 

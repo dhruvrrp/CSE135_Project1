@@ -79,7 +79,6 @@
  			<div class="row" id="shift">
       			<div class="row">
           			<div class="panel">     
-          				<span id="welcome">Hello <%= session.getAttribute("session_username") %> </span>
           				<br>
           				<h4>Welcome <%= session.getAttribute("session_username") %>! These are the
           				options you can choose because you are a(n)

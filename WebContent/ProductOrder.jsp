@@ -92,7 +92,7 @@
          							</tr>
          					<input type="hidden" name="action1" value="<%=new_item %>">
          					</table>
-         					<input type="submit" value="Insert">
+         					<input type="submit" value="Add to cart" class="button">
          					</form>
 							<%
 							if(request.getParameter("quant") != null)
