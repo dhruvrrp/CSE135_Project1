@@ -119,7 +119,7 @@
          				//transaction
          				conn.setAutoCommit(false);
          				
-         				//might need to do checks with these
+         				//set appropriate fields
          				pstmt.setString(1,request.getParameter("prod_name"));
          				pstmt.setString(2, request.getParameter("prod_sku"));
          				pstmt.setInt(3, cat_id);
@@ -157,8 +157,7 @@
          			else if(action!=null && action.equals("update")) {
          				
          				try {
-         				conn.setAutoCommit(false);  //transactions 
-         				
+         				//prepare statement
          				PreparedStatement pstmt_update = conn.prepareStatement("UPDATE products" + 
          								" SET name=?, sku=?, category=?, price=? " + "WHERE product_id=" + 
          								request.getParameter("pkey"));
@@ -166,22 +165,45 @@
          				//get the category id
          				Statement stmt_catID = conn.createStatement();
          				ResultSet rset_catID = stmt_catID.executeQuery("SELECT category_id FROM categories WHERE" +
-         								" name='" + request.getParameter("prod_cat") + "'"); 
+         								" name='" + request.getParameter("prod_cat") + "'");
          				
+         				//preliminary check to ensure product still exists
+         				Statement testStatement = conn.createStatement();
+         				ResultSet test_rset = testStatement.executeQuery("SELECT * FROM products WHERE name='" +
+         										request.getParameter("prod_name") + "'");
+         				
+         				
+         				//check if the product was deleted
+         				if(!test_rset.isBeforeFirst()) {
+         					throw new SQLException();
+         				}
+         				
+         				//get the category id of the product
          				rset_catID.next();
          				int cat_id = rset_catID.getInt("category_id");
          				
+         				//check if input name was null
+         				if(request.getParameter("prod_name").equals("")) {
+         					throw new SQLException();
+         				}
+         				
+         				conn.setAutoCommit(false);  //transaction start
          				pstmt_update.setString(1, request.getParameter("prod_name"));
          				pstmt_update.setString(2, request.getParameter("prod_sku"));
          				pstmt_update.setInt(3, cat_id);
          				pstmt_update.setDouble(4, Double.parseDouble(request.getParameter("prod_price")));
          				
-         				pstmt_update.executeUpdate();
-         				conn.commit();
+         				int count = pstmt_update.executeUpdate();
+         				conn.commit();   //end transaction
          				conn.setAutoCommit(true);
+         				
+         				//close statements
          				rset_catID.close();
          				stmt_catID.close();
          				pstmt_update.close();
+         				test_rset.close();
+         				testStatement.close();
+         				
          				out.print("Update Successful - updated: " + request.getParameter("prod_name"));
          				
          				//reset the products displayed in table
@@ -189,11 +211,22 @@
          				}
          				catch(SQLException e) {
          					out.println("Failure to update product.");
+         					
+         					//set autocommit to be false so rollback is possible
+         					conn.setAutoCommit(false);
+         					
+         					//rollback any changes
+         					conn.rollback();
          				}
-         				catch (Exception e)
-         	 	    	{
+         				catch(Exception e)
+         	 	    	{	
+         					System.out.println("big error");
          	 	     		out.println(e.getMessage());
          	 	    	}
+         				finally {
+         					//make sure to reset ac to true 
+         					conn.setAutoCommit(true);
+         				}
          			}
          			//check if action was delete
          			else if(action!=null && action.equals("delete")) {
@@ -280,7 +313,7 @@
           						   	String current_category = rset_current.getString("name");
           						%>
           						<tr>
-          						<form action="products.jsp" method="GET">
+          						<form action="products.jsp" method="POST">
           						<td><input type="text" name="prod_sku" value="<%= rset_prod_filter.getString("sku") %>"></td>
           						<td><input type="text" name="prod_name" value="<%= rset_prod_filter.getString("name") %>"></td>
           						<td><select name="prod_cat">
