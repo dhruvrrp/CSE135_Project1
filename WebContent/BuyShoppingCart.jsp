@@ -41,47 +41,46 @@
         
     %>
     
-    <!-- Navigation -->
- 
-  <nav class="top-bar" data-topbar>
-    <ul class="title-area">
-      <!-- Title Area -->
-      <li class="name">
-        <h1>
-          <a href="home.jsp">
-            PYTS Home
-          </a>
-        </h1>
-      </li>
-      <li class="toggle-topbar menu-icon"><a href="#"><span>menu</span></a></li>
-    </ul>
+        <!-- Navigation -->
+        <nav class="top-bar" data-topbar>
+            <ul class="title-area">
+                <!-- Title Area -->
+                <li class="name">
+                <h1>
+                    <a href="home.jsp">
+                    PYTS Home
+                    </a>
+                </h1>
+                </li>
+                <li class="toggle-topbar menu-icon"><a href="#"><span>menu</span></a></li>
+            </ul>
     
-    <!-- SHOPPING CART LINK -->
-    <section class="top-bar-section">
-      <!-- Right Nav Section -->
-      <ul class="right">
-        <li><span id="welcome">Hello, <%= session.getAttribute("session_username") %></span></li>
-        <li class="divider"></li>
-        <li><a href="BuyShoppingCart.jsp"><img id="cart" src="img/cart_icon.png" alt="" title="My Cart"></a></li>
-        <li class="divider"></li>
-      </ul>
-    </section>
-  </nav>
+            <!-- SHOPPING CART LINK -->
+            <section class="top-bar-section">
+                <!-- Right Nav Section -->
+                <ul class="right">
+                    <li><span id="welcome">Hello, <%= session.getAttribute("session_username") %></span></li>
+                    <li class="divider"></li>
+                    <li><a href="BuyShoppingCart.jsp"><img id="cart" src="img/cart_icon.png" alt="" title="My Cart"></a></li>
+                    <li class="divider"></li>
+                </ul>
+            </section>
+            </nav>
  
-  <!-- End Top Bar -->
+        <!-- End Top Bar -->
  
-  <!-- Header -->
-  <div class="row">
-    <div class="large-12 columns">
-      <img src="img/yts_header.png" alt=""><br><br>
-    </div>
-  </div>
+        <!-- Header -->
+        <div class="row">
+            <div class="large-12 columns">
+                <img src="img/yts_header.png" alt=""><br><br>
+            </div>
+        </div>
  
-  <!-- End Header -->
+        <!-- End Header -->
   
-  <div class="row" id="shift">
-      <div class="row">
-          <div class="panel">  
+        <div class="row" id="shift">
+            <div class="row">
+                <div class="panel">  
 
         <!------ SELECT CODE ------>
     <%
@@ -240,6 +239,8 @@
   
   
    <!-- *********************************************************************************************** -->
+  
+  
   
   <script src="../assets/js/jquery.js"></script>
     <script src="../assets/js/templates/foundation.js"></script>
