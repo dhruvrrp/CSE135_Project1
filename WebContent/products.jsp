@@ -31,6 +31,16 @@
       </li>
       <li class="toggle-topbar menu-icon"><a href="#"><span>menu</span></a></li>
     </ul>
+    
+    <!-- SHOPPING CART LINK -->
+    <section class="top-bar-section">
+      <!-- Right Nav Section -->
+      <ul class="right">
+        <li class="divider"></li>
+        <li><a href="BuyShoppingCart.jsp"><img id="cart" src="img/cart_icon.png" alt="" title="My Cart"></a></li>
+        <li class="divider"></li>
+      </ul>
+    </section>
   </nav>
  
   <!-- End Top Bar -->
@@ -54,6 +64,7 @@
  			Connection conn = DriverManager.getConnection(
  							  "jdbc:postgresql://localhost:5432/CSE135", "postgres", "calcium");
  			
+ 			//statement to get all categories
  			Statement stmt_cat = conn.createStatement();
 
  			
@@ -72,7 +83,7 @@
       			<div class="row">
           			<div class="panel">     
           			<%
-          			/////////////////////////////actions//////////////////////////////////
+          			/*************************ACTION HANDLING*******************************************/
           			//get the requested action (if applicable)
          			String action = request.getParameter("action");
          			
@@ -274,10 +285,11 @@
          					
          					pstmt_del.executeUpdate();
          					
-         					conn.commit();
+         					conn.commit(); //end the transaction
          					conn.setAutoCommit(true);
          					out.print("Deletion Successful - deleted: " + request.getParameter("prod_name"));
          					
+         					//delete stmts and rsets
          					test.close();
          					test_rset.close();
          					pstmt_del.close();
@@ -329,13 +341,14 @@
          					rset_prod_filter = stmt_prod_filter.executeQuery("SELECT * FROM products");
          				}
          				catch(Exception e) {
-         					System.out.println("wtf just happened");
+         					//ideally should never enter here
+         					System.out.println("Internal error");
          				}
          				finally {
-         					//don't need to perform any post-action processes
+         					//don't need to perform any post-action processes for filtering
          				}
          			}
-         			
+         			/*****************************END OF ACTION HANDLING**************************************/
           			%>
           				
           				<!--  CATEGORY LINKS ON LEFT HAND SIDE -->
@@ -373,12 +386,12 @@
           						<th colspan="2">Action</th>
           					</tr>
           					
-          					<!-- Insert form -->
+          					<!-- INSERT FORM -->
           					<tr>
           					<form action="products.jsp" method="POST">
           						<input type="hidden" name="action" value="insert">
-          						<th><input type="text" name="prod_sku"></th>
-          						<th><input type="text" name="prod_name"></th>
+          						<th><input type="text" name="prod_sku" placeholder="Insert Product SKU"></th>
+          						<th><input type="text" name="prod_name" placeholder="Name"></th>
           						<th><select name="prod_category">
           								<% rset_cat = stmt_cat.executeQuery("SELECT * FROM categories");
           								   while(rset_cat.next()) { %>
@@ -386,7 +399,7 @@
           								<% } %>
           							</select>
           						</th>
-          						<th><input type="text" name="prod_price"></th>
+          						<th><input type="text" name="prod_price" placeholder="Price"></th>
           						<th><input type="submit" value="Insert" class="button"></th>
           						<th></th>
           					</form>
@@ -411,6 +424,8 @@
           						   	String current_category = rset_current.getString("name");
           						%>
           						<tr>
+          						
+          						<!-- UPDATE FORM -->
           						<form action="products.jsp" method="POST">
           						<td><input type="text" name="prod_sku" value="<%= rset_prod_filter.getString("sku") %>"></td>
           						<td><input type="text" name="prod_name" value="<%= rset_prod_filter.getString("name") %>"></td>
@@ -430,6 +445,8 @@
           						<input type="hidden" name="action" value="update">
           						<input type="hidden" name="pkey" value="<%= product_pkey %>">
           						</form>		
+          						
+          						<!-- DELETE FORM -->
           						<form action="products.jsp" method="GET">
           							<input type="hidden" name="pkey" value="<%= product_pkey %>">
           							<input type="hidden" name="prod_name" value="<%= rset_prod_filter.getString("name") %>">
@@ -438,7 +455,9 @@
           						</form>
           						</tr>
           					<%
-          						rset_current.close();
+          					    //close rsets and stmts made above
+          						rset_current.close(); 
+          						get_cat.close();
           					} 
           					%>
           					
@@ -470,7 +489,7 @@
  				//throws exception if you try to close here?
  			}
         %>
- <!-- *********************************************************************************************** -->
+ <!-- *********************************END OF JSP******************************************* -->
  
   <!-- Footer -->
   

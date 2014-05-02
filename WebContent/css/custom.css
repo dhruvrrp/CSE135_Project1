@@ -21,6 +21,10 @@ div.large-4 a {
 	color: #33B5E5;
 }
 
+#cart {
+	width: 45px;
+}
+
 div.center {
 	text-align: center;
 }
