@@ -55,15 +55,17 @@
               <input type="submit" value="Log in" class="button">
             </form> 
             
- <!-- *****************************************JSP*************************************************** -->
+   <!-- *****************************************JSP*************************************************** -->
  	
  	
- 	<%@ page language="java" import="java.sql.*" %>
+ 	    <%@ page language="java" import="java.sql.*" %>
  	    
  	    <!-- Connect to DataBase -->
  		
- 		<% 
-            Class.forName("org.postgresql.Driver");
+  <% 
+        try
+ 		{
+ 		    Class.forName("org.postgresql.Driver");
  			Connection conn = DriverManager.getConnection(
  							  "jdbc:postgresql://localhost:5432/CSE135", "postgres", "calcium");
  		
@@ -78,7 +80,7 @@
  			    ResultSet rset_user = stmt_user.executeQuery("SELECT * FROM Users WHERE name='" + 
  	 				 								         request.getParameter("param_username") + "'");
 
-				//Check if username is valid
+				// Check if username is valid
                 if(rset_user.next()) 
                 { 
                     // Save username in session
@@ -103,8 +105,19 @@
                 conn.setAutoCommit(true);
                 conn.close();
  		    }
+ 		}
+        catch (SQLException e) 
+        {
+            out.println(e.getMessage());
+            e.printStackTrace();
+            return;
+        } 
+        catch (Exception e)
+        {
+            out.println(e.getMessage());
+        }
         
-        %>
+   %>
             
             
  <!-- *********************************************************************************************** -->      
