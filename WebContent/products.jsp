@@ -17,6 +17,41 @@
   <script type="text/javascript" src="js/foundation.min.js"></script>
 </head>
 <body>
+
+	<!-- *****************************************JSP*************************************************** -->
+ 	
+ 	<!-- Set language to java, and import sql package -->
+ 	<%@ page language="java" import="java.sql.*" %>
+ 	    
+ 	    <!-- Connect to DataBase -->
+ 		<% 
+ 			boolean noUser = false;  //boolean flag to see if there is a user who is logged in
+ 		
+ 			try {
+ 				//check if there is a user logged in (required to access this page)
+ 	 			if(session.getAttribute("session_username") == null) {
+ 	 				noUser = true;
+ 	 				throw new SQLException();
+ 	 			}
+ 	 				
+           		Class.forName("org.postgresql.Driver");
+ 				Connection conn = DriverManager.getConnection(
+ 							  "jdbc:postgresql://localhost:5432/CSE135", "postgres", "calcium");
+ 			
+ 				//statement to get all categories
+ 				Statement stmt_cat = conn.createStatement();
+
+ 			
+ 				//get all category tuples
+ 				ResultSet rset_cat = stmt_cat.executeQuery("SELECT * FROM categories");
+ 			
+ 				//insert,update,delete, and search handling 
+ 				Statement stmt_prod_filter = conn.createStatement();
+ 			
+ 				//select all products for display
+ 				ResultSet rset_prod_filter = stmt_prod_filter.executeQuery("SELECT * FROM products");
+ 			
+ 		%>
 	<!-- Navigation -->
  
   <nav class="top-bar" data-topbar>
@@ -54,32 +89,7 @@
   </div>
  
   <!-- End Header -->
- <!-- *****************************************JSP*************************************************** -->
- 	
- 	<!-- Set language to java, and import sql package -->
- 	<%@ page language="java" import="java.sql.*" %>
- 	    
- 	    <!-- Connect to DataBase -->
- 		<% try {
-            Class.forName("org.postgresql.Driver");
- 			Connection conn = DriverManager.getConnection(
- 							  "jdbc:postgresql://localhost:5432/CSE135", "postgres", "calcium");
- 			
- 			//statement to get all categories
- 			Statement stmt_cat = conn.createStatement();
-
- 			
- 			//get all category tuples
- 			ResultSet rset_cat = stmt_cat.executeQuery("SELECT * FROM categories");
- 			
- 			//insert,update,delete, and search handling 
- 			Statement stmt_prod_filter = conn.createStatement();
- 			
- 			//select all products for display
- 			ResultSet rset_prod_filter = stmt_prod_filter.executeQuery("SELECT * FROM products");
- 			
- 		%>
-
+ 
  			<div class="row" id="shift">
       			<div class="row">
           			<div class="panel">     
@@ -358,7 +368,7 @@
   							<ul>
   								<li><a href="products.jsp?categoryName=All Products">All Products</a></li>
   								<% while(rset_cat.next()) { %>
-  									<li><a href="products.jsp?categoryName=<%= rset_cat.getString("name") %>">
+  									<li><a class="filter" href="products.jsp?categoryName=<%= rset_cat.getString("name") %>">
   									<%= rset_cat.getString("name") %></a></li>
   								<% } %>
   							</ul>
@@ -366,7 +376,7 @@
   		
           				<br>
           				<h4>Search for products by name</h4>
-          				<form method="GET" action="products.jsp"> 
+          				<form name="search" method="GET" action="products.jsp"> 
           					<input id="search_bar" type="text" name="search_for" autofocus="autofocus">
           					<input type="submit" value="Search" class="button">
           					<input type="hidden" value="search" name="action">
@@ -465,6 +475,16 @@
           			</div>
     			</div>
   			</div>
+  			<!-- Footer -->
+  			<footer class="row">
+ 	 			<div class="large-12 columns"><hr />
+    	  			<div class="row">
+			        	<div class="large-6 columns">
+            				<p>&copy; Allen Gong, Dhruv Kaushal, Jasmine Nguyen.</p>
+        				</div>
+      				</div>
+  				</div>
+  			</footer>
  		
  		
  		<% 
@@ -477,9 +497,13 @@
  			}
  			catch (SQLException e)
  	    	{
- 	       	 	out.println(e.getMessage());
- 	       	 	e.printStackTrace();
- 	       	 	return;
+ 				if(noUser) {
+ 					out.println("You must be logged in to view this page!");
+ 				}
+ 				else {
+ 	       	 		out.println(e.getMessage());
+ 	       	 		e.printStackTrace();
+ 				}
  	    	}
  	    	catch (Exception e)
  	    	{
@@ -490,19 +514,6 @@
  			}
         %>
  <!-- *********************************END OF JSP******************************************* -->
- 
-  <!-- Footer -->
-  
-  <footer class="row">
-  <div class="large-12 columns"><hr />
-      <div class="row">
- 
-        <div class="large-6 columns">
-            <p>&copy; Allen Gong, Dhruv Kaushal, Jasmine Nguyen.</p>
-        </div>
-      </div>
-  </div>
-  </footer>
   <script src="../assets/js/jquery.js"></script>
     <script src="../assets/js/templates/foundation.js"></script>
     <script>

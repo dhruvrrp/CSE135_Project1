@@ -17,42 +17,7 @@
   <script type="text/javascript" src="js/foundation.min.js"></script>
 </head>
 <body>
-	<!-- Navigation -->
  
-  <nav class="top-bar" data-topbar>
-    <ul class="title-area">
-      <!-- Title Area -->
-      <li class="name">
-        <h1>
-          <a href="home.jsp">
-            PYTS Home
-          </a>
-        </h1>
-      </li>
-      <li class="toggle-topbar menu-icon"><a href="#"><span>menu</span></a></li>
-    </ul>
-    
-    <!-- SHOPPING CART LINK -->
-    <section class="top-bar-section">
-      <!-- Right Nav Section -->
-      <ul class="right">
-        <li class="divider"></li>
-        <li><a href="BuyShoppingCart.jsp"><img id="cart" src="img/cart_icon.png" alt="" title="My Cart"></a></li>
-        <li class="divider"></li>
-      </ul>
-    </section>
-  </nav>
- 
-  <!-- End Top Bar -->
- 
-  <!-- Header -->
-  <div class="row">
-    <div class="large-12 columns">
-      <img src="img/yts_header.png" alt=""><br><br>
-    </div>
-  </div>
- 
-  <!-- End Header -->
  <!-- *****************************************JSP*************************************************** -->
  	
  	<!-- Set language to java, and import sqql package -->
@@ -73,7 +38,44 @@
  			rset_role.next();
  			String user_role = rset_role.getString("role");
  			
+ 			
+ 			
  		%>
+ 			<!-- Navigation -->
+ 
+  			<nav class="top-bar" data-topbar>
+    			<ul class="title-area">
+      			<!-- Title Area -->
+     			<li class="name">
+        			<h1>
+          			<a href="home.jsp">
+            			PYTS Home
+         			</a>
+        			</h1>
+      			</li>
+      			<li class="toggle-topbar menu-icon"><a href="#"><span>menu</span></a></li>
+    			</ul>
+    
+    			<!-- SHOPPING CART LINK -->
+    			<section class="top-bar-section">
+      			<!-- Right Nav Section -->
+      			<ul class="right">
+      			<li><span id="welcome">Hello, <%= session.getAttribute("session_username") %>! </span></li>
+        			<li class="divider"></li>
+        			<li><a href="BuyShoppingCart.jsp"><img id="cart" src="img/cart_icon.png" alt="" title="My Cart"></a></li>
+        			<li class="divider"></li>
+      			</ul>
+    			</section>
+  			</nav>
+ 
+  			<!-- End Top Bar -->
+ 
+  			<!-- Header -->
+  			<div class="row">
+    			<div class="large-12 columns">
+      			<img src="img/yts_header.png" alt=""><br><br>
+    			</div>
+  			</div>
  			<div class="row" id="shift">
       			<div class="row">
           			<div class="panel">     
@@ -104,8 +106,7 @@
  			}
  			catch (SQLException e)
  	    	{
- 	       	 	out.println(e.getMessage());
- 	       	 	e.printStackTrace();
+ 	       	 	out.println("You must be logged in to view this page!");
  	       	 	return;
  	    	}
  	    	catch (Exception e)

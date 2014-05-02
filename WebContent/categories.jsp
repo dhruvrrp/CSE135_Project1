@@ -19,6 +19,29 @@
   <script type="text/javascript" src="js/foundation.min.js"></script>
 </head>
 <body>
+
+	<!-- *****************************************JSP*************************************************** -->
+    
+     <%@ page language="java" import="java.sql.*" %>
+    
+  <!-- Connect to database -->
+  <%
+       boolean noUser = false;  //boolean flag to see if there is no user logged in
+       try
+        {
+            Class.forName("org.postgresql.Driver");
+            Connection conn = DriverManager.getConnection(
+                              "jdbc:postgresql://localhost:5432/CSE135", 
+                              "postgres", "calcium");
+            
+            //check if there is no user who is logged in (shouldn't be on this page)
+            if(session.getAttribute("session_username") == null) {
+            	noUser = true;
+            	throw new SQLException();
+            }
+            
+            
+    %>
     <!-- Navigation -->
  
   <nav class="top-bar" data-topbar>
@@ -38,6 +61,7 @@
     <section class="top-bar-section">
       <!-- Right Nav Section -->
       <ul class="right">
+        <li><span id="welcome">Hello, <%= session.getAttribute("session_username") %> </span></li>
         <li class="divider"></li>
         <li><a href="BuyShoppingCart.jsp"><img id="cart" src="img/cart_icon.png" alt="" title="My Cart"></a></li>
         <li class="divider"></li>
@@ -57,26 +81,10 @@
   <!-- End Header -->
   
      
-    
-  <!-- *****************************************JSP*************************************************** -->
-    
-     <%@ page language="java" import="java.sql.*" %>
-    
-  <!-- Connect to database -->
-  <%
-       try
-        {
-            Class.forName("org.postgresql.Driver");
-            Connection conn = DriverManager.getConnection(
-                              "jdbc:postgresql://localhost:5432/CSE135", 
-                              "postgres", "calcium");
-            
-    %>
             <!------ Insert text forms ------>
             <div class="row" id="shift">
                 <div class="row">
                     <div class="panel">
-                        <span id="welcome">Hello <%= session.getAttribute("session_username") %> </span>
                         <br>
                         <h2>Add categories</h2><hr>
                         <table border="1">
@@ -307,6 +315,22 @@
             }
         %>
             </table>
+            </div>
+    		</div>
+  		</div>
+  
+ 		<!-- Footer -->
+ 
+  		<footer class="row">
+  		<div class="large-12 columns"><hr />
+      		<div class="row">
+ 
+        		<div class="large-6 columns">
+           		<p>&copy; Allen Gong, Dhruv Kaushal, Jasmine Nguyen.</p>
+        		</div>
+      		</div>
+  		</div>
+  		</footer>
 
     
             <!------ Close the connection code ------>
@@ -324,9 +348,13 @@
         }
         catch (SQLException e)
         {
-            out.println(e.getMessage());
-            e.printStackTrace();
-            return;
+        	if(noUser) {
+        		out.println("You must be logged in to view this page!");
+        	}
+        	else{
+            	out.println(e.getMessage());
+            	e.printStackTrace();
+        	}
         }
         catch (Exception e)
         {
@@ -337,24 +365,6 @@
   
   
   <!-- *********************************************************************************************** -->      
-  
-  
-      </div>
-    </div>
-  </div>
-  
-  <!-- Footer -->
- 
-  <footer class="row">
-  <div class="large-12 columns"><hr />
-      <div class="row">
- 
-        <div class="large-6 columns">
-            <p>&copy; Allen Gong, Dhruv Kaushal, Jasmine Nguyen.</p>
-        </div>
-      </div>
-  </div>
-  </footer>
   <script src="../assets/js/jquery.js"></script>
     <script src="../assets/js/templates/foundation.js"></script>
     <script>
