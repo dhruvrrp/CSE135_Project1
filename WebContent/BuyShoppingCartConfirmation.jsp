@@ -59,6 +59,8 @@
       <div class="row">
           <div class="panel">
               
+              
+              
         <!-- *****************************************JSP*************************************************** -->
         
         <%-- Set the scripting language to Java and import the java.sql package--%>
@@ -201,7 +203,6 @@
         {
             out.println(e.getMessage());
         }
-        finally {}
         
     %>
   

@@ -155,6 +155,17 @@
         }
     %>
         </table>
+        
+        <!------ Order total ------>
+    <%
+        // Print two decimal places    
+        java.util.Formatter formatted_total = new java.util.Formatter();
+        formatted_total.format("%.2f", rs_total.getFloat("total"));
+    %>
+        <h4>Order total</h4>
+        <table border="1">
+            <td><%=formatted_total %></td>
+        </table>
         <br>
         
     <%  // Add more items if desired %>    
