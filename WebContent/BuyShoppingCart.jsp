@@ -81,6 +81,8 @@
         <div class="row" id="shift">
             <div class="row">
                 <div class="panel">  
+                
+                
 
         <!------ SELECT CODE ------>
     <%
@@ -175,7 +177,8 @@
         <!-- Purchase order -->
         <br><br><br><br>
         <h3>Want to place your order?</h3>
-            <form method="post" action="BuyShoppingCartConfirmation.jsp">
+            <form method="post" action="BuyShoppingCart.jsp">
+            <input type="hidden" value="purchase_click" name="action" />
                 Name on card: 
                     <input type="text" name="card_name" placeholder="John Smith" />
                 Credit card number: 
@@ -188,9 +191,31 @@
                     <br>
                 <input type="submit" value="Purchase!" class="button">
             </form>
+            
+            
+    <%
+        // Check that all credit card fields have been filled before confirming purchase
+        String action = request.getParameter("action");
+        if (action != null && action.equals("purchase_click"))
+        {
+            if (request.getParameter("card_name") == "" || request.getParameter("card_num") == "" ||
+                request.getParameter("card_mon") == "" || request.getParameter("card_yr") == "")
+            {
+                
+            	out.println("ERROR SUBMITTING PURCHASE: You must provide all of the requested credit card information!");
+                return;
+            }
+            else
+            {
+                String redirectURL = "BuyShoppingCartConfirmation.jsp";
+                response.sendRedirect(redirectURL);
+            }
+        }
+    %>
+            
 
             </div>
-      </div>
+        </div>
     </div>
     <!-- Footer -->
  

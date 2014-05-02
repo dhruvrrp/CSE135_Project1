@@ -75,9 +75,8 @@
             Connection conn = DriverManager.getConnection(
                               "jdbc:postgresql://localhost:5432/CSE135", 
                               "postgres", "calcium");
-            
-            
-        %>
+
+    %>
     
             <!------ SELECT CODE ------>
         <%
