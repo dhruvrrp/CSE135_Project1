@@ -24,7 +24,7 @@
       <!-- Title Area -->
       <li class="name">
         <h1>
-          <a href="index.html">
+          <a href="home.jsp">
             PYTS Home
           </a>
         </h1>
@@ -47,7 +47,6 @@
  	
  	<!-- Set language to java, and import sql package -->
  	<%@ page language="java" import="java.sql.*" %>
- 	   	<% String ERROR_MISSING_CATNAME   = "23514"; %>
  	    
  	    <!-- Connect to DataBase -->
  		<% try {
@@ -79,12 +78,52 @@
          			
          			//check if search was selected
          			if(action!=null && action.equals("search")) {
-         				rset_prod_filter = stmt_prod_filter.executeQuery("SELECT * FROM products" +
+         				try {
+         					//check if a category was selected before this search
+         					if(request.getParameter("categoryName") != null) {
+         					
+         						//get the category id if a category filter is needed
+     							Statement cat_stmt = conn.createStatement();
+     							ResultSet cat_rset = cat_stmt.executeQuery("SELECT category_id FROM categories WHERE name='" +
+     							request.getParameter("categoryName") + "'");
+     							cat_rset.next(); 								//get the tuple
+     							int cat_id = cat_rset.getInt("category_id");	//get the category ID
+     						
+         						rset_prod_filter = stmt_prod_filter.executeQuery("SELECT * FROM products" +
+        							" WHERE name ILIKE '%" + request.getParameter("search_for")+"%' AND" +
+         							" category=" + cat_id);
+         				
+         						if(!rset_prod_filter.isBeforeFirst()) {
+         						out.print("Sorry, no results found for \"" + request.getParameter("search_for") +
+         										"\"");
+         						}
+         						
+         						//close statements and result sets
+         						cat_stmt.close();
+         						cat_rset.close();
+         					}
+         					//else no category filtering needed, only search by name
+         					else {
+         						rset_prod_filter = stmt_prod_filter.executeQuery("SELECT * FROM products" +
         							" WHERE name ILIKE '%" + request.getParameter("search_for")+"%'");
          				
-         				if(!rset_prod_filter.isBeforeFirst()) {
-         					out.print("Sorry, no results found for \"" + request.getParameter("search_for") +
+         						if(!rset_prod_filter.isBeforeFirst()) {
+         						out.print("Sorry, no results found for \"" + request.getParameter("search_for") +
          									"\"");
+         						}
+         					}
+         				}
+         				catch(SQLException e) {
+         					//should ideally never go here
+         					out.println("Something was wrong with your search, please try again");
+         				}
+         				catch(Exception e) {
+         					out.println("Internal error");
+         					System.out.println(e.getMessage());
+         					e.printStackTrace();
+         				}
+         				finally {
+         					//no post action processes needed
          				}
          			}
          			
@@ -270,8 +309,6 @@
          						request.getParameter("categoryName") + "'");
          						cat_rset.next(); 								//get the tuple
          						int cat_id = cat_rset.getInt("category_id");	//get the category ID
-         						
-         						System.out.println(cat_id);
          				
          						//filter display based on category
          						rset_prod_filter = stmt_prod_filter.executeQuery("SELECT * FROM products" +
