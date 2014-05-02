@@ -132,7 +132,6 @@
         java.util.Formatter formatted_total = new java.util.Formatter();
         formatted_total.format("%.2f", rs_total.getFloat("total"));
     %>
-        
         <h4>Order total</h4>
         <table border="1">
             <td><%=formatted_total %></td>
@@ -142,8 +141,17 @@
         <br><br><br><br>
         <h3>Want to place your order?</h3>
             <form method="post" action="BuyShoppingCartConfirmation.jsp">
-              Credit card number: <input type="text" name="card" />
-              <input type="submit" value="Purchase!" class="button">
+                Name on card: 
+                    <input type="text" name="card_name" />
+                Credit card number: 
+                    <input type="text" name="card_num" size="10" />
+                Expiration date: <br>
+                    <input name="card_mon" size="2" maxlength="2" placeholder="mm"/>
+                    <input name="card_yr" size="2" maxlength="4" placeholder="yyyy" />
+                    <br>
+                    <br>
+                    <br>
+                <input type="submit" value="Purchase!" class="button">
             </form> 
   
         <!------ Close the connection code ------>
