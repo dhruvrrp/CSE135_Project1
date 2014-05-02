@@ -55,7 +55,6 @@
  			Connection conn = DriverManager.getConnection(
  							  "jdbc:postgresql://localhost:5432/CSE135", "postgres", "calcium");
  			
- 			Statement stmt_prod = conn.createStatement();
  			Statement stmt_cat = conn.createStatement();
 
  			
@@ -116,7 +115,7 @@
          				pstmt.setString(1,request.getParameter("prod_name"));
          				pstmt.setString(2, request.getParameter("prod_sku"));
          				pstmt.setInt(3, cat_id);
-         				pstmt.setInt(4, Integer.parseInt(request.getParameter("prod_price")));
+         				pstmt.setDouble(4, Double.parseDouble(request.getParameter("prod_price")));
          				
          				int count = pstmt.executeUpdate();
          				
@@ -183,6 +182,7 @@
          	 	     		out.println(e.getMessage());
          	 	    	}
          			}
+         			//check if action was delete
          			else if(action!=null && action.equals("delete")) {
          				try {
          					conn.setAutoCommit(false);  //transaction power up!
@@ -277,7 +277,7 @@
           								<% } }%>
           							</select>
           						</td>
-          						<td><input type="text" name="prod_price" value="<%= rset_prod_filter.getInt("price") %>"></td>
+          						<td><input type="text" name="prod_price" value="<%= rset_prod_filter.getFloat("price") %>"></td>
           						<td><input type="submit" value="Update" class="small button"></td>
           						<input type="hidden" name="action" value="update">
           						<input type="hidden" name="pkey" value="<%= product_pkey %>">
@@ -306,7 +306,6 @@
  			stmt_prod_filter.close();
  			rset_cat.close();
  			stmt_cat.close();
- 			stmt_prod.close();
  			conn.close();
  			}
  			catch (SQLException e)

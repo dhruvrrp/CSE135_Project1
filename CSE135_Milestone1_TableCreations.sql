@@ -37,7 +37,7 @@ DROP TABLE IF EXISTS Products CASCADE;
 CREATE TABLE Products
 (
     product_id    SERIAL     PRIMARY KEY,
-    name          VARCHAR(30),
+    name          VARCHAR(30) 	 NOT NULL,
     sku           VARCHAR(10)    NOT NULL UNIQUE,
     category      INTEGER        REFERENCES Categories(category_id) ON UPDATE CASCADE,
     price         FLOAT,
