@@ -77,8 +77,10 @@
 							String new_item = (String)request.getParameter("prod_pur");
 							int user_id =  (Integer)session.getAttribute("session_userid");
 							int quantity = 0;
-							
+							System.out.println("WOWO "+new_item);
 							Statement stmt_del = conn.createStatement();
+							if(new_item == null)
+								new_item = (String)request.getParameter("action1");
 							ResultSet rset_del = stmt_del.executeQuery("SELECT * FROM products WHERE name = '"+new_item+"'");
 							if(!rset_del.isBeforeFirst())
 							{
