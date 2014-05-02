@@ -24,13 +24,23 @@
       <!-- Title Area -->
       <li class="name">
         <h1>
-          <a href="index.html">
+          <a href="home.jsp">
             PYTS Home
           </a>
         </h1>
       </li>
       <li class="toggle-topbar menu-icon"><a href="#"><span>menu</span></a></li>
     </ul>
+    
+    <!-- SHOPPING CART LINK -->
+    <section class="top-bar-section">
+      <!-- Right Nav Section -->
+      <ul class="right">
+        <li class="divider"></li>
+        <li><a href="BuyShoppingCart.jsp"><img id="cart" src="img/cart_icon.png" alt="" title="My Cart"></a></li>
+        <li class="divider"></li>
+      </ul>
+    </section>
   </nav>
  
   <!-- End Top Bar -->
@@ -72,11 +82,12 @@
           				<h4>Welcome <%= session.getAttribute("session_username") %>! These are the
           				options you can choose because you are a(n)
           				<%= user_role %> :
-          				</h4>    
+          				</h4><br>    
           				<% if(user_role != null && user_role.equals("Owner")) { %>   
        	  				<div class="center">
        	  					<a href="categories.jsp" class="button">Categories</a>
        	  					<a href="products.jsp" class="button">Products</a>
+       	  					<a href="ProductBrowsing.jsp" class="button">Product Browsing</a>
        	  				</div>
        	  				<% } else if(user_role != null && user_role.equals("Customer")) { %>
        	  					<div class="center"><a href="ProductBrowsing.jsp" class="button">Products Browsing</a></div>

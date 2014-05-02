@@ -26,13 +26,23 @@
       <!-- Title Area -->
       <li class="name">
         <h1>
-          <a href="index.html">
+          <a href="home.jsp">
             PYTS Home
           </a>
         </h1>
       </li>
       <li class="toggle-topbar menu-icon"><a href="#"><span>menu</span></a></li>
     </ul>
+    
+    <!-- SHOPPING CART LINK -->
+    <section class="top-bar-section">
+      <!-- Right Nav Section -->
+      <ul class="right">
+        <li class="divider"></li>
+        <li><a href="BuyShoppingCart.jsp"><img id="cart" src="img/cart_icon.png" alt="" title="My Cart"></a></li>
+        <li class="divider"></li>
+      </ul>
+    </section>
   </nav>
  
   <!-- End Top Bar -->
