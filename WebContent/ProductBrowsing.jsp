@@ -59,41 +59,42 @@
  			//get all tuples from the categories table
  			ResultSet rset_cat = stmt_cat.executeQuery("SELECT * FROM categories");
  			
+ 			
  		%>
+ 			<div id="prod_search">
+  				<p><b>Filter</b></p>
+  				<ul>
+  					<li><a href="ProductBrowsing.jsp?BUTTONN=">All Products</a></li>
+  					<% while(rset_cat.next()) { %>
+  						<li><a href="ProductBrowsing.jsp?BUTTONN=<%=rset_cat.getInt("category_id")%>"><%= rset_cat.getString("name") %></a></li>
+  					<% } %>
+  				</ul>
+  			</div>
+ 			
+ 			
+ 			
+ 		
  			<div class="row" id="shift">
       			<div class="row">
           			<div class="panel">     
           				<span id="welcome">Hello <%= session.getAttribute("session_username") %> </span>
           				<br>
           				
-          				
-          				
-          				<table border="1">
-          					<tr>
-          						<th>Category ID</th>
-          						<th>Name</th>
-          						<th>Description</th>
-          					</tr>
-          					
-          					<%-- Populate the table --%>
-          					<% while(rset_cat.next()) { %>
-          					<form action="ProductBrowsing.jsp" method="POST">
-          						<tr>
-          						<td><%= rset_cat.getInt("category_id") %></td>
-          						<td><input type="radio" name="BUTTONN" value =<%=rset_cat.getInt("category_id")%>>  <%=rset_cat.getString("name")%>  </td>
-          						<td><%= rset_cat.getString("description") %></td>
-          						</tr>
           					<%
-          					} 
+          					String link ="";
+          					if(request.getParameter("BUTTONN") != null)
+          						link = "ProductBrowsing.jsp?BUTTONN="+request.getParameter("BUTTONN");
           					%>
+
+          					<form action="<%=link%>" method="POST">
           					Search for Products: <input type="search" name="prod_search">
           					<input type="submit" value="Submit">
           					</form>
-          				</table>
+
 
 
 						<%
-							System.out.println("CAT "+request.getParameter("BUTTONN"));
+							System.out.println("CAT "+request.getParameter("BUTTONN") + "X");
 						
 							Statement stmt_sea = conn.createStatement();
 							String q="";
@@ -111,7 +112,7 @@
 							boolean check = true;
 							System.out.println("AAA "+ a);
 							System.out.println("QQ  " +q);
-							if((String)request.getParameter("BUTTONN") != null)
+							if((String)request.getParameter("BUTTONN") != null && !request.getParameter("BUTTONN").equals(""))
 							{
 								q = q + " AND category = '"+request.getParameter("BUTTONN") +"'";
 								System.out.println("I'm here");
@@ -139,7 +140,7 @@
 									<form action="ProductOrder.jsp" method="GET">
 									<tr>
          								<td><%= rset_sea.getString("sku") %></td>
-         								<td><input type="submit" name="prod_pur" value ="<%=rset_sea.getString("name")%>"></td>
+         								<td align="center"><input type="submit" class="button small" name="prod_pur" value ="<%=rset_sea.getString("name")%>"></td>
          								<td><%= rset_catname.getString("name") %></td>
          								<td><%= rset_sea.getInt("price") %></td>
          							</tr>

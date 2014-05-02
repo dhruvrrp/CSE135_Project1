@@ -67,14 +67,7 @@
 
 						<%
 							String new_item = (String)request.getParameter("prod_pur");
-						
-							//int user_id = (int)session.getAttribute("session_userid");
-							//REMOVE THIS LINE LATER> TESTING ONLY
-							
-							int user_id = 1;
-							
-							//REMOVE IT
-							
+							int user_id =  (Integer)session.getAttribute("session_userid");
 							int quantity = 0;
 							%>
 							<form action="ProductOrder.jsp" method="POST">
