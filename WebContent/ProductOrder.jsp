@@ -115,7 +115,8 @@
 								    
 								    Statement stmt_check = conn.createStatement();
 								    ResultSet rset_check = stmt_check.executeQuery("SELECT * FROM shopping_cart " +
-								    												"WHERE product_sku = '"+rset_allprod.getInt("product_id")+"'");
+								    												"WHERE product_sku = '"+rset_allprod.getInt("product_id")+"'" +
+								    											    "AND customer_name = " + session.getAttribute("session_userid"));
 								    System.out.println("AAAAAAAA");
 								    conn.setAutoCommit(false);
 									if(rset_check.next())
@@ -123,7 +124,8 @@
 										quantity += rset_check.getInt("quantity");
 										PreparedStatement pstmt_check = conn.prepareStatement("UPDATE shopping_cart " + 
 		                                        "SET quantity = ? " +
-	                                            "WHERE product_sku = ?");
+	                                            "WHERE product_sku = ? " +
+		                                        "AND customer_name = " + session.getAttribute("session_userid"));
 										pstmt_check.setInt(1, quantity);
 										pstmt_check.setInt(2, rset_check.getInt("product_sku"));
 										int rowCount = pstmt_check.executeUpdate();
