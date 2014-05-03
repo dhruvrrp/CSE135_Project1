@@ -1,5 +1,5 @@
 
-Allen Gong 		CSE 135  
+Allen Gong 			CSE 135  
 Dhruv Kaushal		Milestone 1
 Jasmine Nguyen		1 May 2014
 
