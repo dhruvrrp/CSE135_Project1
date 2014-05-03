@@ -36,7 +36,12 @@
     <section class="top-bar-section">
       <!-- Right Nav Section -->
       <ul class="right">
+      <% if(session.getAttribute("session_username") != null) { %>
       	<li><span id="welcome">Hello, <%= session.getAttribute("session_username") %>! </span></li>
+      <% } else {%>
+      	<li><span id="signLink"><a href="index.html">Sign in to start shopping!</a></span></li>
+      <% } %>
+      
         <li class="divider"></li>
         <li><a href="BuyShoppingCart.jsp"><img id="cart" src="img/cart_icon.png" alt="" title="My Cart"></a></li>
         <li class="divider"></li>
