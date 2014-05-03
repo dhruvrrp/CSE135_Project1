@@ -74,6 +74,7 @@
 
 
 				<%
+				if()
 							String new_item = (String)request.getParameter("prod_pur");
 							int user_id =  (Integer)session.getAttribute("session_userid");
 							int quantity = 0;
