@@ -24,7 +24,15 @@
       <!-- Title Area -->
       <li class="name">
         <h1>
-          <a href="home.jsp">
+          <% 
+             String href = null; //href for where home will redirect to
+          	 if(session.getAttribute("session_username") == null) { 
+          		href = "index.html";
+          	 } else { 
+          		 href = "home.jsp";
+          	 }
+          	 %>
+          <a href="<%= href %>">
             PYTS Home
           </a>
         </h1>
@@ -38,12 +46,11 @@
       <ul class="right">
       <% if(session.getAttribute("session_username") != null) { %>
       	<li><span id="welcome">Hello, <%= session.getAttribute("session_username") %>! </span></li>
+      	<li class="divider"></li>
+        <li><a href="BuyShoppingCart.jsp"><img id="cart" src="img/cart_icon.png" alt="" title="My Cart"></a></li>
       <% } else {%>
       	<li><span id="signLink"><a href="index.html">Sign in to start shopping!</a></span></li>
       <% } %>
-      
-        <li class="divider"></li>
-        <li><a href="BuyShoppingCart.jsp"><img id="cart" src="img/cart_icon.png" alt="" title="My Cart"></a></li>
         <li class="divider"></li>
       </ul>
     </section>

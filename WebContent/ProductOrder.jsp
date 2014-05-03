@@ -77,23 +77,21 @@
 				if(session.getAttribute("session_username") == null)
 				{
 					out.println("Please log in! Redirecting to homepage...");
-					%><meta http-equiv="refresh"content="5;URL='index.html'" /><%
+					%><meta http-equiv="refresh" content="5;URL='index.html'" /><%
 				}
 				else
 				{
 							String new_item = (String)request.getParameter("prod_pur");
 							int user_id =  (Integer)session.getAttribute("session_userid");
 							int quantity = 0;
-							System.out.println("WOWO "+new_item);
 							Statement stmt_del = conn.createStatement();
 							if(new_item == null)
 								new_item = (String)request.getParameter("action1");
 							ResultSet rset_del = stmt_del.executeQuery("SELECT * FROM products WHERE name = '"+new_item+"'");
 							if(!rset_del.isBeforeFirst())
 							{
-								out.println("The product you added just got deleted!!! Redirecting....");
-								%><meta http-equiv="refresh"
-					content="5;URL='ProductBrowsing.jsp'" />
+								out.println("The product you selected no longer exists! Redirecting....");
+								%><meta http-equiv="refresh" content="5;URL='ProductBrowsing.jsp'" />
 				<%
 							}
 							else
@@ -121,7 +119,7 @@
 								new_item = request.getParameter("action1");
 								if(quantity <= 0)
 								{
-									out.println("Quantity needs to be more than 0!!!");
+									out.println("Quantity must be a positive number!");
 								}
 								else
 								{
