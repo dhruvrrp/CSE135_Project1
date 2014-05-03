@@ -137,7 +137,7 @@
          				}
          				catch(SQLException e) {
          					//should ideally never go here
-         					out.println("Something was wrong with your search, please try again");
+         					out.println("Something was wrong with your search, please try again.");
          				}
          				catch(Exception e) {
          					out.println("Internal error");
@@ -271,7 +271,7 @@
          				}
          				catch(Exception e)
          	 	    	{	
-         					System.out.println("big error");
+         					System.out.println("Internal Error");
          	 	     		out.println(e.getMessage());
          	 	    	}
          				finally {
