@@ -74,7 +74,13 @@
 
 
 				<%
-				if()
+				if(session.getAttribute("session_username") == null)
+				{
+					out.println("Please log in!!!! Redirecting in 5");
+					%><meta http-equiv="refresh"content="5;URL='index.html'" /><%
+				}
+				else
+				{
 							String new_item = (String)request.getParameter("prod_pur");
 							int user_id =  (Integer)session.getAttribute("session_userid");
 							int quantity = 0;
@@ -85,7 +91,7 @@
 							ResultSet rset_del = stmt_del.executeQuery("SELECT * FROM products WHERE name = '"+new_item+"'");
 							if(!rset_del.isBeforeFirst())
 							{
-								out.println("The product you added just got deleted!!!");
+								out.println("The product you added just got deleted!!! Redirecting....");
 								%><meta http-equiv="refresh"
 					content="5;URL='ProductBrowsing.jsp'" />
 				<%
@@ -191,7 +197,7 @@
 	</div>
 
 
-	<% }
+	<% }}
  			//close connections to db
  		//	rset_cat.close();
  			//stmt_cat.close();
