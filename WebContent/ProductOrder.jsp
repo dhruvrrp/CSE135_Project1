@@ -76,7 +76,7 @@
 				<%
 				if(session.getAttribute("session_username") == null)
 				{
-					out.println("Please log in!!!! Redirecting in 5");
+					out.println("Please log in! Redirecting to homepage...");
 					%><meta http-equiv="refresh"content="5;URL='index.html'" /><%
 				}
 				else
