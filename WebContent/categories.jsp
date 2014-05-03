@@ -157,28 +157,45 @@
              String action = request.getParameter("action");
              if (action != null && action.equals("update"))
              {
-                 // Begin transaction
-                 conn.setAutoCommit(false);
+                 // Preliminary check to ensure the UPDATED Category still exists
+                 Statement testStatement = conn.createStatement();
+                 ResultSet test_rset = testStatement.executeQuery("SELECT * FROM Categories " +
+                		                                          "WHERE category_id = " + 
+                		                                          request.getParameter("cat_id"));
+                 
+                 // Check if the Category was deleted
+                 if(!test_rset.isBeforeFirst()) 
+                 {
+                     out.println("ERROR UPDATING CATEGORY: Category name \"" + 
+                                 request.getParameter("cat_name") + 
+                                 "\" has been deleted!");
+                     %><br><%
+                 }
+                 else
+                 {
+            	     // Begin transaction
+                     conn.setAutoCommit(false);
                 
-                 // Create the PreparedStatement and use it to UPDATE
-                 //   Category values in the Categories table
-                 PreparedStatement pstmt = conn.prepareStatement("UPDATE Categories " +
-                                                                 "SET name = ?, description = ? " +
-                                                                 "WHERE category_id = ?");
+                     // Create the PreparedStatement and use it to UPDATE
+                     //   Category values in the Categories table
+                     PreparedStatement pstmt = conn.prepareStatement("UPDATE Categories " +
+                                                                     "SET name = ?, description = ? " +
+                                                                     "WHERE category_id = ?");
                 
-                 pstmt.setString(1, request.getParameter("cat_name"));
-                 pstmt.setString(2, request.getParameter("cat_desc"));
-                 pstmt.setInt   (3, Integer.parseInt(request.getParameter("cat_id")));
-                 int rowCount = pstmt.executeUpdate();
+                     pstmt.setString(1, request.getParameter("cat_name"));
+                     pstmt.setString(2, request.getParameter("cat_desc"));
+                     pstmt.setInt   (3, Integer.parseInt(request.getParameter("cat_id")));
+                     int rowCount = pstmt.executeUpdate();
                 
-                 // Commit transaction
-                 conn.commit();
-                 conn.setAutoCommit(true);
+                     // Commit transaction
+                     conn.commit();
+                     conn.setAutoCommit(true);
                     
-                 out.println("The category \"" + 
-                             request.getParameter("cat_name") + 
-                             "\" has been updated!");
-                 %><br><%
+                     out.println("The category \"" + 
+                                 request.getParameter("cat_name") + 
+                                 "\" has been updated!");
+                     %><br><%
+                 }
              }
          }
          catch (SQLException e)
