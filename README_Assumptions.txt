@@ -10,7 +10,7 @@ Jasmine Nguyen		1 May 2014
 GENERAL ASSUMPTIONS
 -----------------------
 
-Welcome to Papa Yannis's Thirft Shop! Your go-to place for unbeatable
+Welcome to Papa Yannis's Thrift Shop! Your go-to place for unbeatable
 e-commerce deals. This web abb is most optimally viewed in a fully expanded
 web browser. Also note that input is indeed case-sensitive.
 
