@@ -11,7 +11,7 @@ GENERAL ASSUMPTIONS
 -----------------------
 
 Welcome to Papa Yannis's Thrift Shop! Your go-to place for unbeatable
-e-commerce deals. This web abb is most optimally viewed in a fully expanded
+e-commerce deals. This web app is most optimally viewed in a fully expanded
 web browser. Also note that input is indeed case-sensitive.
 
 Below are more specific assumptions for each of the pages of the web app.
@@ -37,7 +37,7 @@ that they have access to. An Owner can see all pages of the site, as well as
 possess their own shopping cart, while a Customer may only directly access
 the product browsing page.
 
-If a user is NOT logged in, they can only access: the login page, sthe sign up
+If a user is NOT logged in, they can only access: the login page, the sign up
 page, and the product browsing page.
 
 
