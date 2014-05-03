@@ -114,8 +114,20 @@
 				<%
 							if(request.getParameter("quant") != null)
 							{
+								
 								String quan = request.getParameter("quant");
-								quantity = Integer.parseInt(quan);
+								if(quan.equals(""))
+									quantity = 0;
+								else
+								{
+									try{
+									quantity = Integer.parseInt(quan);
+									}
+									catch(NumberFormatException e)
+									{
+										quantity = 0;
+									}
+								}
 								new_item = request.getParameter("action1");
 								if(quantity <= 0)
 								{
@@ -161,6 +173,7 @@
 				                    response.sendRedirect("ProductBrowsing.jsp");
 								}
 							}
+							
 							ResultSet rset_prodo = stmt_prodo.executeQuery("SELECT * FROM shopping_cart WHERE customer_name = "+user_id);
 
 %>
@@ -209,7 +222,7 @@
  	    	}
  	    	catch (Exception e)
  	    	{
- 	     		out.println(e.getMessage());
+ 	     		out.println("this is whats wrong"+e.getMessage());
  	    	}
  			finally {
  				//throws exception if you try to close here?

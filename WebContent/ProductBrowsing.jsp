@@ -176,7 +176,7 @@
  			}
  			catch (SQLException e)
  	    	{
- 	       	 	out.println(e.getMessage());
+ 	       	 	out.println("Something was wrong with your search, please try again!!");
  	       	 	e.printStackTrace();
  	       	 	return;
  	    	}
