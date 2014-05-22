@@ -1,6 +1,6 @@
 CREATE TABLE Users
 (
-   user_id    SERIAL     PRIMARY KEY,
+   user_id        SERIAL         PRIMARY KEY,
    name           VARCHAR(50)    NOT NULL UNIQUE,
    role           VARCHAR(8)     NOT NULL,
    age            INTEGER        NOT NULL,
@@ -21,7 +21,7 @@ CREATE TABLE Roles
 
 CREATE TABLE Categories
 (
-    category_id   SERIAL     PRIMARY KEY,
+    category_id   SERIAL         PRIMARY KEY,
     name          VARCHAR(20)    NOT NULL UNIQUE,
     description   TEXT,
     CHECK         (name <> '')
@@ -29,7 +29,7 @@ CREATE TABLE Categories
 
 CREATE TABLE Products
 (
-    product_id    SERIAL     PRIMARY KEY,
+    product_id    SERIAL         PRIMARY KEY,
     name          VARCHAR(30) 	 NOT NULL,
     sku           VARCHAR(10)    NOT NULL UNIQUE,
     category      INTEGER        REFERENCES Categories(category_id) ON UPDATE CASCADE,
@@ -45,7 +45,7 @@ CREATE TABLE Shopping_Cart
     quantity      INTEGER
 );
 
-
+/* Check ON UPDATE CASCADE for product_sku and customer_name FKs */
 
 
 
