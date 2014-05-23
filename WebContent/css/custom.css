@@ -61,11 +61,46 @@ div.center {
 }
 
 #shift form{
-	width: 500px;
-	
+	width: 200px;
+}
+
+#left-box {
+	width: 200px;
+	float: left;
+}
+
+#right-box {
+	width: 705px;
+	float: right;
+}
+
+#footer {
+	clear: both;
+}
+
+.panel {
+	min-height: 500px;
+}
+
+.divide {
+	clear: both;
 }
 
 
+#next-btns form{
+	width: 200px;
+}
+
+#next20 {
+	position: relative;
+	left: 800px;
+	top: -15px;
+}
+
+#next10 {
+	position: relative;
+	left: 800px;
+}
 
 /*index.html*/
 .fill {

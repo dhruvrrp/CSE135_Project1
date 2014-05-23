@@ -68,38 +68,7 @@
  			<div class="row" id="shift">
       			<div class="row">
           			<div class="panel">     
-          				<div id="left-box">
-          					<form action="" method="GET">
-          						<h3>Filter</h3>
-          						
-          						<label>Rows:</label>
-          				    	<select name="big_filter">
-          				    		<option value="customers" selected="selected">Customers</option>
-          				    		<option value="states">States</option>
-          				    	</select>
-          				    	
-          				    	<label>State:</label>
-          				    	<select name="states">
-          				    		<option value="placeholder">All States</option>
-          				    		<option value="Arizona">Arizona</option>
-          				    	</select>
-          				    	
-          				    	<label>Product Category:</label>
-          				    	<select name="product_category">
-          				    		<option value="placeholder">All Categories</option>
-          				    		<option value="states">cat1</option>
-          				    	</select>
-          				    	
-          				    	<label>Age:</label>
-          				    	<select name="age">
-          				    		<option value="placeholder">All Ages</option>
-          				    		<option value="1">12-18</option>
-          				    	</select>
-          				    	<input type="submit" value="Run Query" class="button">
-          				    	<input type="reset" value="Clear Fields" class="button">
-          					</form> 
-          				</div>
-          				<div id="right-box">
+          				<div>
           					<h3>Your Sales Analytics Report</h3><hr>
           					<table border="1">
           						<tr>
@@ -114,6 +83,9 @@
           							<td>State 1</td>
           							<td>$200</td>
           						</tr>
+          						<tr>
+          						<td>hi</td>
+          						</tr>
           					</table>
           				</div>
           				<div class="divide"></div>
@@ -125,8 +97,8 @@
           						<input type="submit" value="Next 20" class="button">
           					</form>
           				</div>
-          				<div class="divide"></div>
           			</div>
+          			<div class="divide"></div>
     			</div>
   			</div>
  		
