@@ -32,9 +32,39 @@
  			
  			 Statement stmt_states = conn.createStatement();
  	         ResultSet rs_states = stmt_states.executeQuery("SELECT state_id FROM states ORDER BY state_id");
- 	         
+ 	         String WHERE_ROWS = "";
+ 	         String WHERE_COLS = "";
  	         Statement stmt_cats = conn.createStatement();
- 	         ResultSet rs_cats = stmt_cats.executeQuery("SELECT name FROM categories ORDER BY name");
+ 	         ResultSet rs_cats = stmt_cats.executeQuery("SELECT name, id FROM categories ORDER BY name");
+ 	         if(request.getParameter("big_filter") != null)
+ 	         {
+ 	        	   if(request.getParameter("big_filter").equals("states"))
+ 	        	   {
+ 	        		   if(!request.getParameter("states").equals("all"))
+ 	        		   {
+ 	        			   WHERE_ROWS +=  "WHERE states.state_id = " + request.getParameter("states");
+ 	        		   }
+ 	        		   if(!request.getParameter("age").equals("all"))
+ 	        		   {
+ 	        			   //states is all
+ 	        			   if(WHERE_ROWS.length() == 0)
+ 	        			   {
+ 	        				   WHERE_ROWS +=  "WHERE users.age = " + request.getParameter("age");
+ 	        			   }
+ 	        			   else
+ 	        			   {
+ 	        				   WHERE_ROWS += " AND users.age = " + request.getParameter("age");
+ 	        			   }
+ 	        		   }
+ 	        		   if(!request.getParameter("product_cat").equals("all"))
+ 	        		   {
+ 	        			   WHERE_COLS += "WHERE products.cid = " + request.getParameter("product_cat");
+ 	        		   }
+ 	        	   }
+ 	        	   String qRow = "SELECT * FROM users " + WHERE_ROWS;
+ 	        	   String qCol = "SELECT * FROM products " + WHERE_COLS;
+ 	        	   out.println(qCol + " |||");
+ 	         }
  		%>
  			<!-- Navigation -->
  
@@ -96,7 +126,7 @@
           				    	<select name="product_cat">
           				    	    <option value="all">All Categories</option>
                                     <% while(rs_cats.next()) { %>
-                                        <option value= <%= rs_cats.getString("name") %>>
+                                        <option value= <%= rs_cats.getInt("id") %>>
                                         <%= rs_cats.getString("name") %></option>
                                     <% } %>
                                 </select> 
