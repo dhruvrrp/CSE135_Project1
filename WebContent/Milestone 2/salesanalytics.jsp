@@ -7,12 +7,12 @@
   <meta name="Author" content="Allen Gong">
   <meta name="description" content="Best place to get your goodies">
   
-  <link rel="stylesheet" type="text/css" href="css/normalize.css">
-  <link rel="stylesheet" type="text/css" href="css/foundation.css">
-  <link rel="stylesheet" type="text/css" href="css/custom.css">
+  <link rel="stylesheet" type="text/css" href="../css/normalize.css">
+  <link rel="stylesheet" type="text/css" href="../css/foundation.css">
+  <link rel="stylesheet" type="text/css" href="../css/custom.css">
   
-  <script type="text/javascript" src="js/vendor/jquery.js"></script>
-  <script type="text/javascript" src="js/foundation.min.js"></script>
+  <script type="text/javascript" src="../js/vendor/jquery.js"></script>
+  <script type="text/javascript" src="../js/foundation.min.js"></script>
 </head>
 <body>
  
@@ -51,7 +51,7 @@
       			<ul class="right">
       			<li><span id="welcome">Hello, You! </span></li>
         			<li class="divider"></li>
-        			<li><a href="BuyShoppingCart.jsp"><img id="cart" src="img/cart_icon.png" alt="" title="My Cart"></a></li>
+        			<li><a href="BuyShoppingCart.jsp"><img id="cart" src="../img/cart_icon.png" alt="" title="My Cart"></a></li>
         			<li class="divider"></li>
       			</ul>
     			</section>
@@ -62,7 +62,7 @@
   			<!-- Header -->
   			<div class="row">
     			<div class="large-12 columns">
-      			<img src="img/yts_header.png" alt=""><br><br>
+      			<img src="../img/yts_header.png" alt=""><br><br>
     			</div>
   			</div>
  			<div class="row" id="shift">
@@ -159,8 +159,8 @@
       </div>
   </div>
   </footer>
-  <script src="../assets/js/jquery.js"></script>
-    <script src="../assets/js/templates/foundation.js"></script>
+  <script src="../../assets/js/jquery.js"></script>
+    <script src="../../assets/js/templates/foundation.js"></script>
     <script>
       $(document).foundation();
 
