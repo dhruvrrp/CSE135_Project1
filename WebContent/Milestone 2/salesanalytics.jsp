@@ -86,7 +86,7 @@
           				    	
           				    	<label>State:</label>
           				    	<select name="states">
-          				    	    <option value="placeholder">All States</option>
+          				    	    <option value="all">All States</option>
                                     <% while(rs_states.next()) { %>
                                         <option value= <%= rs_states.getString("state_id") %>>
                                         <%= rs_states.getString("state_id") %></option>
@@ -94,7 +94,7 @@
                                 </select> 
           				    	<label>Product Category:</label>
           				    	<select name="product_cat">
-          				    	    <option value="placeholder">All Categories</option>
+          				    	    <option value="all">All Categories</option>
                                     <% while(rs_cats.next()) { %>
                                         <option value= <%= rs_cats.getString("name") %>>
                                         <%= rs_cats.getString("name") %></option>
@@ -102,7 +102,7 @@
                                 </select> 
           				    	<label>Age:</label>
           				    	<select name="age">
-          				    		<option value="placeholder">All Ages</option>
+          				    		<option value="all">All Ages</option>
           				    		<option value="1">12-18</option>
           				    		<option value="2">18-45</option>
           				    		<option value="3">45-65</option>
