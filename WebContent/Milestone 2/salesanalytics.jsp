@@ -30,8 +30,11 @@
  			Connection conn = DriverManager.getConnection(
  							  "jdbc:postgresql://localhost:5432/CSE135", "postgres", "calcium");
  			
- 			 Statement stmt = conn.createStatement();
- 	         ResultSet rs_states = stmt.executeQuery("SELECT state_id FROM states ORDER BY state_id");
+ 			 Statement stmt_states = conn.createStatement();
+ 	         ResultSet rs_states = stmt_states.executeQuery("SELECT state_id FROM states ORDER BY state_id");
+ 	         
+ 	         Statement stmt_cats = conn.createStatement();
+ 	         ResultSet rs_cats = stmt_cats.executeQuery("SELECT name FROM categories ORDER BY name");
  		%>
  			<!-- Navigation -->
  
@@ -83,21 +86,27 @@
           				    	
           				    	<label>State:</label>
           				    	<select name="states">
+          				    	    <option value="placeholder">All States</option>
                                     <% while(rs_states.next()) { %>
                                         <option value= <%= rs_states.getString("state_id") %>>
                                         <%= rs_states.getString("state_id") %></option>
                                     <% } %>
                                 </select> 
           				    	<label>Product Category:</label>
-          				    	<select name="product_category">
-          				    		<option value="placeholder">All Categories</option>
-          				    		<option value="states">cat1</option>
-          				    	</select>
-          				    	
+          				    	<select name="product_cat">
+          				    	    <option value="placeholder">All Categories</option>
+                                    <% while(rs_cats.next()) { %>
+                                        <option value= <%= rs_cats.getString("name") %>>
+                                        <%= rs_cats.getString("name") %></option>
+                                    <% } %>
+                                </select> 
           				    	<label>Age:</label>
           				    	<select name="age">
           				    		<option value="placeholder">All Ages</option>
           				    		<option value="1">12-18</option>
+          				    		<option value="2">18-45</option>
+          				    		<option value="3">45-65</option>
+          				    		<option value="4">65+</option>
           				    	</select>
           				    	<input type="submit" value="Run Query" class="button">
           				    	<input type="reset" value="Clear Fields" class="button">
