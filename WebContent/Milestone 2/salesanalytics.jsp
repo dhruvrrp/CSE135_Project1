@@ -29,6 +29,9 @@
             Class.forName("org.postgresql.Driver");
  			Connection conn = DriverManager.getConnection(
  							  "jdbc:postgresql://localhost:5432/CSE135", "postgres", "calcium");
+ 			
+ 			 Statement stmt = conn.createStatement();
+ 	         ResultSet rs_states = stmt.executeQuery("SELECT state_id FROM states ORDER BY state_id");
  		%>
  			<!-- Navigation -->
  
@@ -80,10 +83,11 @@
           				    	
           				    	<label>State:</label>
           				    	<select name="states">
-          				    		<option value="placeholder">All States</option>
-          				    		<option value="Arizona">Arizona</option>
-          				    	</select>
-          				    	
+                                    <% while(rs_states.next()) { %>
+                                        <option value= <%= rs_states.getString("state_id") %>>
+                                        <%= rs_states.getString("state_id") %></option>
+                                    <% } %>
+                                </select> 
           				    	<label>Product Category:</label>
           				    	<select name="product_category">
           				    		<option value="placeholder">All Categories</option>
