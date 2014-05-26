@@ -161,11 +161,13 @@
           				</div>
           				<div class="divide"></div>
           				<div id="next-btns">
-          					<form id="next10" class="float-left" action="salesanalytics.jsp" method="GET">
-          						<input type="submit" value="Next 10" class="button">
+          					<form id="next10" class="float-left" action="salesanalyticsnext.jsp" method="GET">
+          						<input type="submit" value="Next 10 Products" class="button">
+          						<input type="hidden" name="action" value="next10">
           					</form>
-          					<form id="next20" action="salesanalytics.jsp" method="GET">
-          						<input type="submit" value="Next 20" class="button">
+          					<form id="next20" action="salesanalyticsnext.jsp" method="GET">
+          						<input type="submit" value="Next 20 Customers" class="button">
+          						<input type="hidden" name="action" value="next20">
           					</form>
           				</div>
           				<div class="divide"></div>
