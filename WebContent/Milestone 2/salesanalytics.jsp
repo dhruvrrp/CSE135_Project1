@@ -39,7 +39,7 @@
  	         Statement stmt_cats = conn.createStatement();
  	         ResultSet rs_cats = stmt_cats.executeQuery("SELECT name, id FROM categories ORDER BY name");
  	         ResultSet rset_TESTTT = null;
- 	        Statement stmt_users = conn.createStatement();
+ 	         Statement stmt_users = conn.createStatement();
  	        
  	         if(request.getParameter("big_filter") != null)
  	         {
@@ -74,7 +74,7 @@
 
  	        	   PreparedStatement seleUsers = conn.prepareStatement("DROP TABLE IF EXISTS SelectedUsers; SELECT id, name, age, state INTO TEMP SelectedUsers FROM users "+ WHERE_ROWS+ " ORDER BY state");
  	        	   seleUsers.executeUpdate();
- 	        	  out.println("first");
+ 	        	  
  	        	  //Create the selected products temp table
  	        	  
  	        	  PreparedStatement seleProds = conn.prepareStatement("DROP TABLE IF EXISTS SelectedProducts; SELECT id, cid, name INTO TEMP SelectedProducts FROM products " + WHERE_COLS);
