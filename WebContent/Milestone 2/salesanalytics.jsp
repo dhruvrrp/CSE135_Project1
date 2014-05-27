@@ -67,16 +67,11 @@
  	        			   out.println(request.getParameter("product_cat"));
  	        			   WHERE_COLS += "WHERE products.cid = " + request.getParameter("product_cat");
  	        		   }
- 	        	   }
-
- 	        	   
- 	        	   
- 	        	   
+ 	        	   }   
  	        	   
  	        	   
 					//Create the selected users temp table
- 	        	   
-out.println(WHERE_ROWS);
+
  	        	   PreparedStatement seleUsers = conn.prepareStatement("DROP TABLE IF EXISTS SelectedUsers; SELECT id, name, age, state INTO TEMP SelectedUsers FROM users "+ WHERE_ROWS+ " ORDER BY state");
  	        	   seleUsers.executeUpdate();
  	        	  out.println("first");
@@ -103,10 +98,14 @@ out.println(WHERE_ROWS);
  	      	        	  "ON SelectedProducts.id = sales.pid GROUP BY SelectedUsers.state ORDER BY SelectedUsers.state");
  	        	  }
  	        	  Statement stmt_TESTTT = conn.createStatement();
- 	        	  rset_TESTTT = stmt_TESTTT.executeQuery("SELECT SUM(quantity* sales.price) AS total, products.name, states.state_id "+
- 	        			" FROM sales RIGHT OUTER JOIN products ON sales.pid = products.id INNER JOIN users ON users.id = sales.uid "+
- 	        			" FULL OUTER JOIN states ON states.state_id = users.state GROUP BY products.name, states.state_id ORDER BY states.state_id");
+ 	        	  rset_TESTTT = stmt_TESTTT.executeQuery("SELECT SUM(quantity* sales.price) AS total, SelectedProducts.name, states.state_id "+
+ 	        			" FROM sales RIGHT OUTER JOIN SelectedProducts ON sales.pid = SelectedProducts.id INNER JOIN SelectedUsers ON SelectedUsers.id = sales.uid "+
+ 	        			" FULL OUTER JOIN states ON states.state_id = SelectedUsers.state GROUP BY SelectedProducts.name, states.state_id ORDER BY states.state_id");
  	         }
+ 	  //       while(rset_TESTTT.next())
+ 	 //        {
+ 	 //       	 System.out.println(rset_TESTTT.getInt("total") + " A " + rset_TESTTT.getString("name") + " state " + rset_TESTTT.getString("state_id"));
+ 	  //       }
  	         ArrayList<String> ar = new ArrayList<String>();
  		%>
 	<!-- Navigation -->
@@ -185,16 +184,23 @@ out.println(WHERE_ROWS);
 						</tr>
 						<%rset_TESTTT.next();
 						while(rset_JoinRows.next()){  %>
-						<tr>
+						<tr><%while(rset_TESTTT.getString("state_id").equals(rset_JoinRows.getString("state")) == false )
+							{
+								rset_TESTTT.next();
+							}
+							%>
 							<td><%=rset_JoinRows.getString("state") + " $" + rset_JoinRows.getInt("total") %></td>
 							<%for(int i=0; i< ar.size(); i++){
 							if(rset_TESTTT.getString("name") == null) 
 							{
 							%>
-							<td>$ 0</td>
+							<td><%="$" + "0" %></td>
 							<%
 							if((i+1) == ar.size())
-								rset_TESTTT.next();}
+							{
+								rset_TESTTT.next();
+							}
+							}
 							else
 							{
 								if(ar.get(i).equals(rset_TESTTT.getString("name")))
@@ -207,9 +213,9 @@ out.println(WHERE_ROWS);
 									<td>$ 0</td>
 								<% 
 								}
-							} %>
+							}} %>
 						</tr>
-						<%}} %>
+						<%} %>
 					</table>
 				</div>
 				<div class="divide"></div>
