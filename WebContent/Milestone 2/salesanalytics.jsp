@@ -21,8 +21,8 @@
 	<!-- *****************************************JSP*************************************************** -->
 	<%@ page language="java" contentType="text/html; charset=UTF-8"
 		pageEncoding="UTF-8"%>
-	<!-- Set language to java, and import sqql package -->
-	<%@ page language="java" import="java.sql.*"%>
+	<!-- Set language to java, and import sql package -->
+	<%@ page language="java" import="java.sql.*, java.util.ArrayList"%>
 
 	<!-- Connect to DataBase -->
 	<% try {
@@ -35,9 +35,10 @@
  	         String WHERE_ROWS = "";
  	         String WHERE_COLS = "";
  	         ResultSet rset_Join = null;
+ 	         ResultSet rset_JoinRows = null;
  	         Statement stmt_cats = conn.createStatement();
  	         ResultSet rs_cats = stmt_cats.executeQuery("SELECT name, id FROM categories ORDER BY name");
- 	         
+ 	         ResultSet rset_TESTTT = null;
  	        Statement stmt_users = conn.createStatement();
  	        
  	         if(request.getParameter("big_filter") != null)
@@ -50,14 +51,15 @@
  	        		   }
  	        		   if(!request.getParameter("age").equals("all"))
  	        		   {
+ 	        			   String age[] = request.getParameter("age").split("-");
  	        			   //states is all
  	        			   if(WHERE_ROWS.length() == 0)
  	        			   {
- 	        				   WHERE_ROWS +=  "WHERE users.age = " + request.getParameter("age");
+ 	        				   WHERE_ROWS +=  "WHERE users.age BETWEEN " + age[0] + " AND " + age[1];
  	        			   }
  	        			   else
  	        			   {
- 	        				   WHERE_ROWS += " AND users.age = " + request.getParameter("age");
+ 	        				   WHERE_ROWS += " AND users.age BETWEEN " +age[0] + " AND " + age[1];
  	        			   }
  	        		   }
  	        		   if(!request.getParameter("product_cat").equals("all"))
@@ -89,9 +91,23 @@ out.println(WHERE_ROWS);
 	        			  " FROM sales INNER JOIN SelectedUsers ON SelectedUsers.id = sales.uid RIGHT OUTER JOIN SelectedProducts"+
 	        			  " ON SelectedProducts.id = sales.pid GROUP BY SelectedProducts.name ORDER BY SelectedProducts.name");
  	        	   
-   	   
- 	        	  
+	        	  Statement stmt_JoinRows = conn.createStatement();
+ 	        	  if(request.getParameter("states").equals("all"))
+ 	        	  {
+	        	  rset_JoinRows = stmt_JoinRows.executeQuery("SELECT SUM(quantity* sales.price) AS total, states.state_id AS state FROM sales INNER JOIN SelectedUsers ON SelectedUsers.id = sales.uid INNER JOIN SelectedProducts "+
+	        	  "ON SelectedProducts.id = sales.pid RIGHT OUTER JOIN states ON states.state_id=SelectedUsers.state GROUP BY states.state_id ORDER BY states.state_id");
+ 	        	  }
+ 	        	  else
+ 	        	  {
+ 	        		 rset_JoinRows = stmt_JoinRows.executeQuery("SELECT SUM(quantity* sales.price) AS total, SelectedUsers.state FROM sales INNER JOIN SelectedUsers ON SelectedUsers.id = sales.uid INNER JOIN SelectedProducts "+
+ 	      	        	  "ON SelectedProducts.id = sales.pid GROUP BY SelectedUsers.state ORDER BY SelectedUsers.state");
+ 	        	  }
+ 	        	  Statement stmt_TESTTT = conn.createStatement();
+ 	        	  rset_TESTTT = stmt_TESTTT.executeQuery("SELECT SUM(quantity* sales.price) AS total, products.name, states.state_id "+
+ 	        			" FROM sales RIGHT OUTER JOIN products ON sales.pid = products.id INNER JOIN users ON users.id = sales.uid "+
+ 	        			" FULL OUTER JOIN states ON states.state_id = users.state GROUP BY products.name, states.state_id ORDER BY states.state_id");
  	         }
+ 	         ArrayList<String> ar = new ArrayList<String>();
  		%>
 	<!-- Navigation -->
 
@@ -149,10 +165,10 @@ out.println(WHERE_ROWS);
 							<% } %>
 						</select> <label>Age:</label> <select name="age">
 							<option value="all">All Ages</option>
-							<option value="1">12-18</option>
-							<option value="2">18-45</option>
-							<option value="3">45-65</option>
-							<option value="4">65+</option>
+							<option value="12-17">12-18</option>
+							<option value="18-44">18-45</option>
+							<option value="45-64">45-65</option>
+							<option value="65-999">65+</option>
 						</select> <input type="submit" value="Run Query" class="button"> <input
 							type="reset" value="Clear Fields" class="button">
 					</form>
@@ -163,18 +179,37 @@ out.println(WHERE_ROWS);
 					<table border="1">
 						<tr>
 							<th>Row Header</th>
-							<%while(rset_Join.next()){ %>
+							<%while(rset_Join.next()){ar.add(rset_Join.getString("name")); %>
 							<td><%=rset_Join.getString("name") + " $" + rset_Join.getInt("total") %></td>
 							<%} %>
 						</tr>
+						<%rset_TESTTT.next();
+						while(rset_JoinRows.next()){  %>
 						<tr>
-							<td>Customer 1</td>
-							<td>$599</td>
+							<td><%=rset_JoinRows.getString("state") + " $" + rset_JoinRows.getInt("total") %></td>
+							<%for(int i=0; i< ar.size(); i++){
+							if(rset_TESTTT.getString("name") == null) 
+							{
+							%>
+							<td>$ 0</td>
+							<%
+							if((i+1) == ar.size())
+								rset_TESTTT.next();}
+							else
+							{
+								if(ar.get(i).equals(rset_TESTTT.getString("name")))
+								{%>
+									<td><%=" $" +rset_TESTTT.getString("total") %></td>
+								<%rset_TESTTT.next();
+								}
+								else
+								{%>
+									<td>$ 0</td>
+								<% 
+								}
+							} %>
 						</tr>
-						<tr>
-							<td>State 1</td>
-							<td>$200</td>
-						</tr>
+						<%}} %>
 					</table>
 				</div>
 				<div class="divide"></div>
