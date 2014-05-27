@@ -183,15 +183,25 @@
 							<%} %>
 						</tr>
 						<%rset_TESTTT.next();
-						while(rset_JoinRows.next()){ 
-							if(rset_TESTTT.getString("state_id").equals("WY"))
-							{
-								break;
-							}%>
+
+					    if (!(rset_JoinRows.isBeforeFirst()))
+					    {
+					        %><tr><td><%=request.getParameter("states") + " ($0)"%></td>
+                            <%for(int i=0; i< ar.size(); i++){%>
+                                  <td>$0</td><% 
+                              }%></tr><%}
+					    else
+					    {
+		                    while(rset_JoinRows.next()){ 
+							//if(rset_TESTTT.getString("state_id").equals("WY"))
+							//{
+							//	break;
+							//}%>
 						<tr><%while(rset_TESTTT.getString("state_id").equals(rset_JoinRows.getString("state")) == false )
 							{
 								rset_TESTTT.next();
 								System.out.println(rset_TESTTT.getString("state_id") + " " + rset_JoinRows.getString("state"));
+								System.out.println("yup");
 							}
 							if(rset_JoinRows.getString("state").equals("MI") || rset_TESTTT.getString("state_id").equals("MI"))
 							{
@@ -228,7 +238,7 @@
 								}
 							}} %>
 						</tr>
-						<%} %>
+						<%} }%>
 					</table>
 				</div>
 				<div class="divide"></div>
