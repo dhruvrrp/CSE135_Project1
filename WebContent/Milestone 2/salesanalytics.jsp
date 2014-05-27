@@ -40,6 +40,13 @@
  	         ResultSet rs_cats = stmt_cats.executeQuery("SELECT name, id FROM categories ORDER BY name");
  	         ResultSet rset_TESTTT = null;
  	         Statement stmt_users = conn.createStatement();
+ 	         
+ 	        int offset = 0;    //default offset is 0 (first load of page)*
+	         
+	         //check if offset is set, therefore need to change value of offset*
+	         if(request.getParameter("offset") != null) {
+	        	 offset = Integer.parseInt(request.getParameter("offset"));
+	         }
  	        
  	         if(request.getParameter("big_filter") != null)
  	         {
