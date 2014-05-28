@@ -123,37 +123,35 @@
  	         }
 	         else if(request.getParameter("big_filter").equals("states"))
  	         {
- 	        	   if(request.getParameter("big_filter").equals("states"))
- 	        	   {
- 	        		   if(!request.getParameter("states").equals("all"))
- 	        		   {
- 	        			   WHERE_ROWS +=  "WHERE users.state = '" + request.getParameter("states")+"'";
- 	        		   }
- 	        		   if(!request.getParameter("age").equals("all"))
- 	        		   {
- 	        			   String age[] = request.getParameter("age").split("-");
- 	        			   //states is all
- 	        			   if(WHERE_ROWS.length() == 0)
- 	        			   {
- 	        				   WHERE_ROWS +=  "WHERE users.age BETWEEN " + age[0] + " AND " + age[1];
- 	        			   }
- 	        			   else
- 	        			   {
- 	        				   WHERE_ROWS += " AND users.age BETWEEN " +age[0] + " AND " + age[1];
- 	        			   }
- 	        		   }
- 	        		   if(!request.getParameter("product_cat").equals("all"))
- 	        		   {
- 	        			   out.println(request.getParameter("product_cat"));
- 	        			   WHERE_COLS += "WHERE products.cid = " + request.getParameter("product_cat");
- 	        		   }
- 	        	   }   
- 	        	   
- 	        	   
-					//Create the selected users temp table
 
- 	        	   PreparedStatement seleUsers = conn.prepareStatement("DROP TABLE IF EXISTS SelectedUsers; SELECT id, name, age, state INTO TEMP SelectedUsers FROM users "+ WHERE_ROWS+ " ORDER BY state");
- 	        	   seleUsers.executeUpdate();
+ 	        	if(!request.getParameter("states").equals("all"))
+ 	        	{
+ 	        		WHERE_ROWS +=  "WHERE users.state = '" + request.getParameter("states")+"'";
+ 	        	}
+ 	        	if(!request.getParameter("age").equals("all"))
+ 	        	{
+ 	        		String age[] = request.getParameter("age").split("-");
+ 	        		//states is all
+ 	        		if(WHERE_ROWS.length() == 0)
+ 	        		{
+ 	        			WHERE_ROWS +=  "WHERE users.age BETWEEN " + age[0] + " AND " + age[1];
+ 	        		}
+ 	        		else
+ 	        		{
+ 	        			WHERE_ROWS += " AND users.age BETWEEN " +age[0] + " AND " + age[1];
+ 	        		}
+ 	        	}
+ 	        	if(!request.getParameter("product_cat").equals("all"))
+ 	        	{
+ 	        		out.println(request.getParameter("product_cat"));
+ 	        		WHERE_COLS += "WHERE products.cid = " + request.getParameter("product_cat");
+ 	        	}   
+ 	        	   
+ 	        	   
+				  //Create the selected users temp table
+
+ 	        	  PreparedStatement seleUsers = conn.prepareStatement("DROP TABLE IF EXISTS SelectedUsers; SELECT id, name, age, state INTO TEMP SelectedUsers FROM users "+ WHERE_ROWS+ " ORDER BY state");
+ 	        	  seleUsers.executeUpdate();
  	        	  
  	        	  //Create the selected products temp table
  	        	  
@@ -182,10 +180,7 @@
  	        			" FROM sales INNER JOIN SelectedProducts ON sales.pid = SelectedProducts.id INNER JOIN SelectedUsers ON SelectedUsers.id = sales.uid "+
  	        			" FULL OUTER JOIN states ON states.state_id = SelectedUsers.state GROUP BY SelectedProducts.name, states.state_id ORDER BY states.state_id");
  	         }
- 	  //       while(rset_TESTTT.next())
- 	 //        {
- 	 //       	 System.out.println(rset_TESTTT.getInt("total") + " A " + rset_TESTTT.getString("name") + " state " + rset_TESTTT.getString("state_id"));
- 	  //       }
+ 	  
  	         ArrayList<String> ar = new ArrayList<String>();
  		%>
 	<!-- Navigation -->
