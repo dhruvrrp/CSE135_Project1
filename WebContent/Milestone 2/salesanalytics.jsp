@@ -185,12 +185,12 @@
 					<table border="1">
 						<tr>
 							<th>Row Header</th>
-							<%while(rset_Join.next()){System.out.println(rset_Join.getString("name"));ar.add(rset_Join.getString("name")); %>
+							<%while(rset_Join.next()){ar.add(rset_Join.getString("name")); %>
 							<td><%=rset_Join.getString("name") + " $" + rset_Join.getInt("total") %></td>
 							<%} %>
 						</tr>
 						<%rset_TESTTT.next();
-
+						
 					    if (!(rset_JoinRows.isBeforeFirst()))
 					    {
 					        %><tr><td><%=request.getParameter("states") + " ($0)"%></td>
@@ -200,42 +200,52 @@
 					    else
 					    {
 		                    while(rset_JoinRows.next()){ 
-							//if(rset_TESTTT.getString("state_id").equals("WY"))
-							//{
-							//	break;
-							//}%>
+
+							%>
 						<tr><%while(rset_TESTTT.getString("state_id").equals(rset_JoinRows.getString("state")) == false )
 							{
 								rset_TESTTT.next();
+								System.out.println(rset_TESTTT.getString("state_id")+" yup");
 								System.out.println(rset_TESTTT.getString("state_id") + " " + rset_JoinRows.getString("state"));
 								System.out.println("yup");
 							}
-							if(rset_JoinRows.getString("state").equals("MI") || rset_TESTTT.getString("state_id").equals("MI"))
-							{
-								System.out.println("Ok here is MI " + rset_TESTTT.getString("state_id"));
-							}
 							%>
 							<td><%=rset_JoinRows.getString("state") + " $" + rset_JoinRows.getInt("total") %></td>
-							<%for(int i=0; i< ar.size(); i++){
+							<%for(int i=0; i< ar.size(); i++)
+							{
 							if(rset_TESTTT.getString("name") == null) 
 							{
 							%>
 							<td><%="$" + "0" %></td>
 							<%
-							if((i+1) == ar.size() && rset_TESTTT.getString("state_id").equals(rset_JoinRows.getString("state")))
-							{
-								rset_TESTTT.next();
-								if(rset_TESTTT.getString("state_id").equals("MI"))
-									System.out.println("YOHOHOHOHOH");
-							}
+								if((i+1) == ar.size() && rset_TESTTT.getString("state_id").equals(rset_JoinRows.getString("state")))
+								{
+									rset_TESTTT.next();
+									if(rset_TESTTT.isAfterLast())
+									{
+										System.out.println("Hello");
+										break;
+									}
+									System.out.println(rset_TESTTT.getString("state_id")+" yup woho");
+									if(rset_TESTTT.getString("state_id").equals("WY"))
+										System.out.println("YOHOHOHOHOH");
+								}
 							}
 							else
 							{
 								if(rset_TESTTT.getString("name") != null && ar.get(i).equals(rset_TESTTT.getString("name")) && rset_TESTTT.getString("state_id").equals(rset_JoinRows.getString("state")))
 								{%>
 									<td><%=" $" +rset_TESTTT.getString("total") %></td>
-								<%rset_TESTTT.next();
-								if(rset_TESTTT.getString("state_id").equals("MI"))
+								<%
+								System.out.println(rset_TESTTT.getString("state_id")+" yup before");
+								rset_TESTTT.next();
+								if(rset_TESTTT.isAfterLast())
+								{
+									System.out.println("Hello 1");
+									break;
+								}
+								System.out.println(rset_TESTTT.getString("state_id")+" yup after");
+								if(rset_TESTTT.getString("state_id").equals("WY"))
 									System.out.println(rset_JoinRows.getString("state")+" YOHOHOHOHOH " + i + " A " + rset_TESTTT.getString("name"));
 								}
 								else
