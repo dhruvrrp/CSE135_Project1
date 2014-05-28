@@ -256,7 +256,7 @@
 							<%while(rset_Join.next()){ar.add(rset_Join.getString("name"));
 							String truncate = rset_Join.getString("name");
 							if(truncate.length() > 10)
-							truncate = truncate.substring(0,10);%>
+							truncate = truncate.substring(0,10) + "...";%>
 							<td><%=truncate + " $" + rset_Join.getInt("total") %></td>
 							<%} %>
 						</tr>
