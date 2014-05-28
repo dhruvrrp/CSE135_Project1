@@ -43,22 +43,26 @@
  	         ResultSet rset_TESTTT = null;
  	         Statement stmt_users = conn.createStatement();
  	         
- 	         int offset = 0;    //default offset is 0 (first load of page)*
+ 	         //get offset values
+ 	         int colOffset = Integer.parseInt(request.getParameter("colOffset"));
+ 	         int rowOffset = Integer.parseInt(request.getParameter("rowOffset"));
 	         
 	         
  	         if(request.getParameter("big_filter") == null)
  	         {
- 	        	Statement stmt_Join = conn.createStatement();
+ 	        	Statement stmt_Join = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+                        ResultSet.CONCUR_READ_ONLY);
 	        	  
  	        	rset_Join = stmt_Join.executeQuery("SELECT SUM(quantity* sales.price) AS total, products.name"+
  	       			  " FROM sales INNER JOIN users ON users.id = sales.uid RIGHT OUTER JOIN products"+
- 	       			  " ON products.id = sales.pid GROUP BY products.name ORDER BY products.name LIMIT 10");
+ 	       			  " ON products.id = sales.pid GROUP BY products.name ORDER BY products.name LIMIT 10 OFFSET " + colOffset);
  	        	   
- 	       	  	Statement stmt_JoinRows = conn.createStatement();
+ 	       	  	Statement stmt_JoinRows = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+                        ResultSet.CONCUR_READ_ONLY);
 
  	       	  	rset_JoinRows = stmt_JoinRows.executeQuery("SELECT SUM(quantity* sales.price) AS total, users.name AS state "+
  	       			"FROM sales INNER JOIN products ON products.id = sales.pid RIGHT OUTER JOIN users ON users.id = sales.uid "+
- 	       			"GROUP BY users.name ORDER BY users.name LIMIT 20");
+ 	       			"GROUP BY users.name ORDER BY users.name LIMIT 20 OFFSET " + rowOffset);
  	        	  	Statement stmt_TESTTT = conn.createStatement();
  	        	  	rset_TESTTT = stmt_TESTTT.executeQuery("SELECT SUM(quantity* sales.price) AS total, products.name, users.name AS state_id "+
  	        			" FROM sales INNER JOIN products ON sales.pid = products.id RIGHT OUTER JOIN users ON users.id = sales.uid "+
@@ -98,17 +102,19 @@
        	  	PreparedStatement seleProds = conn.prepareStatement("DROP TABLE IF EXISTS SelectedProducts; SELECT id, cid, name INTO TEMP SelectedProducts FROM products " + WHERE_COLS);
       	  	seleProds.executeUpdate();
       	  
-      	  	Statement stmt_Join = conn.createStatement();
+      	  	Statement stmt_Join = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
       	  
       	  	rset_Join = stmt_Join.executeQuery("SELECT SUM(quantity* sales.price) AS total, SelectedProducts.name"+
       			  " FROM sales INNER JOIN SelectedUsers ON SelectedUsers.id = sales.uid RIGHT OUTER JOIN SelectedProducts"+
-      			  " ON SelectedProducts.id = sales.pid GROUP BY SelectedProducts.name ORDER BY SelectedProducts.name LIMIT 10");
+      			  " ON SelectedProducts.id = sales.pid GROUP BY SelectedProducts.name ORDER BY SelectedProducts.name LIMIT 10 OFFSET " + colOffset);
        	   
-      	  	Statement stmt_JoinRows = conn.createStatement();
+      	  	Statement stmt_JoinRows = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
 
       	  	rset_JoinRows = stmt_JoinRows.executeQuery("SELECT SUM(quantity* sales.price) AS total, SelectedUsers.name AS state "+
       			"FROM sales INNER JOIN SelectedProducts ON SelectedProducts.id = sales.pid RIGHT OUTER JOIN SelectedUsers ON SelectedUsers.id = sales.uid "+
-      			"GROUP BY SelectedUsers.name ORDER BY SelectedUsers.name LIMIT 20");
+      			"GROUP BY SelectedUsers.name ORDER BY SelectedUsers.name LIMIT 20 OFFSET " + rowOffset);
        	  	Statement stmt_TESTTT = conn.createStatement();
        	  	rset_TESTTT = stmt_TESTTT.executeQuery("SELECT SUM(quantity* sales.price) AS total, SelectedProducts.name, SelectedUsers.name AS state_id "+
        			" FROM sales INNER JOIN SelectedProducts ON sales.pid = SelectedProducts.id RIGHT OUTER JOIN SelectedUsers ON SelectedUsers.id = sales.uid "+
@@ -153,17 +159,19 @@
  	        	  PreparedStatement seleProds = conn.prepareStatement("DROP TABLE IF EXISTS SelectedProducts; SELECT id, cid, name INTO TEMP SelectedProducts FROM products " + WHERE_COLS);
 	        	  seleProds.executeUpdate();
 	        	  
-	        	  Statement stmt_Join = conn.createStatement();
+	        	  Statement stmt_Join = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+	                       ResultSet.CONCUR_READ_ONLY);
 	        	  
 	        	  rset_Join = stmt_Join.executeQuery("SELECT SUM(quantity* sales.price) AS total, SelectedProducts.name"+
 	        			  " FROM sales INNER JOIN SelectedUsers ON SelectedUsers.id = sales.uid RIGHT OUTER JOIN SelectedProducts"+
-	        			  " ON SelectedProducts.id = sales.pid GROUP BY SelectedProducts.name ORDER BY SelectedProducts.name LIMIT 10");
+	        			  " ON SelectedProducts.id = sales.pid GROUP BY SelectedProducts.name ORDER BY SelectedProducts.name LIMIT 10 OFFSET " + colOffset);
  	        	   
-	        	  Statement stmt_JoinRows = conn.createStatement();
+	        	  Statement stmt_JoinRows = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+	                       ResultSet.CONCUR_READ_ONLY);
  	        	  if(request.getParameter("states").equals("all"))
  	        	  {
 	        	  rset_JoinRows = stmt_JoinRows.executeQuery("SELECT SUM(quantity* sales.price) AS total, states.state_id AS state FROM sales INNER JOIN SelectedUsers ON SelectedUsers.id = sales.uid INNER JOIN SelectedProducts "+
-	        	  "ON SelectedProducts.id = sales.pid RIGHT OUTER JOIN states ON states.state_id=SelectedUsers.state GROUP BY states.state_id ORDER BY states.state_id LIMIT 20");
+	        	  "ON SelectedProducts.id = sales.pid RIGHT OUTER JOIN states ON states.state_id=SelectedUsers.state GROUP BY states.state_id ORDER BY states.state_id LIMIT 20 OFFSET " + rowOffset);
  	        	  }
  	        	  else
  	        	  {
@@ -213,37 +221,9 @@
 	<div class="row" id="shift">
 		<div class="row">
 			<div class="panel">
-				<div id="left-box">
-					<form action="salesanalytics.jsp" method="GET">
-						<h3>Filter</h3>
-
-						<label>Rows:</label> <select name="big_filter">
-							<option value="customers" selected="selected">Customers</option>
-							<option value="states">States</option>
-						</select> <label>State:</label> <select name="states">
-							<option value="all">All States</option>
-							<% while(rs_states.next()) { %>
-							<option value=<%= rs_states.getString("state_id") %>>
-								<%= rs_states.getString("state_id") %></option>
-							<% } %>
-						</select> <label>Product Category:</label> <select name="product_cat">
-							<option value="all">All Categories</option>
-							<% while(rs_cats.next()) { %>
-							<option value=<%= rs_cats.getInt("id") %>>
-								<%= rs_cats.getString("name") %></option>
-							<% } %>
-						</select> <label>Age:</label> <select name="age">
-							<option value="all">All Ages</option>
-							<option value="12-17">12-18</option>
-							<option value="18-44">18-45</option>
-							<option value="45-64">45-65</option>
-							<option value="65-999">65+</option>
-						</select> <input type="submit" value="Run Query" class="button"> <input
-							type="reset" value="Clear Fields" class="button">
-					</form>
-				</div>
-				<div id="right-box">
+				<div>
 					<h3>Your Sales Analytics Report</h3>
+					<h4><a href="salesanalytics.jsp">Original Page</a></h4>
 					<hr>
 					<table border="1">
 						<tr>
@@ -319,40 +299,38 @@
 				</div>
 				<div class="divide"></div>
 				<div id="next-btns">
-					<% 
-						String big_filter = request.getParameter("big_filter");
-						String states = request.getParameter("states");
-						String product_cat = request.getParameter("product_cat");
-						String age = request.getParameter("age");
-						
-						//if the big filter is null, then the page has been loaded for the first time
-						if(big_filter == null) {
-							big_filter = "all";
-							states = "all";
-							product_cat = "all";
-							age = "all";
-						}
-					%>
+				<br>
+					<%  //reset the cursor 
+						rset_Join.first();
 					
+						//check if there are any more tuples to display, if not, don't display button
+						if(rset_Join.relative(9)) { 
+					%>
 					<form id="next10" class="float-left" action="salesanalyticsnext.jsp"
 						method="GET">
 						<input type="submit" value="Next 10 Products" class="button">
-						<input type="hidden" name="colOffset" value="10">
-						<input type="hidden" name="rowOffset" value="0">
-						<input type="hidden" name="big_filter" value="<%= big_filter %>">
-						<input type="hidden" name="states" value="<%= states %>">
-						<input type="hidden" name="age" value="<%= age %>">
-						<input type="hidden" name="product_cat" value="<%= product_cat %>">
+						<input type="hidden" name="colOffset" value="<%= colOffset + 10 %>">
+						<input type="hidden" name="rowOffset" value="<%= rowOffset %>">
+						<input type="hidden" name="big_filter" value="<%= request.getParameter("big_filter") %>">
+						<input type="hidden" name="states" value="<%= request.getParameter("states") %>">
+						<input type="hidden" name="age" value="<%= request.getParameter("age") %>">
+						<input type="hidden" name="product_cat" value="<%= request.getParameter("product_cat") %>">
 					</form>
+					<% } %>
+					<%
+						rset_JoinRows.first();
+						if(rset_JoinRows.relative(19)) {
+					%>
 					<form id="next20" action="salesanalyticsnext.jsp" method="GET">
 						<input type="submit" value="Next 20 Rows" class="button">
-						<input type="hidden" name="colOffset" value="0">
-						<input type="hidden" name="rowOffset" value="20">
-						<input type="hidden" name="big_filter" value="<%= big_filter %>">
-						<input type="hidden" name="states" value="<%= states %>">
-						<input type="hidden" name="age" value="<%= age %>">
-						<input type="hidden" name="product_cat" value="<%= product_cat %>">
+						<input type="hidden" name="colOffset" value="<%= colOffset %>">
+						<input type="hidden" name="rowOffset" value="<%= rowOffset + 20 %>">
+						<input type="hidden" name="big_filter" value="<%= request.getParameter("big_filter") %>">
+						<input type="hidden" name="states" value="<%= request.getParameter("states") %>">
+						<input type="hidden" name="age" value="<%= request.getParameter("age") %>">
+						<input type="hidden" name="product_cat" value="<%= request.getParameter("product_cat") %>">
 					</form>
+					<% } %>
 				</div>
 				<div class="divide"></div>
 			</div>
