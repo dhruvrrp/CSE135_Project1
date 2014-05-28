@@ -34,6 +34,8 @@
  	         ResultSet rs_states = stmt_states.executeQuery("SELECT state_id FROM states ORDER BY state_id");
  	         String WHERE_ROWS = "";
  	         String WHERE_COLS = "";
+ 	         String RowParam = "";
+ 	         
  	         ResultSet rset_Join = null;
  	         ResultSet rset_JoinRows = null;
  	         Statement stmt_cats = conn.createStatement();
@@ -47,8 +49,78 @@
 	         if(request.getParameter("offset") != null) {
 	        	 offset = Integer.parseInt(request.getParameter("offset"));
 	         }
- 	        
- 	         if(request.getParameter("big_filter") != null)
+ 	         if(request.getParameter("big_filter") == null)
+ 	         {
+ 	        	Statement stmt_Join = conn.createStatement();
+	        	  
+	        	rset_Join = stmt_Join.executeQuery("SELECT SUM(quantity* sales.price) AS total, products.name"+
+	        			  " FROM sales INNER JOIN users ON users.id = sales.uid RIGHT OUTER JOIN products"+
+	        			  " ON products.id = sales.pid GROUP BY products.name ORDER BY products.name");
+	        	
+	        	Statement stmt_JoinRows = conn.createStatement();
+
+           	    rset_JoinRows = stmt_JoinRows.executeQuery("SELECT SUM(quantity* sales.price) AS total, states.state_id AS state FROM sales INNER JOIN users ON users.id = sales.uid INNER JOIN products "+
+	        	  "ON products.id = sales.pid RIGHT OUTER JOIN states ON states.state_id=users.state GROUP BY states.state_id ORDER BY states.state_id");
+           	    
+           	 Statement stmt_TESTTT = conn.createStatement();
+        	  rset_TESTTT = stmt_TESTTT.executeQuery("SELECT SUM(quantity* sales.price) AS total, products.name, states.state_id "+
+        			" FROM sales RIGHT OUTER JOIN products ON sales.pid = products.id INNER JOIN users ON users.id = sales.uid "+
+        			" FULL OUTER JOIN states ON states.state_id = users.state GROUP BY products.name, states.state_id ORDER BY states.state_id");
+ 	         }
+ 	         else if(request.getParameter("big_filter").equals("customers"))
+ 	         {
+ 	        	 System.out.println(" Customers");
+ 	        	if(!request.getParameter("states").equals("all"))
+      		    {
+      				WHERE_ROWS +=  "WHERE users.state = '" + request.getParameter("states")+"'";
+      		   	}
+      		   	if(!request.getParameter("age").equals("all"))
+      		   	{
+      				String age[] = request.getParameter("age").split("-");
+      			   //states is all
+      			   if(WHERE_ROWS.length() == 0)
+      			   {
+      				   WHERE_ROWS +=  "WHERE users.age BETWEEN " + age[0] + " AND " + age[1];
+      			   }
+      			   else
+      			   {
+      				   WHERE_ROWS += " AND users.age BETWEEN " +age[0] + " AND " + age[1];
+      			   }
+      		   }
+      		   if(!request.getParameter("product_cat").equals("all"))
+      		   {
+      			   out.println(request.getParameter("product_cat"));
+      			   WHERE_COLS += "WHERE products.cid = " + request.getParameter("product_cat");
+      		   }
+      		   
+      		   
+      		 PreparedStatement seleUsers = conn.prepareStatement("DROP TABLE IF EXISTS SelectedUsers; SELECT id, name, age, state INTO TEMP SelectedUsers FROM users "+ WHERE_ROWS+ " ORDER BY state");
+       	   seleUsers.executeUpdate();
+       	  
+       	  //Create the selected products temp table
+       	  
+       	  PreparedStatement seleProds = conn.prepareStatement("DROP TABLE IF EXISTS SelectedProducts; SELECT id, cid, name INTO TEMP SelectedProducts FROM products " + WHERE_COLS);
+      	  seleProds.executeUpdate();
+      	  
+      	  Statement stmt_Join = conn.createStatement();
+      	  
+      	  rset_Join = stmt_Join.executeQuery("SELECT SUM(quantity* sales.price) AS total, SelectedProducts.name"+
+      			  " FROM sales INNER JOIN SelectedUsers ON SelectedUsers.id = sales.uid RIGHT OUTER JOIN SelectedProducts"+
+      			  " ON SelectedProducts.id = sales.pid GROUP BY SelectedProducts.name ORDER BY SelectedProducts.name");
+       	   
+      	  Statement stmt_JoinRows = conn.createStatement();
+
+      	  rset_JoinRows = stmt_JoinRows.executeQuery("SELECT SUM(quantity* sales.price) AS total, SelectedUsers.name AS state "+
+      			"FROM sales INNER JOIN SelectedProducts ON SelectedProducts.id = sales.pid RIGHT OUTER JOIN SelectedUsers ON SelectedUsers.id = sales.uid "+
+      			"GROUP BY SelectedUsers.name ORDER BY SelectedUsers.name");
+       	  Statement stmt_TESTTT = conn.createStatement();
+       	  rset_TESTTT = stmt_TESTTT.executeQuery("SELECT SUM(quantity* sales.price) AS total, SelectedProducts.name, SelectedUsers.name AS state_id "+
+       			" FROM sales INNER JOIN SelectedProducts ON sales.pid = SelectedProducts.id RIGHT OUTER JOIN SelectedUsers ON SelectedUsers.id = sales.uid "+
+       			"GROUP BY SelectedProducts.name, SelectedUsers.name ORDER BY SelectedUsers.name");
+      		   
+      		   
+ 	         }
+	         else if(request.getParameter("big_filter").equals("states"))
  	         {
  	        	   if(request.getParameter("big_filter").equals("states"))
  	        	   {
@@ -106,7 +178,7 @@
  	        	  }
  	        	  Statement stmt_TESTTT = conn.createStatement();
  	        	  rset_TESTTT = stmt_TESTTT.executeQuery("SELECT SUM(quantity* sales.price) AS total, SelectedProducts.name, states.state_id "+
- 	        			" FROM sales RIGHT OUTER JOIN SelectedProducts ON sales.pid = SelectedProducts.id INNER JOIN SelectedUsers ON SelectedUsers.id = sales.uid "+
+ 	        			" FROM sales INNER JOIN SelectedProducts ON sales.pid = SelectedProducts.id INNER JOIN SelectedUsers ON SelectedUsers.id = sales.uid "+
  	        			" FULL OUTER JOIN states ON states.state_id = SelectedUsers.state GROUP BY SelectedProducts.name, states.state_id ORDER BY states.state_id");
  	         }
  	  //       while(rset_TESTTT.next())
@@ -191,7 +263,7 @@
 						</tr>
 						<%rset_TESTTT.next();
 						
-					    if (!(rset_JoinRows.isBeforeFirst()))
+					    if (!(rset_JoinRows.isBeforeFirst()) && !request.getParameter("states").equals("all"))
 					    {
 					        %><tr><td><%=request.getParameter("states") + " ($0)"%></td>
                             <%for(int i=0; i< ar.size(); i++){%>
