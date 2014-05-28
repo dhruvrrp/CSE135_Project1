@@ -221,37 +221,9 @@
 	<div class="row" id="shift">
 		<div class="row">
 			<div class="panel">
-				<div id="left-box">
-					<form action="salesanalytics.jsp" method="GET">
-						<h3>Filter</h3>
-
-						<label>Rows:</label> <select name="big_filter">
-							<option value="customers" selected="selected">Customers</option>
-							<option value="states">States</option>
-						</select> <label>State:</label> <select name="states">
-							<option value="all">All States</option>
-							<% while(rs_states.next()) { %>
-							<option value=<%= rs_states.getString("state_id") %>>
-								<%= rs_states.getString("state_id") %></option>
-							<% } %>
-						</select> <label>Product Category:</label> <select name="product_cat">
-							<option value="all">All Categories</option>
-							<% while(rs_cats.next()) { %>
-							<option value=<%= rs_cats.getInt("id") %>>
-								<%= rs_cats.getString("name") %></option>
-							<% } %>
-						</select> <label>Age:</label> <select name="age">
-							<option value="all">All Ages</option>
-							<option value="12-17">12-18</option>
-							<option value="18-44">18-45</option>
-							<option value="45-64">45-65</option>
-							<option value="65-999">65+</option>
-						</select> <input type="submit" value="Run Query" class="button"> <input
-							type="reset" value="Clear Fields" class="button">
-					</form>
-				</div>
-				<div id="right-box">
+				<div>
 					<h3>Your Sales Analytics Report</h3>
+					<h4><a href="salesanalytics.jsp">Original Page</a></h4>
 					<hr>
 					<table border="1">
 						<tr>
