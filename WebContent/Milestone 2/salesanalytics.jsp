@@ -69,7 +69,7 @@
  	         }
  	         else if(request.getParameter("big_filter").equals("customers"))
  	         {
- 	        	 System.out.println(" Customers");
+ 	        
  	        	if(!request.getParameter("states").equals("all"))
       		    {
       				WHERE_ROWS +=  "WHERE users.state = '" + request.getParameter("states")+"'";
@@ -89,7 +89,6 @@
       		   }
       		   if(!request.getParameter("product_cat").equals("all"))
       		   {
-      			   out.println(request.getParameter("product_cat"));
       			   WHERE_COLS += "WHERE products.cid = " + request.getParameter("product_cat");
       		   }
       		   
@@ -142,7 +141,6 @@
  	        	}
  	        	if(!request.getParameter("product_cat").equals("all"))
  	        	{
- 	        		out.println(request.getParameter("product_cat"));
  	        		WHERE_COLS += "WHERE products.cid = " + request.getParameter("product_cat");
  	        	}
  	        	      
@@ -294,12 +292,8 @@
 									rset_TESTTT.next();
 									if(rset_TESTTT.isAfterLast())
 									{
-										System.out.println("Hello");
 										break;
 									}
-									System.out.println(rset_TESTTT.getString("state_id")+" yup woho");
-									if(rset_TESTTT.getString("state_id").equals("WY"))
-										System.out.println("YOHOHOHOHOH");
 								}
 							}
 							else
@@ -308,16 +302,13 @@
 								{%>
 									<td><%=" $" +rset_TESTTT.getString("total") %></td>
 								<%
-								System.out.println(rset_TESTTT.getString("state_id")+" yup before");
+								
 								rset_TESTTT.next();
 								if(rset_TESTTT.isAfterLast())
 								{
-									System.out.println("Hello 1");
 									break;
 								}
-								System.out.println(rset_TESTTT.getString("state_id")+" yup after");
-								if(rset_TESTTT.getString("state_id").equals("WY"))
-									System.out.println(rset_JoinRows.getString("state")+" YOHOHOHOHOH " + i + " A " + rset_TESTTT.getString("name"));
+									
 								}
 								else
 								{%>
@@ -331,12 +322,39 @@
 				</div>
 				<div class="divide"></div>
 				<div id="next-btns">
-					<form id="next10" class="float-left" action="salesanalytics.jsp"
+					<% 
+						String big_filter = request.getParameter("big_filter");
+						String states = request.getParameter("states");
+						String product_cat = request.getParameter("product_cat");
+						String age = request.getParameter("age");
+						
+						//if the big filter is null, then the page has been loaded for the first time
+						if(big_filter == null) {
+							big_filter = "customers";
+							states = "all";
+							product_cat = "all";
+							age = "all";
+						}
+					%>
+					
+					<form id="next10" class="float-left" action="salesanalyticsnext.jsp"
 						method="GET">
-						<input type="submit" value="Next 10" class="button">
+						<input type="submit" value="Next 10 Products" class="button">
+						<input type="hidden" name="colOffset" value="10">
+						<input type="hidden" name="rowOffset" value="0">
+						<input type="hidden" name="big_filter" value="<%= big_filter %>">
+						<input type="hidden" name="states" value="<%= states %>">
+						<input type="hidden" name="age" value="<%= age %>">
+						<input type="hidden" name="product_cat" value="<%= product_cat %>">
 					</form>
-					<form id="next20" action="salesanalytics.jsp" method="GET">
-						<input type="submit" value="Next 20" class="button">
+					<form id="next20" action="salesanalyticsnext.jsp" method="GET">
+						<input type="submit" value="Next 20 Rows" class="button">
+						<input type="hidden" name="colOffset" value="0">
+						<input type="hidden" name="rowOffset" value="20">
+						<input type="hidden" name="big_filter" value="<%= big_filter %>">
+						<input type="hidden" name="states" value="<%= states %>">
+						<input type="hidden" name="age" value="<%= age %>">
+						<input type="hidden" name="product_cat" value="<%= product_cat %>">
 					</form>
 				</div>
 				<div class="divide"></div>
