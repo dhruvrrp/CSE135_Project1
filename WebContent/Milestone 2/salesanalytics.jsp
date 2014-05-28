@@ -55,13 +55,13 @@
 	        	  
  	        	rset_Join = stmt_Join.executeQuery("SELECT SUM(quantity* sales.price) AS total, products.name"+
  	       			  " FROM sales INNER JOIN users ON users.id = sales.uid RIGHT OUTER JOIN products"+
- 	       			  " ON products.id = sales.pid GROUP BY products.name ORDER BY products.name");
+ 	       			  " ON products.id = sales.pid GROUP BY products.name ORDER BY products.name LIMIT 10");
  	        	   
  	       	  	Statement stmt_JoinRows = conn.createStatement();
 
  	       	  	rset_JoinRows = stmt_JoinRows.executeQuery("SELECT SUM(quantity* sales.price) AS total, users.name AS state "+
  	       			"FROM sales INNER JOIN products ON products.id = sales.pid RIGHT OUTER JOIN users ON users.id = sales.uid "+
- 	       			"GROUP BY users.name ORDER BY users.name");
+ 	       			"GROUP BY users.name ORDER BY users.name LIMIT 20");
  	        	  	Statement stmt_TESTTT = conn.createStatement();
  	        	  	rset_TESTTT = stmt_TESTTT.executeQuery("SELECT SUM(quantity* sales.price) AS total, products.name, users.name AS state_id "+
  	        			" FROM sales INNER JOIN products ON sales.pid = products.id RIGHT OUTER JOIN users ON users.id = sales.uid "+
@@ -106,13 +106,13 @@
       	  
       	  	rset_Join = stmt_Join.executeQuery("SELECT SUM(quantity* sales.price) AS total, SelectedProducts.name"+
       			  " FROM sales INNER JOIN SelectedUsers ON SelectedUsers.id = sales.uid RIGHT OUTER JOIN SelectedProducts"+
-      			  " ON SelectedProducts.id = sales.pid GROUP BY SelectedProducts.name ORDER BY SelectedProducts.name");
+      			  " ON SelectedProducts.id = sales.pid GROUP BY SelectedProducts.name ORDER BY SelectedProducts.name LIMIT 10");
        	   
       	  	Statement stmt_JoinRows = conn.createStatement();
 
       	  	rset_JoinRows = stmt_JoinRows.executeQuery("SELECT SUM(quantity* sales.price) AS total, SelectedUsers.name AS state "+
       			"FROM sales INNER JOIN SelectedProducts ON SelectedProducts.id = sales.pid RIGHT OUTER JOIN SelectedUsers ON SelectedUsers.id = sales.uid "+
-      			"GROUP BY SelectedUsers.name ORDER BY SelectedUsers.name");
+      			"GROUP BY SelectedUsers.name ORDER BY SelectedUsers.name LIMIT 20");
        	  	Statement stmt_TESTTT = conn.createStatement();
        	  	rset_TESTTT = stmt_TESTTT.executeQuery("SELECT SUM(quantity* sales.price) AS total, SelectedProducts.name, SelectedUsers.name AS state_id "+
        			" FROM sales INNER JOIN SelectedProducts ON sales.pid = SelectedProducts.id RIGHT OUTER JOIN SelectedUsers ON SelectedUsers.id = sales.uid "+
@@ -162,13 +162,13 @@
 	        	  
 	        	  rset_Join = stmt_Join.executeQuery("SELECT SUM(quantity* sales.price) AS total, SelectedProducts.name"+
 	        			  " FROM sales INNER JOIN SelectedUsers ON SelectedUsers.id = sales.uid RIGHT OUTER JOIN SelectedProducts"+
-	        			  " ON SelectedProducts.id = sales.pid GROUP BY SelectedProducts.name ORDER BY SelectedProducts.name");
+	        			  " ON SelectedProducts.id = sales.pid GROUP BY SelectedProducts.name ORDER BY SelectedProducts.name LIMIT 10");
  	        	   
 	        	  Statement stmt_JoinRows = conn.createStatement();
  	        	  if(request.getParameter("states").equals("all"))
  	        	  {
 	        	  rset_JoinRows = stmt_JoinRows.executeQuery("SELECT SUM(quantity* sales.price) AS total, states.state_id AS state FROM sales INNER JOIN SelectedUsers ON SelectedUsers.id = sales.uid INNER JOIN SelectedProducts "+
-	        	  "ON SelectedProducts.id = sales.pid RIGHT OUTER JOIN states ON states.state_id=SelectedUsers.state GROUP BY states.state_id ORDER BY states.state_id");
+	        	  "ON SelectedProducts.id = sales.pid RIGHT OUTER JOIN states ON states.state_id=SelectedUsers.state GROUP BY states.state_id ORDER BY states.state_id LIMIT 20");
  	        	  }
  	        	  else
  	        	  {
