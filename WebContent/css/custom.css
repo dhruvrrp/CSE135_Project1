@@ -108,3 +108,10 @@ div.center {
 	width: 720px;
 }
 
+td {
+	text-align: center;
+}
+
+table {
+	width: 90%;
+}
