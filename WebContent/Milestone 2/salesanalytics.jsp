@@ -50,12 +50,14 @@
 		}
 		if(request.getParameter("big_filter") == null)
 		{
-			Statement stmt_Join = conn.createStatement();        	  
+			Statement stmt_Join = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);        	  
 			rset_Join = stmt_Join.executeQuery("SELECT SUM(quantity* sales.price) AS total, products.name"+
  	       			  " FROM sales INNER JOIN users ON users.id = sales.uid RIGHT OUTER JOIN products"+
  	       			  " ON products.id = sales.pid GROUP BY products.name ORDER BY products.name LIMIT 10");
  	        	   
-			Statement stmt_JoinRows = conn.createStatement();
+			Statement stmt_JoinRows = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
 
 			rset_JoinRows = stmt_JoinRows.executeQuery("SELECT SUM(quantity* sales.price) AS total, users.name AS state "+
  	       			"FROM sales INNER JOIN products ON products.id = sales.pid RIGHT OUTER JOIN users ON users.id = sales.uid "+
@@ -97,13 +99,15 @@
 			PreparedStatement seleProds = conn.prepareStatement("DROP TABLE IF EXISTS SelectedProducts; SELECT id, cid, name INTO TEMP SelectedProducts FROM products " + WHERE_COLS);
 			seleProds.executeUpdate();
      	  
-			Statement stmt_Join = conn.createStatement();
+			Statement stmt_Join = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
      	  
 			rset_Join = stmt_Join.executeQuery("SELECT SUM(quantity* sales.price) AS total, SelectedProducts.name"+
 					" FROM sales INNER JOIN SelectedUsers ON SelectedUsers.id = sales.uid RIGHT OUTER JOIN SelectedProducts"+
      			  " ON SelectedProducts.id = sales.pid GROUP BY SelectedProducts.name ORDER BY SelectedProducts.name LIMIT 10");
       	   
-			Statement stmt_JoinRows = conn.createStatement();
+			Statement stmt_JoinRows = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
 
 			rset_JoinRows = stmt_JoinRows.executeQuery("SELECT SUM(quantity* sales.price) AS total, SelectedUsers.name AS state "+
      			"FROM sales INNER JOIN SelectedProducts ON SelectedProducts.id = sales.pid RIGHT OUTER JOIN SelectedUsers ON SelectedUsers.id = sales.uid "+
@@ -146,13 +150,15 @@
  	        	  
 			PreparedStatement seleProds = conn.prepareStatement("DROP TABLE IF EXISTS SelectedProducts; SELECT id, cid, name INTO TEMP SelectedProducts FROM products " + WHERE_COLS);
 			seleProds.executeUpdate();
-			Statement stmt_Join = conn.createStatement();
+			Statement stmt_Join = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
 	        	  
 			rset_Join = stmt_Join.executeQuery("SELECT SUM(quantity* sales.price) AS total, SelectedProducts.name"+
 	        			  " FROM sales INNER JOIN SelectedUsers ON SelectedUsers.id = sales.uid RIGHT OUTER JOIN SelectedProducts"+
 	        			  " ON SelectedProducts.id = sales.pid GROUP BY SelectedProducts.name ORDER BY SelectedProducts.name LIMIT 10");
  	        	   
-			Statement stmt_JoinRows = conn.createStatement();
+			Statement stmt_JoinRows = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
 			if(request.getParameter("states").equals("all"))
 			{
 				rset_JoinRows = stmt_JoinRows.executeQuery("SELECT SUM(quantity* sales.price) AS total, states.state_id AS state FROM sales INNER JOIN SelectedUsers ON SelectedUsers.id = sales.uid INNER JOIN SelectedProducts "+
@@ -334,8 +340,16 @@
 							product_cat = "all";
 							age = "all";
 						}
+						
+						//reset the cursors 
+						rset_Join.first();
+						rset_JoinRows.first();
 					%>
-					
+				
+					<%	
+						//check if there are any more tuples to display, if not, don't display button
+						if(rset_Join.relative(9)) { 
+					%>
 					<form id="next10" class="float-left" action="salesanalyticsnext.jsp"
 						method="GET">
 						<input type="submit" value="Next 10 Products" class="button">
@@ -346,6 +360,9 @@
 						<input type="hidden" name="age" value="<%= age %>">
 						<input type="hidden" name="product_cat" value="<%= product_cat %>">
 					</form>
+					<% } %>
+					
+					<% if(rset_JoinRows.relative(19))  {%>
 					<form id="next20" action="salesanalyticsnext.jsp" method="GET">
 						<input type="submit" value="Next 20 Rows" class="button">
 						<input type="hidden" name="colOffset" value="0">
@@ -355,6 +372,7 @@
 						<input type="hidden" name="age" value="<%= age %>">
 						<input type="hidden" name="product_cat" value="<%= product_cat %>">
 					</form>
+					<% } %>
 				</div>
 				<div class="divide"></div>
 			</div>
