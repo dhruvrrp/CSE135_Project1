@@ -43,12 +43,13 @@
  	         ResultSet rset_TESTTT = null;
  	         Statement stmt_users = conn.createStatement();
  	         
- 	        int offset = 0;    //default offset is 0 (first load of page)*
+ 	         int offset = 0;    //default offset is 0 (first load of page)*
 	         
 	         //check if offset is set, therefore need to change value of offset*
 	         if(request.getParameter("offset") != null) {
 	        	 offset = Integer.parseInt(request.getParameter("offset"));
 	         }
+ 	         
  	         if(request.getParameter("big_filter") == null)
  	         {
  	        	Statement stmt_Join = conn.createStatement();
@@ -62,7 +63,7 @@
            	    rset_JoinRows = stmt_JoinRows.executeQuery("SELECT SUM(quantity* sales.price) AS total, states.state_id AS state FROM sales INNER JOIN users ON users.id = sales.uid INNER JOIN products "+
 	        	  "ON products.id = sales.pid RIGHT OUTER JOIN states ON states.state_id=users.state GROUP BY states.state_id ORDER BY states.state_id");
            	    
-           	 Statement stmt_TESTTT = conn.createStatement();
+           	  Statement stmt_TESTTT = conn.createStatement();
         	  rset_TESTTT = stmt_TESTTT.executeQuery("SELECT SUM(quantity* sales.price) AS total, products.name, states.state_id "+
         			" FROM sales RIGHT OUTER JOIN products ON sales.pid = products.id INNER JOIN users ON users.id = sales.uid "+
         			" FULL OUTER JOIN states ON states.state_id = users.state GROUP BY products.name, states.state_id ORDER BY states.state_id");
@@ -94,8 +95,8 @@
       		   }
       		   
       		   
-      		 PreparedStatement seleUsers = conn.prepareStatement("DROP TABLE IF EXISTS SelectedUsers; SELECT id, name, age, state INTO TEMP SelectedUsers FROM users "+ WHERE_ROWS+ " ORDER BY state");
-       	   seleUsers.executeUpdate();
+      	  PreparedStatement seleUsers = conn.prepareStatement("DROP TABLE IF EXISTS SelectedUsers; SELECT id, name, age, state INTO TEMP SelectedUsers FROM users "+ WHERE_ROWS+ " ORDER BY state");
+       	  seleUsers.executeUpdate();
        	  
        	  //Create the selected products temp table
        	  
