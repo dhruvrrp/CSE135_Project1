@@ -115,3 +115,7 @@ td {
 table {
 	width: 90%;
 }
+
+.bold {
+	font-weight: bold;
+}

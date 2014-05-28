@@ -257,14 +257,14 @@
 							String truncate = rset_Join.getString("name");
 							if(truncate.length() > 10)
 							truncate = truncate.substring(0,10) + "...";%>
-							<td><%=truncate + " ($" + rset_Join.getInt("total") + ")" %></td>
+							<td class="bold"><%=truncate + " ($" + rset_Join.getInt("total") + ")" %></td>
 							<%} %>
 						</tr>
 						<%rset_TESTTT.next();
 						
 					    if (!(rset_JoinRows.isBeforeFirst()) && !request.getParameter("states").equals("all"))
 					    {
-					        %><tr><td><%=request.getParameter("states") + " ($0)"%></td>
+					        %><tr><td class="bold"><%=request.getParameter("states") + " ($0)"%></td>
                             <%for(int i=0; i< ar.size(); i++){%>
                                   <td>$0</td><% 
                               }%></tr><%}
@@ -281,7 +281,7 @@
 								System.out.println("yup");
 							}
 							%>
-							<td><%=rset_JoinRows.getString("state") + " ($" + rset_JoinRows.getInt("total") + ")" %></td>
+							<td class="bold"><%=rset_JoinRows.getString("state") + " ($" + rset_JoinRows.getInt("total") + ")" %></td>
 							<%for(int i=0; i< ar.size(); i++)
 							{
 							if(rset_TESTTT.getString("name") == null) 
