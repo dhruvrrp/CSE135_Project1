@@ -306,7 +306,7 @@
 							{
 								if(rset_TESTTT.getString("name") != null && ar.get(i).equals(rset_TESTTT.getString("name")) && rset_TESTTT.getString("state_id").equals(rset_JoinRows.getString("state")))
 								{%>
-									<td><%=" ($" +rset_TESTTT.getString("total") + ")"%></td>
+									<td><%=" $" +rset_TESTTT.getString("total") %></td>
 								<%
 								System.out.println(rset_TESTTT.getString("state_id")+" yup before");
 								rset_TESTTT.next();
