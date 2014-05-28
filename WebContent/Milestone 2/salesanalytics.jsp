@@ -257,7 +257,7 @@
 							String truncate = rset_Join.getString("name");
 							if(truncate.length() > 10)
 							truncate = truncate.substring(0,10) + "...";%>
-							<td><%=truncate + " $" + rset_Join.getInt("total") %></td>
+							<td><%=truncate + " ($" + rset_Join.getInt("total") + ")" %></td>
 							<%} %>
 						</tr>
 						<%rset_TESTTT.next();
@@ -281,7 +281,7 @@
 								System.out.println("yup");
 							}
 							%>
-							<td><%=rset_JoinRows.getString("state") + " $" + rset_JoinRows.getInt("total") %></td>
+							<td><%=rset_JoinRows.getString("state") + " ($" + rset_JoinRows.getInt("total") + ")" %></td>
 							<%for(int i=0; i< ar.size(); i++)
 							{
 							if(rset_TESTTT.getString("name") == null) 
@@ -306,7 +306,7 @@
 							{
 								if(rset_TESTTT.getString("name") != null && ar.get(i).equals(rset_TESTTT.getString("name")) && rset_TESTTT.getString("state_id").equals(rset_JoinRows.getString("state")))
 								{%>
-									<td><%=" $" +rset_TESTTT.getString("total") %></td>
+									<td><%=" ($" +rset_TESTTT.getString("total") + ")"%></td>
 								<%
 								System.out.println(rset_TESTTT.getString("state_id")+" yup before");
 								rset_TESTTT.next();
