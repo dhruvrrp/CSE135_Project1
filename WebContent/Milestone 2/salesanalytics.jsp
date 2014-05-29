@@ -275,9 +275,6 @@
 								while(rset_Table.getString("state_id").equals(rset_JoinRows.getString("state")) == false )
 								{
 									rset_Table.next();
-									System.out.println(rset_Table.getString("state_id")+" yup");
-									System.out.println(rset_Table.getString("state_id") + " " + rset_JoinRows.getString("state"));
-									System.out.println("yup");
 								}
 							%>
 							<td class="bold"><%=rset_JoinRows.getString("state") + " ($" + rset_JoinRows.getInt("total") + ")" %></td>

@@ -184,10 +184,6 @@
  	        			" FULL OUTER JOIN states ON states.state_id = SelectedUsers.state GROUP BY SelectedProducts.name, states.state_id ORDER BY states.state_id");
  	         }
  	         
- 	        /* while(rset_TESTTT.next())
- 	             {
- 	                System.out.println(rset_TESTTT.getInt("total") + " A " + rset_TESTTT.getString("name") + " state " + rset_TESTTT.getString("state_id"));
- 	           } */
  	  
  	         ArrayList<String> ar = new ArrayList<String>();
  		%>
@@ -256,9 +252,6 @@
 						<tr><%while(rset_TESTTT.getString("state_id").equals(rset_JoinRows.getString("state")) == false )
 							{
 								rset_TESTTT.next();
-							    /* System.out.println(rset_TESTTT.getString("state_id")+" yup");
-								System.out.println(rset_TESTTT.getString("state_id") + " " + rset_JoinRows.getString("state"));
-								System.out.println("yup");  */
 							}
 							%>
 							<td class="bold"><%=rset_JoinRows.getString("state") + " ($" + rset_JoinRows.getInt("total") + ")" %></td>
@@ -348,13 +341,11 @@
  			}
  			catch (SQLException e)
  	    	{
-out.println("SQLException");
  	       	 	out.println(e.getMessage());
  	       	 	return;
  	    	}
  	    	catch (Exception e)
  	    	{
-out.println("Exception");
  	     		out.println(e.getMessage());
  	    	}
  			finally {
