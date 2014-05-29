@@ -33,6 +33,7 @@
  		Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/CSE135", "postgres", "calcium");
  		
  		Statement stmt_states = conn.createStatement();
+ 		long startTime, endTime;
  		ResultSet rs_states = stmt_states.executeQuery("SELECT state_id FROM states ORDER BY state_id");
  		String WHERE_ROWS = "";
 		String WHERE_COLS = "";    
@@ -52,20 +53,33 @@
 		{
 			Statement stmt_Join = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);        	  
+			
+			// Initialize timer
+			startTime = System.currentTimeMillis();
 			rset_Join = stmt_Join.executeQuery("SELECT SUM(quantity* sales.price) AS total, products.name"+
  	       			  " FROM sales INNER JOIN users ON users.id = sales.uid RIGHT OUTER JOIN products"+
  	       			  " ON products.id = sales.pid GROUP BY products.name ORDER BY products.name LIMIT 10");
+			// End timer
+            endTime = System.currentTimeMillis();
+            System.out.println("Time for running rset_Join query: " + (endTime-startTime) + "ms");
  	        	   
 			Statement stmt_JoinRows = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
 
+			startTime = System.currentTimeMillis();
 			rset_JoinRows = stmt_JoinRows.executeQuery("SELECT SUM(quantity* sales.price) AS total, users.name AS state "+
  	       			"FROM sales INNER JOIN products ON products.id = sales.pid RIGHT OUTER JOIN users ON users.id = sales.uid "+
  	       			"GROUP BY users.name ORDER BY users.name LIMIT 20");
-			Statement stmt_Table = conn.createStatement();
+            endTime = System.currentTimeMillis();
+            System.out.println("Time for running rset_JoinRows query: " + (endTime-startTime) + "ms");
+			
+            startTime = System.currentTimeMillis();
+            Statement stmt_Table = conn.createStatement();
 			rset_Table = stmt_Table.executeQuery("SELECT SUM(quantity* sales.price) AS total, products.name, users.name AS state_id "+
  	        			" FROM sales INNER JOIN products ON sales.pid = products.id RIGHT OUTER JOIN users ON users.id = sales.uid "+
  	        			"GROUP BY products.name, users.name ORDER BY users.name");
+			endTime = System.currentTimeMillis();
+            System.out.println("Time for running rset_Table query: " + (endTime-startTime) + "ms");
 		}
 		else if(request.getParameter("big_filter").equals("customers"))
 		{
@@ -91,31 +105,46 @@
 				WHERE_COLS += "WHERE products.cid = " + request.getParameter("product_cat");
 			}
   
+	        startTime = System.currentTimeMillis();
 			PreparedStatement seleUsers = conn.prepareStatement("DROP TABLE IF EXISTS SelectedUsers; SELECT id, name, age, state INTO TEMP SelectedUsers FROM users "+ WHERE_ROWS+ " ORDER BY state");
 			seleUsers.executeUpdate();
+            endTime = System.currentTimeMillis();
+            System.out.println("Time for running seleUsers query: " + (endTime-startTime) + "ms");
       	  
 			//Create the selected products temp table
-      	  
+			startTime = System.currentTimeMillis();
 			PreparedStatement seleProds = conn.prepareStatement("DROP TABLE IF EXISTS SelectedProducts; SELECT id, cid, name INTO TEMP SelectedProducts FROM products " + WHERE_COLS);
 			seleProds.executeUpdate();
+            endTime = System.currentTimeMillis();
+            System.out.println("Time for running seleProds query: " + (endTime-startTime) + "ms");
      	  
 			Statement stmt_Join = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
-     	  
+     	    
+			startTime = System.currentTimeMillis();
 			rset_Join = stmt_Join.executeQuery("SELECT SUM(quantity* sales.price) AS total, SelectedProducts.name"+
 					" FROM sales INNER JOIN SelectedUsers ON SelectedUsers.id = sales.uid RIGHT OUTER JOIN SelectedProducts"+
      			  " ON SelectedProducts.id = sales.pid GROUP BY SelectedProducts.name ORDER BY SelectedProducts.name LIMIT 10");
+			endTime = System.currentTimeMillis();
+            System.out.println("Time for running rset_Join query: " + (endTime-startTime) + "ms");
       	   
 			Statement stmt_JoinRows = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
 
+	        startTime = System.currentTimeMillis();
 			rset_JoinRows = stmt_JoinRows.executeQuery("SELECT SUM(quantity* sales.price) AS total, SelectedUsers.name AS state "+
      			"FROM sales INNER JOIN SelectedProducts ON SelectedProducts.id = sales.pid RIGHT OUTER JOIN SelectedUsers ON SelectedUsers.id = sales.uid "+
      			"GROUP BY SelectedUsers.name ORDER BY SelectedUsers.name LIMIT 20");
+			endTime = System.currentTimeMillis();
+            System.out.println("Time for running rset_JoinRows query: " + (endTime-startTime) + "ms");
+            
+            startTime = System.currentTimeMillis();
 			Statement stmt_Table = conn.createStatement();
 			rset_Table = stmt_Table.executeQuery("SELECT SUM(quantity* sales.price) AS total, SelectedProducts.name, SelectedUsers.name AS state_id "+
       			" FROM sales INNER JOIN SelectedProducts ON sales.pid = SelectedProducts.id RIGHT OUTER JOIN SelectedUsers ON SelectedUsers.id = sales.uid "+
       			"GROUP BY SelectedProducts.name, SelectedUsers.name ORDER BY SelectedUsers.name");
+			endTime = System.currentTimeMillis();
+            System.out.println("Time for running rset_Table query: " + (endTime-startTime) + "ms");
      		   
      		   
 		}
@@ -143,36 +172,54 @@
 				WHERE_COLS += "WHERE products.cid = " + request.getParameter("product_cat");
 			}
 			//Create the selected users temp table
+			startTime = System.currentTimeMillis();
 			PreparedStatement seleUsers = conn.prepareStatement("DROP TABLE IF EXISTS SelectedUsers; SELECT id, name, age, state INTO TEMP SelectedUsers FROM users "+ WHERE_ROWS+ " ORDER BY state");
 			seleUsers.executeUpdate();
+			endTime = System.currentTimeMillis();
+            System.out.println("Time for running seleUsers query: " + (endTime-startTime) + "ms");
  	        	  
 			//Create the selected products temp table
- 	        	  
+ 	        startTime = System.currentTimeMillis();
 			PreparedStatement seleProds = conn.prepareStatement("DROP TABLE IF EXISTS SelectedProducts; SELECT id, cid, name INTO TEMP SelectedProducts FROM products " + WHERE_COLS);
 			seleProds.executeUpdate();
+			endTime = System.currentTimeMillis();
+            System.out.println("Time for running seleProds query: " + (endTime-startTime) + "ms");
+            
 			Statement stmt_Join = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
-	        	  
+	        
+			startTime = System.currentTimeMillis();
 			rset_Join = stmt_Join.executeQuery("SELECT SUM(quantity* sales.price) AS total, SelectedProducts.name"+
 	        			  " FROM sales INNER JOIN SelectedUsers ON SelectedUsers.id = sales.uid RIGHT OUTER JOIN SelectedProducts"+
 	        			  " ON SelectedProducts.id = sales.pid GROUP BY SelectedProducts.name ORDER BY SelectedProducts.name LIMIT 10");
+			endTime = System.currentTimeMillis();
+            System.out.println("Time for running rset_Join query: " + (endTime-startTime) + "ms");
  	        	   
 			Statement stmt_JoinRows = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
 			if(request.getParameter("states").equals("all"))
 			{
+				startTime = System.currentTimeMillis();
 				rset_JoinRows = stmt_JoinRows.executeQuery("SELECT SUM(quantity* sales.price) AS total, states.state_id AS state FROM sales INNER JOIN SelectedUsers ON SelectedUsers.id = sales.uid INNER JOIN SelectedProducts "+
 	        	  "ON SelectedProducts.id = sales.pid RIGHT OUTER JOIN states ON states.state_id=SelectedUsers.state GROUP BY states.state_id ORDER BY states.state_id LIMIT 20");
+				endTime = System.currentTimeMillis();
+	            System.out.println("Time for running rset_JoinRows query: " + (endTime-startTime) + "ms");
 			}
 			else
 			{
+                startTime = System.currentTimeMillis();
 				rset_JoinRows = stmt_JoinRows.executeQuery("SELECT SUM(quantity* sales.price) AS total, SelectedUsers.state FROM sales INNER JOIN SelectedUsers ON SelectedUsers.id = sales.uid INNER JOIN SelectedProducts "+
  	      	        	  "ON SelectedProducts.id = sales.pid GROUP BY SelectedUsers.state ORDER BY SelectedUsers.state");
+				endTime = System.currentTimeMillis();
+                System.out.println("Time for running rset_JoinRows query: " + (endTime-startTime) + "ms");
 			}
 			Statement stmt_Table = conn.createStatement();
+			startTime = System.currentTimeMillis();
 			rset_Table = stmt_Table.executeQuery("SELECT SUM(quantity* sales.price) AS total, SelectedProducts.name, states.state_id "+
  	        			" FROM sales INNER JOIN SelectedProducts ON sales.pid = SelectedProducts.id INNER JOIN SelectedUsers ON SelectedUsers.id = sales.uid "+
  	        			" FULL OUTER JOIN states ON states.state_id = SelectedUsers.state GROUP BY SelectedProducts.name, states.state_id ORDER BY states.state_id");
+			endTime = System.currentTimeMillis();
+            System.out.println("Time for running rset_Table query: " + (endTime-startTime) + "ms");
 		}
 		ArrayList<String> ar = new ArrayList<String>();
  		%>
