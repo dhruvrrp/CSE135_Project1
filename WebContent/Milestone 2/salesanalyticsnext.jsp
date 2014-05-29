@@ -247,16 +247,19 @@
 					    else
 					    {
 		                    while(rset_JoinRows.next()){ 
+		                    	System.out.println("First while out " + rset_JoinRows.getString("state"));
 
 							%>
 						<tr><%while(rset_TESTTT.getString("state_id").equals(rset_JoinRows.getString("state")) == false )
 							{
+							System.out.println(rset_TESTTT.getString("state_id")+ " Not on the same customer/state " + rset_JoinRows.getString("state"));
 								rset_TESTTT.next();
 							}
 							%>
 							<td class="bold"><%=rset_JoinRows.getString("state") + " ($" + rset_JoinRows.getInt("total") + ")" %></td>
 							<%for(int i=0; i< ar.size(); i++)
 							{
+								System.out.println(rset_TESTTT.getString("name")+ " Null " + ar.get(i) + " what " + i);
 							if(rset_TESTTT.getString("name") == null) 
 							{
 							%>
@@ -264,6 +267,7 @@
 							<%
 								if((i+1) == ar.size() && rset_TESTTT.getString("state_id").equals(rset_JoinRows.getString("state")))
 								{
+									System.out.println(rset_TESTTT.getString("state_id")+ " Null " + rset_JoinRows.getString("state"));
 									rset_TESTTT.next();
 									if(rset_TESTTT.isAfterLast())
 									{
@@ -273,8 +277,11 @@
 							}
 							else
 							{
-							    while(rset_TESTTT.getString("name").compareTo(ar.get(0)) < 0)
+							    while(rset_TESTTT.getString("name").compareTo(ar.get(0)) < 0 && rset_TESTTT.getString("state_id").equals(rset_JoinRows.getString("state")))
+							    {
+							    	System.out.println(rset_TESTTT.getString("name")+ " compareTo " + ar.get(0));
 									rset_TESTTT.next();
+							    }
 								if(rset_TESTTT.getString("name") != null && ar.get(i).equals(rset_TESTTT.getString("name")) && rset_TESTTT.getString("state_id").equals(rset_JoinRows.getString("state")))
 								{%>
 									<td><%=" $" +rset_TESTTT.getString("total") %></td>
