@@ -256,6 +256,9 @@
 						<tr><%while(rset_TESTTT.getString("state_id").equals(rset_JoinRows.getString("state")) == false )
 							{
 								rset_TESTTT.next();
+							    /* System.out.println(rset_TESTTT.getString("state_id")+" yup");
+								System.out.println(rset_TESTTT.getString("state_id") + " " + rset_JoinRows.getString("state"));
+								System.out.println("yup");  */
 							}
 							%>
 							<td class="bold"><%=rset_JoinRows.getString("state") + " ($" + rset_JoinRows.getInt("total") + ")" %></td>
@@ -277,7 +280,7 @@
 							}
 							else
 							{
-							    if(rset_TESTTT.getString("name").compareTo(ar.get(0)) < 0)
+							    while(rset_TESTTT.getString("name").compareTo(ar.get(0)) < 0)
 									rset_TESTTT.next();
 								if(rset_TESTTT.getString("name") != null && ar.get(i).equals(rset_TESTTT.getString("name")) && rset_TESTTT.getString("state_id").equals(rset_JoinRows.getString("state")))
 								{%>
@@ -292,7 +295,7 @@
 									
 								}
 								else
-								{%>
+								{
 									<td>$0</td>
 								<% 
 								}
@@ -345,11 +348,13 @@
  			}
  			catch (SQLException e)
  	    	{
+out.println("SQLException");
  	       	 	out.println(e.getMessage());
  	       	 	return;
  	    	}
  	    	catch (Exception e)
  	    	{
+out.println("Exception");
  	     		out.println(e.getMessage());
  	    	}
  			finally {
