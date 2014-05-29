@@ -78,7 +78,7 @@
             Statement stmt_Table = conn.createStatement();
 			rset_Table = stmt_Table.executeQuery("SELECT SUM(quantity* sales.price) AS total, products.name, users.name AS state_id "+
  	        			" FROM sales INNER JOIN products ON sales.pid = products.id RIGHT OUTER JOIN users ON users.id = sales.uid "+
- 	        			"GROUP BY products.name, users.name ORDER BY users.name LIMIT 200");
+ 	        			"GROUP BY products.name, users.name ORDER BY users.name");
 			endTime = System.currentTimeMillis();
             System.out.println("Time for running rset_Table query: " + (endTime-startTime) + "ms");
 		}
@@ -143,7 +143,7 @@
 			Statement stmt_Table = conn.createStatement();
 			rset_Table = stmt_Table.executeQuery("SELECT SUM(quantity* sales.price) AS total, SelectedProducts.name, SelectedUsers.name AS state_id "+
       			" FROM sales INNER JOIN SelectedProducts ON sales.pid = SelectedProducts.id RIGHT OUTER JOIN SelectedUsers ON SelectedUsers.id = sales.uid "+
-      			"GROUP BY SelectedProducts.name, SelectedUsers.name ORDER BY SelectedUsers.name LIMIT 200");
+      			"GROUP BY SelectedProducts.name, SelectedUsers.name ORDER BY SelectedUsers.name");
 			endTime = System.currentTimeMillis();
             System.out.println("Time for running rset_Table query: " + (endTime-startTime) + "ms");
      		   
@@ -218,7 +218,7 @@
 			startTime = System.currentTimeMillis();
 			rset_Table = stmt_Table.executeQuery("SELECT SUM(quantity* sales.price) AS total, SelectedProducts.name, states.state_id "+
  	        			" FROM sales INNER JOIN SelectedProducts ON sales.pid = SelectedProducts.id INNER JOIN SelectedUsers ON SelectedUsers.id = sales.uid "+
- 	        			" FULL OUTER JOIN states ON states.state_id = SelectedUsers.state GROUP BY SelectedProducts.name, states.state_id ORDER BY states.state_id LIMIT 200");
+ 	        			" FULL OUTER JOIN states ON states.state_id = SelectedUsers.state GROUP BY SelectedProducts.name, states.state_id ORDER BY states.state_id");
 			endTime = System.currentTimeMillis();
             System.out.println("Time for running rset_Table query: " + (endTime-startTime) + "ms");
 		}
