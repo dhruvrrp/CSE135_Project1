@@ -183,6 +183,11 @@
  	        			" FROM sales INNER JOIN SelectedProducts ON sales.pid = SelectedProducts.id INNER JOIN SelectedUsers ON SelectedUsers.id = sales.uid "+
  	        			" FULL OUTER JOIN states ON states.state_id = SelectedUsers.state GROUP BY SelectedProducts.name, states.state_id ORDER BY states.state_id");
  	         }
+ 	         
+ 	        /* while(rset_TESTTT.next())
+ 	             {
+ 	                System.out.println(rset_TESTTT.getInt("total") + " A " + rset_TESTTT.getString("name") + " state " + rset_TESTTT.getString("state_id"));
+ 	           } */
  	  
  	         ArrayList<String> ar = new ArrayList<String>();
  		%>
@@ -251,9 +256,6 @@
 						<tr><%while(rset_TESTTT.getString("state_id").equals(rset_JoinRows.getString("state")) == false )
 							{
 								rset_TESTTT.next();
-								System.out.println(rset_TESTTT.getString("state_id")+" yup");
-								System.out.println(rset_TESTTT.getString("state_id") + " " + rset_JoinRows.getString("state"));
-								System.out.println("yup");
 							}
 							%>
 							<td class="bold"><%=rset_JoinRows.getString("state") + " ($" + rset_JoinRows.getInt("total") + ")" %></td>
@@ -275,6 +277,8 @@
 							}
 							else
 							{
+							    if(rset_TESTTT.getString("name").compareTo(ar.get(0)) < 0)
+									rset_TESTTT.next();
 								if(rset_TESTTT.getString("name") != null && ar.get(i).equals(rset_TESTTT.getString("name")) && rset_TESTTT.getString("state_id").equals(rset_JoinRows.getString("state")))
 								{%>
 									<td><%=" $" +rset_TESTTT.getString("total") %></td>
