@@ -267,7 +267,7 @@
 							<%
 								if((i+1) == ar.size() && rset_TESTTT.getString("state_id").equals(rset_JoinRows.getString("state")))
 								{
-									System.out.println(rset_TESTTT.getString("state_id")+ " Null " + rset_JoinRows.getString("state"));
+									//System.out.println(rset_TESTTT.getString("state_id")+ " Null " + rset_JoinRows.getString("state"));
 									rset_TESTTT.next();
 									if(rset_TESTTT.isAfterLast())
 									{
@@ -281,6 +281,8 @@
 							    {
 							    	System.out.println(rset_TESTTT.getString("name")+ " compareTo " + ar.get(0));
 									rset_TESTTT.next();
+									if(rset_TESTTT.getString("name") == null)
+										break;
 							    }
 								if(rset_TESTTT.getString("name") != null && ar.get(i).equals(rset_TESTTT.getString("name")) && rset_TESTTT.getString("state_id").equals(rset_JoinRows.getString("state")))
 								{%>
