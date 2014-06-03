@@ -9,7 +9,7 @@ function change()
 	$("currentFlag_col").value=0;
 	$("search_key_1").disabled = false;
 	$("search_key_2").disabled = false;
-	//$("search_key_3").disabled = false;
+	$("search_key_3").disabled = false;
    $("results").style.display="none";	//dis the results
    
 }
@@ -19,7 +19,7 @@ function doNext20()
 	$("currentFlag_row").value=flag+20;
 	$("search_key_1").disabled = true;
 	$("search_key_2").disabled = true;
-	//$("search_key_3").disabled = true;
+	$("search_key_3").disabled = true;
 	doSearch();
 }
 function doNext10()
@@ -28,7 +28,7 @@ function doNext10()
 	$("currentFlag_col").value=flag+10;
 	$("search_key_1").disabled = true;
 	$("search_key_2").disabled = true;
-	//$("search_key_3").disabled = true;
+	$("search_key_3").disabled = true;
 	doSearch();
 }
 function doSearch()
@@ -42,15 +42,15 @@ function doSearch()
 	 var pos_col=$("currentFlag_col").value;
 	 var state=$("search_key_1").value;
 	 var category=$("search_key_2").value;
-	 //var age=$("search_key_3").value;
+	 var age=$("search_key_3").value;
 	if(type==1)//customer
 	{
 		
-          url = "do_Analysis_Customers.jsp?pos_row="+pos_row+"&&pos_col="+pos_col+"&&state="+state+"&&category="+category;
+          url = "do_Analysis_Customers.jsp?pos_row="+pos_row+"&&pos_col="+pos_col+"&&state="+state+"&&category="+category+"&&age="+age;
 	}
 	else//state
 	{
-		   url = "do_Analysis_States.jsp?pos_row="+pos_row+"&&pos_col="+pos_col+"&&state="+state+"&&category="+category;
+		   url = "do_Analysis_States.jsp?pos_row="+pos_row+"&&pos_col="+pos_col+"&&state="+state+"&&category="+category+"&&age="+age;
 	}
 	var req = getAjax();
 	req.open("GET", url, true);
