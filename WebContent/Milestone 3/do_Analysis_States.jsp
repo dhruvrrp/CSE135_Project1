@@ -360,35 +360,30 @@ try
 			if(maxState>(pos_row+show_num_row-1))
 			{
 		%>
-		<input type="button" value="Next 20 States" onClick="doNext20()">
+		
 		<%
 			}
 			else
 			{
 		%>
-		<input type="button" value="Next 20 States" disabled="disabled">
+		
 		<%
 			}
 			if(maxProduct>pos_col+show_num_col)
 			{
 		%>
-		<input type="button" value="Next 10" onClick="doNext10()">
+		
 		<%
 			}
 			else
 			{
 		%>
-		<input type="button" value="Next 10" disabled="disabled">
+		
 		<%
 			}
 		%>
 		</td>
-		<td align="right">
-			<%
-				out.println("Row Range:["+pos_row+","+(pos_row+show_num_row)+"]<br>");
-				out.println("Column Range:["+pos_col+","+(pos_col+show_num_col)+"]");
-			%>
-		</td>
+		
 		</tr>
 	</table>
 <%
