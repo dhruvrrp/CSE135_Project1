@@ -392,7 +392,7 @@
 						if(rset_Join.relative(9)) { 
 					%>
 					<form id="next10" class="float-left" action="salesanalyticsnext.jsp"
-						method="GET">
+						method="GET" style="display: none">
 						<input type="submit" value="Next 10 Products" class="button">
 						<input type="hidden" name="colOffset" value="10">
 						<input type="hidden" name="rowOffset" value="0">
@@ -404,7 +404,7 @@
 					<% } %>
 					
 					<% if(rset_JoinRows.relative(19))  {%>
-					<form id="next20" action="salesanalyticsnext.jsp" method="GET">
+					<form id="next20" action="salesanalyticsnext.jsp" method="GET" style="display: none">
 						<input type="submit" value="Next 20 Rows" class="button">
 						<input type="hidden" name="colOffset" value="0">
 						<input type="hidden" name="rowOffset" value="20">
