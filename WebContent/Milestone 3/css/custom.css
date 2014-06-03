@@ -1,0 +1,123 @@
+/**custom css for customization of the entire site, I know, it's pretty bad coding but it's functional!**/
+
+
+/*General site-specific css*/
+div#offset {
+	position: relative;
+	left: 15px;
+	width: 240px;
+}
+
+div.large-4 a {
+	position: relative;
+	text-align: center;
+	width: 25px;
+}
+
+#welcome {
+	display: block;
+	position: relative;
+	right: 15px;
+	top: 11px;
+	color: white;
+}
+
+#signLink {
+	position: relative;
+	top:1px;
+}
+
+#signLink a {
+	color: white;
+}
+
+#cart {
+	width: 45px;
+}
+
+div.center {
+	text-align: center;
+}
+
+#prod_search {
+	width: 140px;
+	position: absolute;
+	left: 2%;
+}
+
+#prod_search ul {
+	list-style: none;
+}
+
+#delete {
+	display: inline-block;
+	width: 1px;
+	border: 1px solid black;
+}
+/******signUp.jsp*****/
+#shift {
+	width: 940px;
+	
+}
+
+#shift form{
+	width: 200px;
+}
+
+#left-box {
+	width: 200px;
+	float: left;
+}
+
+#right-box {
+	width: 705px;
+	float: right;
+}
+
+#footer {
+	clear: both;
+}
+
+.panel {
+	min-height: 500px;
+}
+
+.divide {
+	clear: both;
+}
+
+
+#next-btns form{
+	width: 200px;
+}
+
+#next20 {
+	position: relative;
+	left: 700px;
+	top: -15px;
+}
+
+#next10 {
+	position: relative;
+	left: 700px;
+}
+
+/*index.html*/
+.fill {
+	margin-left: 15px;
+	width: 720px;
+}
+
+td {
+	text-align: center;
+	width: 50px;
+}
+
+table {
+	width: 100%
+}
+
+
+.bold {
+	font-weight: bold;
+}
