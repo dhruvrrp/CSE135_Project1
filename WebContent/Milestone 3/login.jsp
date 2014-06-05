@@ -119,7 +119,7 @@ else
 		out.print("<a href=\"categories.jsp\">Manage Categories</a><br>");
 		out.print("<a href=\"products.jsp\">Manage Products</a><br>");
 		out.print("<a href=\"sales_analytics.jsp\">Sales Analytics</a><br>");
-		out.print("<a href=\"sales_analytics_p.jsp\">Sales Analytics(precomputation)</a><br>");
+		out.print("<a href=\"salesanalytics.jsp\">Sales Analytics(precomputation)</a><br>");
 		out.print("<a href=\"login.jsp?flag=-1\"> Change an account</a><br>");
 		out.print("</td></tr>");
 	}
