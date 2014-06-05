@@ -57,8 +57,11 @@
 			
 			// Initialize timer
 			startTime = System.currentTimeMillis();
-			rset_Join = stmt_Join.executeQuery("SELECT sum(total) as total, name FROM precompproductsrow GROUP BY name ORDER BY total " + 
-				 "DESC NULLS LAST LIMIT 10");
+			rset_Join = stmt_Join.executeQuery(
+					"SELECT sum(total) as total, name " +
+					"FROM precompproductsrow " +
+					"GROUP BY name " +
+					"ORDER BY total DESC NULLS LAST LIMIT 10");
 			// End timer
             endTime = System.currentTimeMillis();
             System.out.println("Time for running rset_Join query: " + (endTime-startTime) + "ms");
@@ -67,19 +70,28 @@
                     ResultSet.CONCUR_READ_ONLY);
 
 			startTime = System.currentTimeMillis();
-			rset_JoinRows = stmt_JoinRows.executeQuery("select sum(total) as total, name as state" +
-					" FROM precompstacuscol GROUP BY name ORDER BY total DESC nulls last, state");
+			rset_JoinRows = stmt_JoinRows.executeQuery(
+					"SELECT sum(total) as total, name as state " +
+					"FROM precompstacuscol " +
+				    "GROUP BY name " +
+				    "ORDER BY total DESC NULLS LAST, state");
             endTime = System.currentTimeMillis();
             System.out.println("Time for running rset_JoinRows query: " + (endTime-startTime) + "ms");
 			
             startTime = System.currentTimeMillis();
             Statement stmt_Table = conn.createStatement();
 			rset_Table = stmt_Table.executeQuery(
-					"SELECT SUM(sales.quantity*sales.price) AS grand_total, precompcells.name, precompcells.nam as state_id, precompcells.total " +
+					"SELECT SUM(sales.quantity*sales.price) AS grand_total, " + 
+			                                                   "precompcells.name, " +
+			                                                   "precompcells.nam as state_id, " +
+			                                                   "precompcells.total " +
 					"FROM sales, users, products, precompcells " +
-					"WHERE users.state = precompcells.state AND sales.uid = users.id AND sales.pid = products.id AND precompcells.nam = users.name " +
+					"WHERE users.state = precompcells.state " +
+					       "AND sales.uid = users.id " +
+					       "AND sales.pid = products.id " +
+					       "AND precompcells.nam = users.name " +
 					"GROUP BY users.name, precompcells.total, precompcells.nam, precompcells.name " +
-					 "ORDER BY grand_total DESC NULLS LAST, nam, total DESC");
+					"ORDER BY grand_total DESC NULLS LAST, nam, total DESC");
 			endTime = System.currentTimeMillis();
             System.out.println("Time for running rset_Table query: " + (endTime-startTime) + "ms");
 		}
@@ -104,8 +116,12 @@
                     ResultSet.CONCUR_READ_ONLY);
      	    
 			startTime = System.currentTimeMillis();
-			rset_Join = stmt_Join.executeQuery("SELECT sum(total) as total, name FROM precompproductsrow "+ "WHERE_ROWS " + 
-			"GROUP BY name ORDER BY total " + "DESC NULLS LAST LIMIT 10");
+			rset_Join = stmt_Join.executeQuery(
+					"SELECT sum(total) as total, name " +
+					"FROM precompproductsrow " + 
+					"WHERE_ROWS " + 
+				    "GROUP BY name " +
+				    "ORDER BY total " + "DESC NULLS LAST LIMIT 10");
 			endTime = System.currentTimeMillis();
             System.out.println("Time for running rset_Join query: " + (endTime-startTime) + "ms");
       	   
