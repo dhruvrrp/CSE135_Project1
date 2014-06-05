@@ -79,7 +79,7 @@
 					"FROM sales, users, products, precompcells " +
 					"WHERE users.state = precompcells.state AND sales.uid = users.id AND sales.pid = products.id AND precompcells.nam = users.name " +
 					"GROUP BY users.name, precompcells.total, precompcells.nam, precompcells.name " +
-					 "ORDER BY grand_total DESC NULLS LAST, nam");
+					 "ORDER BY grand_total DESC NULLS LAST, nam, total DESC");
 			endTime = System.currentTimeMillis();
             System.out.println("Time for running rset_Table query: " + (endTime-startTime) + "ms");
 		}
