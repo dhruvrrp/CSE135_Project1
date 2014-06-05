@@ -31,7 +31,7 @@
 		long start=System.currentTimeMillis();
 		
 		Class.forName("org.postgresql.Driver");
- 		Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/CSE135", "postgres", "calcium");
+ 		Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/CSE1351", "postgres", "calcium");
  		
  		Statement stmt_states = conn.createStatement();
  		long startTime, endTime;
@@ -64,7 +64,7 @@
 					"ORDER BY total DESC NULLS LAST LIMIT 10");
 			// End timer
             endTime = System.currentTimeMillis();
-            System.out.println("Time for running rset_Join query: " + (endTime-startTime) + "ms");
+            ////System.out.println("Time for running rset_Join query: " + (endTime-startTime) + "ms");
  	        	   
 			Statement stmt_JoinRows = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
@@ -76,7 +76,7 @@
 				    "GROUP BY name " +
 				    "ORDER BY total DESC NULLS LAST, state");
             endTime = System.currentTimeMillis();
-            System.out.println("Time for running rset_JoinRows query: " + (endTime-startTime) + "ms");
+            ////System.out.println("Time for running rset_JoinRows query: " + (endTime-startTime) + "ms");
 			
             startTime = System.currentTimeMillis();
             Statement stmt_Table = conn.createStatement();
@@ -93,7 +93,7 @@
 					"GROUP BY users.name, precompcells.total, precompcells.nam, precompcells.name " +
 					"ORDER BY grand_total DESC NULLS LAST, nam, total DESC");
 			endTime = System.currentTimeMillis();
-            System.out.println("Time for running rset_Table query: " + (endTime-startTime) + "ms");
+            ////System.out.println("Time for running rset_Table query: " + (endTime-startTime) + "ms");
 		}
 		else if(request.getParameter("big_filter").equals("customers"))
 		{
@@ -124,7 +124,7 @@
 				    "GROUP BY name " +
 				    "ORDER BY total DESC NULLS LAST, name LIMIT 10");
 			endTime = System.currentTimeMillis();
-            System.out.println("Time for running rset_Join query: " + (endTime-startTime) + "ms");
+            ////System.out.println("Time for running rset_Join query: " + (endTime-startTime) + "ms");
       	   
 			Statement stmt_JoinRows = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
@@ -137,7 +137,7 @@
 					"GROUP BY precompstacuscol.name " +
 					"ORDER BY total DESC NULLS LAST LIMIT 20");
 			endTime = System.currentTimeMillis();
-            System.out.println("Time for running rset_JoinRows query: " + (endTime-startTime) + "ms");
+            ////System.out.println("Time for running rset_JoinRows query: " + (endTime-startTime) + "ms");
             
             startTime = System.currentTimeMillis();
 			Statement stmt_Table = conn.createStatement();
@@ -154,7 +154,7 @@
                     "GROUP BY users.name, precompcells.total, precompcells.nam, precompcells.name " +
                     "ORDER BY grand_total DESC NULLS LAST, nam, total DESC, name");
 			endTime = System.currentTimeMillis();
-            System.out.println("Time for running rset_Table query: " + (endTime-startTime) + "ms");
+            ////System.out.println("Time for running rset_Table query: " + (endTime-startTime) + "ms");
      		   
      		   
 		}
@@ -186,7 +186,7 @@
                     "GROUP BY name " +
                     "ORDER BY total DESC NULLS LAST, name LIMIT 10");
 			endTime = System.currentTimeMillis();
-            System.out.println("Time for running rset_Join query: " + (endTime-startTime) + "ms");
+            ////System.out.println("Time for running rset_Join query: " + (endTime-startTime) + "ms");
  	        	   
 			Statement stmt_JoinRows = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
@@ -199,7 +199,7 @@
 	                    "GROUP BY state " +
 	                    "ORDER BY total DESC NULLS LAST LIMIT 20");
 				endTime = System.currentTimeMillis();
-	            System.out.println("Time for running rset_JoinRows query: " + (endTime-startTime) + "ms");
+	            ////System.out.println("Time for running rset_JoinRows query: " + (endTime-startTime) + "ms");
 			}
 			else
 			{
@@ -211,7 +211,7 @@
 	                    "GROUP BY state " +
 	                    "ORDER BY total DESC NULLS LAST LIMIT 20");
 				endTime = System.currentTimeMillis();
-                System.out.println("Time for running rset_JoinRows query: " + (endTime-startTime) + "ms");
+                //System.out.println("Time for running rset_JoinRows query: " + (endTime-startTime) + "ms");
 			}
 			Statement stmt_Table = conn.createStatement();
 			startTime = System.currentTimeMillis();
@@ -227,7 +227,7 @@
 				     "GROUP BY precompcells.state, precompcells.total, precompcells.name " +
 				     "ORDER BY grand_total DESC NULLS LAST, total DESC NULLS LAST, name");
 			endTime = System.currentTimeMillis();
-            System.out.println("Time for running rset_Table query: " + (endTime-startTime) + "ms");
+            //System.out.println("Time for running rset_Table query: " + (endTime-startTime) + "ms");
 		}
 		ArrayList<String> ar = new ArrayList<String>();
  		%>
@@ -327,46 +327,78 @@
 								{
 									rset_Table.next();
 								}
+						System.out.println(" ahahah " + rset_JoinRows.getString("state"));
 							%>
 							<td class="bold"><%=rset_JoinRows.getString("state") + " ($" + rset_JoinRows.getInt("total") + ")" %></td>
 							<%
 								for(int i=0; i< ar.size(); i++)
 								{
-									if(rset_Table.getString("name") == null) 
+									int in = ar.indexOf(rset_Table.getString("name"));
+									System.out.println("haha "+in + " " +rset_Table.getString("name"));
+									if(in == -1)
 									{
-							%>
-							<td><%="$" + "0" %></td>
-								<%
-										if((i+1) == ar.size() && rset_Table.getString("state_id").equals(rset_JoinRows.getString("state")))
+										System.out.println("Index -1");
+										rset_Table.next();
+										if(rset_Table.isAfterLast())
 										{
-											rset_Table.next();
-											if(rset_Table.isAfterLast())
+											for(int j = i; j < ar.size(); j++, i++)
 											{
-												break;
+												%>
+												<td>$0</td>
+												<% 
+											}
+											break;
+										}
+										if(!rset_Table.getString("state_id").equals(rset_JoinRows.getString("state")))
+										{
+											for(int j = i; j < ar.size(); j++, i++)
+											{
+												%>
+												<td>$0</td>
+												<% 
 											}
 										}
+										if(i == 0)
+											i = -1;
 									}
 									else
 									{
-										if(rset_Table.getString("name") != null && ar.get(i).equals(rset_Table.getString("name")) && rset_Table.getString("state_id").equals(rset_JoinRows.getString("state")))
+										System.out.println(" value of i before "+i);
+										for(int j = i; j < in; j++, i++)
 										{
-								%>
-									<td><%=" $" +rset_Table.getString("total") %></td>
-								<%
-											rset_Table.next();
-											if(rset_Table.isAfterLast())
-											{
-												break;
-											}		
-										}
-										else
-										{
-								%>
+											%>
 											<td>$0</td>
-								<% 
+											<% 
+										}
+										System.out.println(" value of i "+i);
+										%>
+										<td><%=" $" +rset_Table.getString("total") %></td>
+										<%	
+										rset_Table.next();
+										if(rset_Table.isAfterLast())
+										{
+											for(int j = i; j < ar.size(); j++, i++)
+											{
+												%>
+												<td>$0</td>
+												<% 
+											}
+											break;
+										}
+										if(!rset_Table.getString("state_id").equals(rset_JoinRows.getString("state")))
+										{
+											for(int j = i +1; j < ar.size(); j++, i++)
+											{
+												%>
+												<td>$0</td>
+												<% 
+											}
+												
 										}
 									}
-								} 	%>
+								}
+%>
+									
 						</tr>
 						<%	} 
 		                }%>
