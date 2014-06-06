@@ -105,6 +105,11 @@
 				if(request.getParameter("product_cat").equals("all"))
 				    SUM2 += "SUM(CASE WHEN state = '"+request.getParameter("states")+"' THEN total END)";
 			}
+			else
+			{
+				if(request.getParameter("product_cat").equals("all"))
+			        SUM2 += "SUM(total)";
+			}
 			if(!request.getParameter("product_cat").equals("all"))
 			{
 				SUM2 += "SUM(CASE WHEN cid = '"+request.getParameter("product_cat")+"' THEN total END)";
