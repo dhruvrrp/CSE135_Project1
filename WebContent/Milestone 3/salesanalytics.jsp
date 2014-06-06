@@ -96,18 +96,22 @@
 		}
 		else if(request.getParameter("big_filter").equals("customers"))
 		{
+			String SUM1 = " ", SUM2 = " ";
 			if(!request.getParameter("states").equals("all"))
 			{
 				WHERE_ROWS +=  "WHERE state = '" + request.getParameter("states")+"'";
+				SUM1 += WHERE_ROWS;
 			}
 			if(!request.getParameter("product_cat").equals("all"))
 			{
-				if(request.getParameter("states").equals("all")) {
+				SUM2 += "SUM(CASE WHEN cid = '"+request.getParameter("product_cat")+"' THEN total END)";
+				if(request.getParameter("states").equals("all")) 
+				{
 					WHERE_ROWS += "WHERE cid = " + request.getParameter("product_cat");
 				}
 				else 
 				{
-					WHERE_ROWS += "AND cid = " + request.getParameter("product_cat");
+					WHERE_ROWS += " AND cid = " + request.getParameter("product_cat");
 				}
 			}
 			
@@ -130,9 +134,9 @@
 
 	        startTime = System.currentTimeMillis();
 			rset_JoinRows = stmt_JoinRows.executeQuery(
-					"SELECT SUM(total) AS total, name AS state " +
+					"SELECT "+ SUM2+" AS total, name AS state " +
 					"FROM precompstacuscol " +
-					WHERE_ROWS +
+					SUM1 +
 					"GROUP BY name " +
 					"ORDER BY total DESC NULLS LAST, state LIMIT 20");
 			endTime = System.currentTimeMillis();
@@ -141,17 +145,16 @@
             startTime = System.currentTimeMillis();
 			Statement stmt_Table = conn.createStatement();
 			rset_Table = stmt_Table.executeQuery(
-					"SELECT SUM(sales.quantity*sales.price) AS grand_total, " + 
-                            "precompcells.name, " +
-                            "precompcells.nam as state_id, " +
-                            "precompcells.total " +
-                    "FROM sales, users, products, precompcells " +
-                    "WHERE users.state = precompcells.state " +
-                    "AND sales.uid = users.id " +
-                    "AND sales.pid = products.id " +
-                    "AND precompcells.nam = users.name " +
-                    "GROUP BY users.name, precompcells.total, precompcells.nam, precompcells.name " +
-                    "ORDER BY grand_total DESC NULLS LAST, nam, total DESC, name");
+					"SELECT foo.nam AS state_id, name, total " +
+		                    "FROM " +
+		                    "(SELECT * " +
+		                    "FROM precompcells " +
+		                    "ORDER BY total DESC) AS foo " +
+		                    "INNER JOIN " +
+		                    "(SELECT SUM(CASE WHEN nam = nam THEN total END), nam " +
+		                    "FROM precompcells " +
+		                    "GROUP BY nam) AS f1 ON foo.nam = f1.nam " +
+		                    "ORDER BY sum DESC NULLS LAST, foo.nam, total DESC");
 			endTime = System.currentTimeMillis();
             ////System.out.println("Time for running rset_Table query: " + (endTime-startTime) + "ms");
      		   
@@ -193,11 +196,16 @@
 			{
 				startTime = System.currentTimeMillis();
 				rset_JoinRows = stmt_JoinRows.executeQuery(
-						"SELECT SUM(total) as total, state " +
-	                    "FROM precompproductsrow " +
-						WHERE_ROWS +
-	                    "GROUP BY state " +
-	                    "ORDER BY total DESC NULLS LAST LIMIT 20");
+						"SELECT total, state_id AS state "+
+								"FROM( "+
+								"SELECT SUM(total) as total, state "+
+								"FROM precompstacuscol "+
+								 WHERE_ROWS + 
+								"GROUP BY state LIMIT 20) AS foo "+
+								"FULL OUTER JOIN states "+
+								"ON states.state_id = foo.state "+
+								"ORDER BY total DESC NULLS LAST, state_id LIMIT 20");
+						
 				endTime = System.currentTimeMillis();
 	            ////System.out.println("Time for running rset_JoinRows query: " + (endTime-startTime) + "ms");
 			}
@@ -206,26 +214,26 @@
                 startTime = System.currentTimeMillis();
 				rset_JoinRows = stmt_JoinRows.executeQuery(
 	                    "SELECT SUM(total) as total, state " +
-	                    "FROM precompproductsrow " + 
+	                    "FROM precompstacuscol " + 
 	                    WHERE_ROWS + 
 	                    "GROUP BY state " +
-	                    "ORDER BY total DESC NULLS LAST LIMIT 20");
+	                    "ORDER BY total DESC NULLS LAST, state LIMIT 20");
 				endTime = System.currentTimeMillis();
                 //System.out.println("Time for running rset_JoinRows query: " + (endTime-startTime) + "ms");
 			}
 			Statement stmt_Table = conn.createStatement();
 			startTime = System.currentTimeMillis();
 			rset_Table = stmt_Table.executeQuery(
-				     "SELECT SUM(sales.quantity*sales.price) AS grand_total, " +
-			                 "precompcells.name, " +
-				             "precompcells.state AS state_id, " +
-			                 "precompcells.total " +
-				     "FROM sales, users, products, precompcells " +
-				     "WHERE users.state = precompcells.state " +
-				           "AND sales.uid = users.id " +
-				           "AND sales.pid = products.id " +
-				     "GROUP BY precompcells.state, precompcells.total, precompcells.name " +
-				     "ORDER BY grand_total DESC NULLS LAST, total DESC NULLS LAST, name");
+					"SELECT foo.state AS state_id, name, total "+
+					"FROM "+
+					"(SELECT * "+
+					"FROM precompcells "+
+					"ORDER BY total DESC) AS foo "+
+					"INNER JOIN "+
+					"(SELECT SUM(CASE WHEN state = state THEN total END), state "+
+					"FROM precompcells "+
+					"GROUP BY state) AS f1 ON foo.state = f1.state "+
+					"ORDER BY sum DESC NULLS LAST, foo.state, total DESC");
 			endTime = System.currentTimeMillis();
             //System.out.println("Time for running rset_Table query: " + (endTime-startTime) + "ms");
 		}
@@ -320,18 +328,32 @@
 					    else
 					    {
 		                    while(rset_JoinRows.next())
-		                    { 
+		                    { System.out.println("Join rows " +rset_JoinRows.getString("state"));
 							%>
 						<tr><%
+								if(!rset_Table.isAfterLast())
 								while(rset_Table.getString("state_id").equals(rset_JoinRows.getString("state")) == false )
 								{
+									System.out.println("XXXXXXX" +rset_Table.getString("state_id")+" ok " +rset_JoinRows.getString("state"));
 									rset_Table.next();
+									if(rset_Table.isAfterLast())
+										break;
 								}
 						System.out.println(" ahahah " + rset_JoinRows.getString("state"));
 							%>
 							<td class="bold"><%=rset_JoinRows.getString("state") + " ($" + rset_JoinRows.getInt("total") + ")" %></td>
 							<%
-								for(int i=0; i< ar.size(); i++)
+								if(rset_Table.isAfterLast())
+								{
+									for(int i=0; i< ar.size(); i++)
+									{
+										%>
+										<td>$0</td>
+										<% 
+									}
+								}
+								else
+								for(int i=0; i< ar.size();)
 								{
 									int in = ar.indexOf(rset_Table.getString("name"));
 									System.out.println("haha "+in + " " +rset_Table.getString("name"));
@@ -358,8 +380,6 @@
 												<% 
 											}
 										}
-										if(i == 0)
-											i = -1;
 									}
 									else
 									{
@@ -370,10 +390,11 @@
 											<td>$0</td>
 											<% 
 										}
-										System.out.println(" value of i "+i);
 										%>
 										<td><%=" $" +rset_Table.getString("total") %></td>
 										<%	
+										i++;
+										System.out.println(" value of i "+i);
 										rset_Table.next();
 										if(rset_Table.isAfterLast())
 										{
@@ -387,7 +408,7 @@
 										}
 										if(!rset_Table.getString("state_id").equals(rset_JoinRows.getString("state")) || i == 9)
 										{
-											for(int j = i +1; j < ar.size(); j++, i++)
+											for(int j = i ; j < ar.size(); j++, i++)
 											{
 												%>
 												<td>$0</td>
