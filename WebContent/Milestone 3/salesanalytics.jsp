@@ -101,7 +101,9 @@
 			{
 				WHERE_ROWS +=  "WHERE state = '" + request.getParameter("states")+"'";
 				SUM1 += WHERE_ROWS;
-				SUM2 += "SUM(CASE WHEN state = '"+request.getParameter("states")+"' THEN total END)";
+				
+				if(request.getParameter("product_cat").equals("all"))
+				    SUM2 += "SUM(CASE WHEN state = '"+request.getParameter("states")+"' THEN total END)";
 			}
 			if(!request.getParameter("product_cat").equals("all"))
 			{
@@ -113,13 +115,15 @@
 				else 
 				{
 					WHERE_ROWS += " AND cid = " + request.getParameter("product_cat");
+		            //SUM2 += "SUM(CASE WHEN cid = '"+request.getParameter("product_cat")+"' THEN total END)";
+
 				}
 			}
 			
      	  
 			Statement stmt_Join = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
-     	    System.out.println(" WhereRows " + WHERE_ROWS);
+System.out.println(" WhereRows: " + WHERE_ROWS);
 			startTime = System.currentTimeMillis();
 			rset_Join = stmt_Join.executeQuery(
 					"SELECT SUM(total) as total, name " +
@@ -134,12 +138,15 @@
                     ResultSet.CONCUR_READ_ONLY);
 
 	        startTime = System.currentTimeMillis();
+System.out.println("here");
+System.out.println("SUM2: " + SUM2);
 			rset_JoinRows = stmt_JoinRows.executeQuery(
-					"SELECT "+ SUM2+" AS total, name AS state " +
+					"SELECT "+ SUM2 +" AS total, name AS state " +
 					"FROM precompstacuscol " +
 					SUM1 +
 					"GROUP BY name " +
 					"ORDER BY total DESC NULLS LAST, state LIMIT 20");
+System.out.println("now here");
 			endTime = System.currentTimeMillis();
             ////System.out.println("Time for running rset_JoinRows query: " + (endTime-startTime) + "ms");
             
@@ -147,15 +154,16 @@
 			Statement stmt_Table = conn.createStatement();
 			rset_Table = stmt_Table.executeQuery(
 					"SELECT foo.nam AS state_id, name, total " +
-		                    "FROM " +
-		                    "(SELECT * " +
-		                    "FROM precompcells " +
-		                    "ORDER BY total DESC) AS foo " +
-		                    "INNER JOIN " +
-		                    "(SELECT SUM(CASE WHEN nam = nam THEN total END), nam " +
-		                    "FROM precompcells " +
-		                    "GROUP BY nam) AS f1 ON foo.nam = f1.nam " +
-		                    "ORDER BY sum DESC NULLS LAST, foo.nam, total DESC");
+		            "FROM " +
+		                "(SELECT * " +
+		                  "FROM precompcells " +
+		                  "ORDER BY total DESC) AS foo " +
+		            "INNER JOIN " +
+		                "(SELECT SUM(CASE WHEN nam = nam THEN total END), nam " +
+		                  "FROM precompcells " +
+		                  "GROUP BY nam) AS f1 " +
+		            "ON foo.nam = f1.nam " +
+		            "ORDER BY sum DESC NULLS LAST, foo.nam, total DESC");
 			endTime = System.currentTimeMillis();
             ////System.out.println("Time for running rset_Table query: " + (endTime-startTime) + "ms");
      		   
