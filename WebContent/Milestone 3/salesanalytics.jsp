@@ -31,7 +31,7 @@
 		long start=System.currentTimeMillis();
 		
 		Class.forName("org.postgresql.Driver");
- 		Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/CSE1351", "postgres", "calcium");
+ 		Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/CSE135", "postgres", "calcium");
  		
  		Statement stmt_states = conn.createStatement();
  		long startTime, endTime;
@@ -101,6 +101,7 @@
 			{
 				WHERE_ROWS +=  "WHERE state = '" + request.getParameter("states")+"'";
 				SUM1 += WHERE_ROWS;
+				SUM2 += "SUM(CASE WHEN state = '"+request.getParameter("states")+"' THEN total END)";
 			}
 			if(!request.getParameter("product_cat").equals("all"))
 			{
