@@ -31,7 +31,7 @@
 		long start=System.currentTimeMillis();
 		
 		Class.forName("org.postgresql.Driver");
- 		Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/CSE1351", "postgres", "calcium");
+ 		Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/CSE135", "postgres", "calcium");
  		
  		Statement stmt_states = conn.createStatement();
  		long startTime, endTime;
@@ -74,7 +74,7 @@
 					"SELECT sum(total) as total, name as state " +
 					"FROM precompstacuscol " +
 				    "GROUP BY name " +
-				    "ORDER BY total DESC NULLS LAST, state");
+				    "ORDER BY total DESC NULLS LAST, state LIMIT 20");
             endTime = System.currentTimeMillis();
             ////System.out.println("Time for running rset_JoinRows query: " + (endTime-startTime) + "ms");
 			
