@@ -251,12 +251,12 @@ if(session.getAttribute("name")!=null)
 							//else we need to insert
 							else {
 								conn.setAutoCommit(false);
-								pstmt_col_insert.setInt(1, quantity*price);
-								pstmt_col_insert.setString(2, name);
-								pstmt_col_insert.setString(3, state);
-								pstmt_col_insert.setString(4, uName);
+								pstmt_inner_insert.setInt(1, quantity*price);
+								pstmt_inner_insert.setString(2, name);
+								pstmt_inner_insert.setString(3, state);
+								pstmt_inner_insert.setString(4, uName);
 								
-								pstmt_col_insert.executeUpdate();
+								pstmt_inner_insert.executeUpdate();
 								conn.setAutoCommit(true);
 							}
 						}
