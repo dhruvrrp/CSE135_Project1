@@ -43,6 +43,16 @@ if(session.getAttribute("name")!=null)
 		ResultSet rs=null;
 		String SQL="select p.name, c.quantity, p.price, p.cid from products p, users u, carts c where c.uid=u.id and c.pid=p.id and c.uid="+userID;
 		
+		ResultSet pp = stmt.executeQuery(SQL);  //rset for all products currently in the shopping cart
+		ArrayList<String> sales = new ArrayList<String>();
+		
+		while(pp.next()) {
+			sales.add(pp.getString(1) + "@" + pp.getInt(2) + "@" + pp.getInt(3) + "@" + pp.getInt(4));
+		}
+		
+		System.out.println("size " + sales.size());
+		
+		request.getSession().setAttribute("saless", sales);
 		
 		rs=stmt.executeQuery(SQL);
 		out.println("<table width=\"80%\"  align=\"center\">");
