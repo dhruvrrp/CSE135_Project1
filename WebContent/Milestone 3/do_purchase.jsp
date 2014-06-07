@@ -84,16 +84,12 @@ if(session.getAttribute("name")!=null)
 						conn.setAutoCommit(true);
 							
 			////////////FOR THE TOP ROW///////////////////////////////////////////////////////////////			
-						//check if there is already a matching product, only need to udpate
-						String SQL_row = "SELECT * FROM precompproductsrow WHERE " +
-						"name=? AND state=? ";
+						
+			
 				
 						String SQL_row_update = "UPDATE precompproductsrow SET total=total+? " +
 						"WHERE name=? AND state=?";
-						
-						//check 
-						PreparedStatement pstmt_row = conn.prepareStatement(SQL_row);
-						
+
 						//update
 						PreparedStatement pstmt_row_update = conn.prepareStatement(SQL_row_update);
 						
@@ -109,34 +105,32 @@ if(session.getAttribute("name")!=null)
 							int price = Integer.parseInt(currentProd[2]);
 							int cid = Integer.parseInt(currentProd[3]);
 							
-							pstmt_row.setString(1, currentProd[0]);
-							pstmt_row.setString(2, state);
 							
-							conn.setAutoCommit(false);
-							ResultSet rs = pstmt_row.executeQuery();
-							conn.setAutoCommit(true);
 							
-							//check if user has already bought this product, update
-							if(rs.isBeforeFirst()) {
+							//try to update
 								conn.setAutoCommit(false);
 								pstmt_row_update.setInt(1, quantity*price);
 								pstmt_row_update.setString(2, name);
 								pstmt_row_update.setString(3, state);
 								
-								pstmt_row_update.executeUpdate();
+								int rows_changed = pstmt_row_update.executeUpdate();
+									conn.commit();
 								conn.setAutoCommit(true);
-							}
-							//else we need to insert
-							else {
-								conn.setAutoCommit(false);
-								pstmt_row_insert.setInt(1, quantity*price);
-								pstmt_row_insert.setString(2, name);
-								pstmt_row_insert.setString(3, state);
-								pstmt_row_insert.setInt(4, cid);
+							
+							
+								//no rows changed, so we need to insert
+								if(rows_changed == 0) {
+									conn.setAutoCommit(false);
+									pstmt_row_insert.setInt(1, quantity*price);
+									pstmt_row_insert.setString(2, name);
+									pstmt_row_insert.setString(3, state);
+									pstmt_row_insert.setInt(4, cid);
+									
+									pstmt_row_insert.executeUpdate();
+									conn.commit();
+									conn.setAutoCommit(true);
+								}
 								
-								pstmt_row_insert.executeUpdate();
-								conn.setAutoCommit(true);
-							}
 						}
 						
 			////////////END TOP ROW/////////////////////////////////////////////////
@@ -146,15 +140,11 @@ if(session.getAttribute("name")!=null)
 			
 			
 			////////////FOR THE FIRST COL///////////////////////////////////////////////////////////////			
-						//check if there is already a matching product, only need to udpate
-						String SQL_col = "SELECT * FROM precompstacuscol WHERE " +
-						"name=? AND cid=? ";
+						
 				
 						String SQL_col_update = "UPDATE precompstacuscol SET total=total+? " +
 						"WHERE name=? AND cid=?";
-						
-						//check 
-						PreparedStatement pstmt_col = conn.prepareStatement(SQL_col);
+
 						
 						//update
 						PreparedStatement pstmt_col_update = conn.prepareStatement(SQL_col_update);
@@ -171,25 +161,22 @@ if(session.getAttribute("name")!=null)
 							int price = Integer.parseInt(currentProd[2]);
 							int cid = Integer.parseInt(currentProd[3]);
 							
-							pstmt_col.setString(1, uName);
-							pstmt_col.setInt(2, cid);
-							
-							conn.setAutoCommit(false);
-							ResultSet rs = pstmt_col.executeQuery();
-							conn.setAutoCommit(true);
-							
-							//check if user has already bought this product, update
-							if(rs.isBeforeFirst()) {
+
 								conn.setAutoCommit(false);
 								pstmt_col_update.setInt(1, quantity*price);
 								pstmt_col_update.setString(2, uName);
 								pstmt_col_update.setInt(3, cid);
 								
-								pstmt_col_update.executeUpdate();
+								int num_changed = pstmt_col_update.executeUpdate();
+								conn.commit();
 								conn.setAutoCommit(true);
-							}
-							//else we need to insert
-							else {
+								
+								
+								
+								
+							//insert if nothing was updated
+							if(num_changed == 0) {
+								
 								conn.setAutoCommit(false);
 								pstmt_col_insert.setInt(1, quantity*price);
 								pstmt_col_insert.setString(2, uName);
@@ -197,8 +184,10 @@ if(session.getAttribute("name")!=null)
 								pstmt_col_insert.setInt(4, cid);
 								
 								pstmt_col_insert.executeUpdate();
+								conn.commit();
 								conn.setAutoCommit(true);
 							}
+							
 						}
 						
 			////////////END FIRST COL/////////////////////////////////////////////////
@@ -206,15 +195,10 @@ if(session.getAttribute("name")!=null)
 			
 			
 			////////////FOR THE INNER CELL///////////////////////////////////////////////////////////////			
-						//check if there is already a matching product, only need to udpate
-						String SQL_inner = "SELECT * FROM precompcells WHERE " +
-						"name=? AND nam=? ";
 				
 						String SQL_inner_update = "UPDATE precompcells SET total=total+? " +
 						"WHERE name=? AND nam=?";
 						
-						//check 
-						PreparedStatement pstmt_inner = conn.prepareStatement(SQL_inner);
 						
 						//update
 						PreparedStatement pstmt_inner_update = conn.prepareStatement(SQL_inner_update);
@@ -231,25 +215,19 @@ if(session.getAttribute("name")!=null)
 							int price = Integer.parseInt(currentProd[2]);
 							int cid = Integer.parseInt(currentProd[3]);
 							
-							pstmt_inner.setString(1, name);
-							pstmt_inner.setString(2, uName);
 							
-							conn.setAutoCommit(false);
-							ResultSet rs = pstmt_inner.executeQuery();
-							conn.setAutoCommit(true);
 							
-							//check if user has already bought this product, update
-							if(rs.isBeforeFirst()) {
 								conn.setAutoCommit(false);
 								pstmt_inner_update.setInt(1, quantity*price);
 								pstmt_inner_update.setString(2, name);
 								pstmt_inner_update.setString(3, uName);
 								
-								pstmt_inner_update.executeUpdate();
+								int num = pstmt_inner_update.executeUpdate();
+								conn.commit();
 								conn.setAutoCommit(true);
-							}
-							//else we need to insert
-							else {
+							
+							//else we need to insert cause there were no updates
+							if(num == 0) {
 								conn.setAutoCommit(false);
 								pstmt_inner_insert.setInt(1, quantity*price);
 								pstmt_inner_insert.setString(2, name);
@@ -259,6 +237,7 @@ if(session.getAttribute("name")!=null)
 								pstmt_inner_insert.executeUpdate();
 								conn.setAutoCommit(true);
 							}
+							
 						}
 						
 			////////////END INNER CELL/////////////////////////////////////////////////

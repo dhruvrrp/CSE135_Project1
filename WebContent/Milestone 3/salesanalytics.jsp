@@ -26,6 +26,9 @@
 
 	<!-- Connect to DataBase -->
 	<% 
+	
+	String uName=(String)session.getAttribute("name");
+	
 	try 
 	{
 		long start=System.currentTimeMillis();
@@ -281,7 +284,7 @@ System.out.println("now here");
 		<!-- Title Area -->
 		<li class="name">
 			<h1>
-				<a href="home.jsp"> PYTS Home </a>
+				<a href="login.jsp"> PYTS Home </a>
 			</h1>
 		</li>
 		<li class="toggle-topbar menu-icon"><a href="#"><span>menu</span></a></li>
@@ -290,9 +293,9 @@ System.out.println("now here");
 	<!-- SHOPPING CART LINK --> <section class="top-bar-section">
 	<!-- Right Nav Section -->
 	<ul class="right">
-		<li><span id="welcome">Hello, You! </span></li>
+		<li><span id="welcome">Hello, <%= uName %>! </span></li>
 		<li class="divider"></li>
-		<li><a href="BuyShoppingCart.jsp"><img id="cart"
+		<li><a href="buyShoppingCart.jsp"><img id="cart"
 				src="../img/cart_icon.png" alt="" title="My Cart"></a></li>
 		<li class="divider"></li>
 	</ul>

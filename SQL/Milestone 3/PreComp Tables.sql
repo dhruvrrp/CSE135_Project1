@@ -83,3 +83,9 @@ CREATE TABLE PreCompCells AS
          RIGHT OUTER JOIN users ON users.id = sales.uid 
     GROUP BY users.state, products.name, users.name
 );
+
+
+
+
+/**please add this**/
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
