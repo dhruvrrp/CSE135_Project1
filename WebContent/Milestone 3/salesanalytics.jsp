@@ -31,7 +31,7 @@
 		long start=System.currentTimeMillis();
 		
 		Class.forName("org.postgresql.Driver");
- 		Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/CSE1351", "postgres", "calcium");
+ 		Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/CSE135", "postgres", "calcium");
  		
  		Statement stmt_states = conn.createStatement();
  		long startTime, endTime;
@@ -64,7 +64,7 @@
 					"ORDER BY total DESC NULLS LAST LIMIT 10");
 			// End timer
             endTime = System.currentTimeMillis();
-            ////System.out.println("Time for running rset_Join query: " + (endTime-startTime) + "ms");
+            System.out.println("Time for running rset_Join query: " + (endTime-startTime) + "ms");
  	        	   
 			Statement stmt_JoinRows = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
@@ -76,7 +76,7 @@
 				    "GROUP BY name " +
 				    "ORDER BY total DESC NULLS LAST, state LIMIT 20");
             endTime = System.currentTimeMillis();
-            ////System.out.println("Time for running rset_JoinRows query: " + (endTime-startTime) + "ms");
+            System.out.println("Time for running rset_JoinRows query: " + (endTime-startTime) + "ms");
 			
             startTime = System.currentTimeMillis();
             Statement stmt_Table = conn.createStatement();
@@ -92,7 +92,7 @@
 		                    "GROUP BY nam) AS f1 ON foo.nam = f1.nam " +
 		                    "ORDER BY sum DESC NULLS LAST, foo.nam, total DESC");
 			endTime = System.currentTimeMillis();
-            ////System.out.println("Time for running rset_Table query: " + (endTime-startTime) + "ms");
+            System.out.println("Time for running rset_Table query: " + (endTime-startTime) + "ms");
 		}
 		else if(request.getParameter("big_filter").equals("customers"))
 		{

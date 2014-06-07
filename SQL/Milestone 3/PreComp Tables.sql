@@ -43,7 +43,23 @@ CREATE TABLE PreCompProductsRow AS
 DROP TABLE IF EXISTS PreCompStaCusCol CASCADE; 
 CREATE TABLE PreCompStaCusCol AS
 (
-    SELECT total, 
+   SELECT total, 
+           users.name,
+           users.state, 
+           foo.cid
+          
+           
+    FROM (
+    SELECT SUM(sales.quantity*sales.price) AS total, sales.uid, products.cid
+    FROM products, sales
+    WHERE sales.pid = products.id
+    GROUP BY sales.uid, products.cid) AS foo
+    RIGHT OUTER JOIN users 
+    ON users.id = foo.uid
+    GROUP BY total, users.state, users.name, foo.cid
+
+);
+ /*   SELECT total, 
            users.name,
            users.state, 
            foo.cid,
@@ -57,7 +73,7 @@ CREATE TABLE PreCompStaCusCol AS
     RIGHT OUTER JOIN users 
     ON users.id = foo.uid
     GROUP BY total, users.state, users.name, foo.cid, foo.id
-);
+);*/
 
 DROP TABLE IF EXISTS PreCompCells CASCADE; 
 CREATE TABLE PreCompCells AS
