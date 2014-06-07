@@ -96,6 +96,7 @@
 		}
 		else if(request.getParameter("big_filter").equals("customers"))
 		{
+			String cid = " ";
 			String SUM1 = " ", SUM2 = " ";
 			if(!request.getParameter("states").equals("all"))
 			{
@@ -112,6 +113,7 @@
 			}
 			if(!request.getParameter("product_cat").equals("all"))
 			{
+				cid += " WHERE cid = '" + request.getParameter("product_cat") +"'";
 				SUM2 += "SUM(CASE WHEN cid = '"+request.getParameter("product_cat")+"' THEN total END)";
 				if(request.getParameter("states").equals("all")) 
 				{
@@ -136,6 +138,14 @@ System.out.println(" WhereRows: " + WHERE_ROWS);
 					WHERE_ROWS + 
 				    "GROUP BY name " +
 				    "ORDER BY total DESC NULLS LAST, name LIMIT 10");
+			if(!rset_Join.isBeforeFirst())
+			{
+				rset_Join = stmt_Join.executeQuery(
+						"SELECT 0 as total, name "+
+						"FROM products "+
+						cid +
+						" LIMIT 10 ");
+			}
 			endTime = System.currentTimeMillis();
             ////System.out.println("Time for running rset_Join query: " + (endTime-startTime) + "ms");
       	   
@@ -344,7 +354,7 @@ System.out.println("now here");
 						<%
 						rset_Table.next();	
 						System.out.println(" " +rset_JoinRows.isBeforeFirst());
-					    if ((rset_JoinRows.isBeforeFirst()) && !request.getParameter("states").equals("all"))
+					    if (!(rset_JoinRows.isBeforeFirst()) && !request.getParameter("states").equals("all") && !request.getParameter("big_filter").equals("customers"))
 					    {
 					        %><tr><td class="bold"><%=request.getParameter("states") + " ($0)"%></td>
                             <%for(int i=0; i< ar.size(); i++)
