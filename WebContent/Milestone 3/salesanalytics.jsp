@@ -31,7 +31,7 @@
 		long start=System.currentTimeMillis();
 		
 		Class.forName("org.postgresql.Driver");
- 		Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/CSE135", "postgres", "calcium");
+ 		Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/CSE1351", "postgres", "calcium");
  		
  		Statement stmt_states = conn.createStatement();
  		long startTime, endTime;
@@ -176,12 +176,14 @@ System.out.println("now here");
 		}
 		else if(request.getParameter("big_filter").equals("states"))
 		{
+			String cid = " ";
 			if(!request.getParameter("states").equals("all"))
 			{
 				WHERE_ROWS +=  "WHERE state = '" + request.getParameter("states")+"'";
 			}
 			if(!request.getParameter("product_cat").equals("all"))
 			{
+				cid += "WHERE cid = " + request.getParameter("product_cat");
 				if(request.getParameter("states").equals("all")) {
                     WHERE_ROWS += "WHERE cid = " + request.getParameter("product_cat");
                 }
@@ -193,7 +195,7 @@ System.out.println("now here");
 			
 			Statement stmt_Join = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
-	        System.out.println(" where " + WHERE_ROWS);
+	        System.out.println(" states where " + WHERE_ROWS);
 			startTime = System.currentTimeMillis();
 			rset_Join = stmt_Join.executeQuery(
                     "SELECT SUM(total) as total, name " +
@@ -201,6 +203,15 @@ System.out.println("now here");
                     WHERE_ROWS + 
                     "GROUP BY name " +
                     "ORDER BY total DESC NULLS LAST, name LIMIT 10");
+			if(!rset_Join.isBeforeFirst())
+			{
+				System.out.println("Yo");
+				rset_Join = stmt_Join.executeQuery(
+						"SELECT 0 as total, name "+
+						"FROM products "+
+						cid +
+						"LIMIT 10 ");
+			}
 			endTime = System.currentTimeMillis();
             ////System.out.println("Time for running rset_Join query: " + (endTime-startTime) + "ms");
  	        	   
@@ -322,6 +333,7 @@ System.out.println("now here");
 							<%
 							while(rset_Join.next())
 							{
+								System.out.println(rset_Join.getString("name"));
 								ar.add(rset_Join.getString("name"));
 								String truncate = rset_Join.getString("name");
 								if(truncate.length() > 10)
@@ -331,7 +343,8 @@ System.out.println("now here");
 						</tr>
 						<%
 						rset_Table.next();	
-					    if (!(rset_JoinRows.isBeforeFirst()) && !request.getParameter("states").equals("all"))
+						System.out.println(" " +rset_JoinRows.isBeforeFirst());
+					    if ((rset_JoinRows.isBeforeFirst()) && !request.getParameter("states").equals("all"))
 					    {
 					        %><tr><td class="bold"><%=request.getParameter("states") + " ($0)"%></td>
                             <%for(int i=0; i< ar.size(); i++)
