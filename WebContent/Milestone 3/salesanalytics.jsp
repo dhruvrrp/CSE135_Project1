@@ -1,4 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@page import="org.apache.tomcat.util.buf.StringCache"%>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -368,7 +369,8 @@ System.out.println("now here");
 					    else
 					    {
 		                    while(rset_JoinRows.next())
-		                    { System.out.println("Join rows " +rset_JoinRows.getString("state"));
+		                    { 
+		                    	String inner[] = new String[10];
 							%>
 						<tr><%
 								if(!rset_Table.isAfterLast())
@@ -383,81 +385,35 @@ System.out.println("now here");
 							%>
 							<td class="bold"><%=rset_JoinRows.getString("state") + " ($" + rset_JoinRows.getInt("total") + ")" %></td>
 							<%
+
+							if(rset_Table.isAfterLast())
+							{
+								for(int i=0; i< ar.size(); i++)
+								{
+									%>
+									<td>$0</td>
+									<% 
+								}
+							}
+							while(rset_Table.getString("state_id").equals(rset_JoinRows.getString("state")))
+							{
+								int in = ar.indexOf(rset_Table.getString("name"));
+								if(in != -1)
+								{
+									inner[in] = rset_Table.getString("total");
+								}
+								rset_Table.next();
 								if(rset_Table.isAfterLast())
 								{
-									for(int i=0; i< ar.size(); i++)
-									{
-										%>
-										<td>$0</td>
-										<% 
-									}
+									break;
 								}
-								else
-								for(int i=0; i< ar.size();)
-								{
-									int in = ar.indexOf(rset_Table.getString("name"));
-									System.out.println("haha "+in + " " +rset_Table.getString("name"));
-									if(in == -1)
-									{
-										System.out.println("Index -1 " + i);
-										rset_Table.next();
-										if(rset_Table.isAfterLast())
-										{
-											for(int j = i; j < ar.size(); j++, i++)
-											{
-												%>
-												<td>$0</td>
-												<% 
-											}
-											break;
-										}
-										if(!rset_Table.getString("state_id").equals(rset_JoinRows.getString("state")) || i == 9)
-										{
-											for(int j = i; j < ar.size(); j++, i++)
-											{
-												%>
-												<td>$0</td>
-												<% 
-											}
-										}
-									}
-									else
-									{
-										System.out.println(" value of i before "+i);
-										for(int j = i; j < in; j++, i++)
-										{
-											%>
-											<td>$0</td>
-											<% 
-										}
-										%>
-										<td><%=" $" +rset_Table.getString("total") %></td>
-										<%	
-										i++;
-										System.out.println(" value of i "+i);
-										rset_Table.next();
-										if(rset_Table.isAfterLast())
-										{
-											for(int j = i; j < ar.size(); j++, i++)
-											{
-												%>
-												<td>$0</td>
-												<% 
-											}
-											break;
-										}
-										if(!rset_Table.getString("state_id").equals(rset_JoinRows.getString("state")) || i == 9)
-										{
-											for(int j = i ; j < ar.size(); j++, i++)
-											{
-												%>
-												<td>$0</td>
-												<% 
-											}
-												
-										}
-									}
-								}
+							}
+							for(int i=0; i< inner.length; i++)
+							{
+								%>
+								<td><%=inner[i] %></td>
+								<%
+							}
 %>
 									
 						</tr>
