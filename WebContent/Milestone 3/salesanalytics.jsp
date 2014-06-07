@@ -368,9 +368,12 @@ System.out.println("now here");
                         }
 					    else
 					    {
+
 		                    while(rset_JoinRows.next())
 		                    { 
-		                    	String inner[] = new String[10];
+		                    	String inner[] = new String[ar.size()];
+		                    	for(int i=0 ; i< inner.length; i++)
+		                    		inner[i] ="0";
 							%>
 						<tr><%
 								if(!rset_Table.isAfterLast())
@@ -411,7 +414,7 @@ System.out.println("now here");
 							for(int i=0; i< inner.length; i++)
 							{
 								%>
-								<td><%=inner[i] %></td>
+								<td><%="$"+inner[i] %></td>
 								<%
 							}
 %>
