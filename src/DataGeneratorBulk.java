@@ -34,12 +34,12 @@ public class DataGeneratorBulk
 		int Num_users		=	10000; //100
 		int Num_categories	=	20;  //10
 		int Num_products	=	1000;//1000
-		int Num_sales		=	100000000;//10000
+		int Num_sales		=	20000000;//10000
 		
-		 String  usersPath		=	"C:\\UCSD\\users.txt",
-	    		 categoriesPath	=	"C:\\UCSD\\categories.txt",
-	    		 productsPath	=	"C:\\UCSD\\products.txt",
-	     		 salesPath		=	"C:\\UCSD\\sales.txt";
+		 String  usersPath		=	"C:\\UCSD\\users1.txt",
+	    		 categoriesPath	=	"C:\\UCSD\\categories1.txt",
+	    		 productsPath	=	"C:\\UCSD\\products1.txt",
+	     		 salesPath		=	"C:\\UCSD\\sales1.txt";
 		
 		DataGeneratorBulk dg=new DataGeneratorBulk();
 		dg.createData(usersPath, categoriesPath, productsPath, salesPath, Num_users,Num_categories,Num_products,Num_sales);
@@ -80,7 +80,7 @@ public class DataGeneratorBulk
 	{
 	   try{
 	    try{Class.forName("org.postgresql.Driver");}catch(Exception e){System.out.println("Driver error");}
-	    String url="jdbc:postgresql://127.0.0.1:5432/CSE135"; //database name
+	    String url="jdbc:postgresql://127.0.0.1:5432/CSE1352"; //database name
 	    String user="postgres";							 //username
 	    String password="calcium";						//password
 	    conn=DriverManager.getConnection(url, user, password);

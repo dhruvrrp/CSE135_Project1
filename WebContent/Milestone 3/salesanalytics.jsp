@@ -35,7 +35,7 @@
 		long start=System.currentTimeMillis();
 		
 		Class.forName("org.postgresql.Driver");
- 		Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/CSE135", "postgres", "calcium");
+ 		Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/CSE1351", "postgres", "calcium");
  		
  		Statement stmt_states = conn.createStatement();
  		long startTime, endTime;
@@ -227,7 +227,7 @@ System.out.println("now here");
 						"LIMIT 10 ");
 			}
 			endTime = System.currentTimeMillis();
-            ////System.out.println("Time for running rset_Join query: " + (endTime-startTime) + "ms");
+            System.out.println("Time for running rset_Join query: " + (endTime-startTime) + "ms");
  	        	   
 			Statement stmt_JoinRows = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
@@ -246,7 +246,7 @@ System.out.println("now here");
 								"ORDER BY total DESC NULLS LAST, state_id LIMIT 20");
 						
 				endTime = System.currentTimeMillis();
-	            ////System.out.println("Time for running rset_JoinRows query: " + (endTime-startTime) + "ms");
+	            System.out.println("Time for running rset_JoinRows query: " + (endTime-startTime) + "ms");
 			}
 			else
 			{
@@ -258,7 +258,7 @@ System.out.println("now here");
 	                    "GROUP BY state " +
 	                    "ORDER BY total DESC NULLS LAST, state LIMIT 20");
 				endTime = System.currentTimeMillis();
-                //System.out.println("Time for running rset_JoinRows query: " + (endTime-startTime) + "ms");
+                System.out.println("Time for running rset_JoinRows query: " + (endTime-startTime) + "ms");
 			}
 			Statement stmt_Table = conn.createStatement();
 			startTime = System.currentTimeMillis();
@@ -274,7 +274,7 @@ System.out.println("now here");
 					"GROUP BY state) AS f1 ON foo.state = f1.state "+
 					"ORDER BY sum DESC NULLS LAST, foo.state, total DESC");
 			endTime = System.currentTimeMillis();
-            //System.out.println("Time for running rset_Table query: " + (endTime-startTime) + "ms");
+            System.out.println("Time for running rset_Table query: " + (endTime-startTime) + "ms");
 		}
 		ArrayList<String> ar = new ArrayList<String>();
  		%>
@@ -347,7 +347,6 @@ System.out.println("now here");
 							<%
 							while(rset_Join.next())
 							{
-								System.out.println(rset_Join.getString("name"));
 								ar.add(rset_Join.getString("name"));
 								String truncate = rset_Join.getString("name");
 								if(truncate.length() > 10)
@@ -357,7 +356,7 @@ System.out.println("now here");
 						</tr>
 						<%
 						rset_Table.next();	
-						System.out.println(" " +rset_JoinRows.isBeforeFirst());
+						//System.out.println(" " +rset_JoinRows.isBeforeFirst());
 					    if (!(rset_JoinRows.isBeforeFirst()) && !request.getParameter("states").equals("all") && !request.getParameter("big_filter").equals("customers"))
 					    {
 					        %><tr><td class="bold"><%=request.getParameter("states") + " ($0)"%></td>
@@ -371,20 +370,21 @@ System.out.println("now here");
 
 		                    while(rset_JoinRows.next())
 		                    { 
+		              //      	System.out.println(rset_JoinRows.getString("state"));
 		                    	String inner[] = new String[ar.size()];
 		                    	for(int i=0 ; i< inner.length; i++)
 		                    		inner[i] ="0";
 							%>
 						<tr><%
+					//	System.out.println(" xxx "+ rset_Table.getString("state_id"));
 								if(!rset_Table.isAfterLast())
 								while(rset_Table.getString("state_id").equals(rset_JoinRows.getString("state")) == false )
 								{
-									System.out.println("XXXXXXX" +rset_Table.getString("state_id")+" ok " +rset_JoinRows.getString("state"));
+							//		System.out.println(" wut "+ rset_Table.getString("state_id"));
 									rset_Table.next();
 									if(rset_Table.isAfterLast())
 										break;
 								}
-						System.out.println(" ahahah " + rset_JoinRows.getString("state"));
 							%>
 							<td class="bold"><%=rset_JoinRows.getString("state") + " ($" + rset_JoinRows.getInt("total") + ")" %></td>
 							<%
@@ -398,8 +398,10 @@ System.out.println("now here");
 									<% 
 								}
 							}
+						//	System.out.println(" hmm "+ rset_Table.getString("state_id"));
 							while(rset_Table.getString("state_id").equals(rset_JoinRows.getString("state")))
 							{
+							//	System.out.println("WOWOW " +rset_Table.getString("state_id"));
 								int in = ar.indexOf(rset_Table.getString("name"));
 								if(in != -1)
 								{
